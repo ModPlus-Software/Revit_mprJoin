@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mprJoin", "mprJoin\mprJoin.csproj", "{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		R2017|x64 = R2017|x64
+		R2018|x64 = R2018|x64
+		R2019|x64 = R2019|x64
+		R2020|x64 = R2020|x64
+		R2021|x64 = R2021|x64
+		R2022|x64 = R2022|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.Debug|x64.ActiveCfg = Debug|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.Debug|x64.Build.0 = Debug|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2017|x64.ActiveCfg = R2017|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2017|x64.Build.0 = R2017|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2018|x64.ActiveCfg = R2018|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2018|x64.Build.0 = R2018|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2019|x64.ActiveCfg = R2019|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2019|x64.Build.0 = R2019|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2020|x64.ActiveCfg = R2020|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2020|x64.Build.0 = R2020|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2021|x64.ActiveCfg = R2021|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2021|x64.Build.0 = R2021|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2022|x64.ActiveCfg = R2022|x64
+		{9EFB947E-5EF3-4EE6-9795-45B31ABE7C44}.R2022|x64.Build.0 = R2022|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8ED0A85E-7CF4-4D85-AD13-831726F08645}
+	EndGlobalSection
+EndGlobal

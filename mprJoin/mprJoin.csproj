@@ -114,10 +114,5 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\mprJoin_16x16.png" />
-    <Resource Include="Resources\mprJoin_32x32.png" />
-  </ItemGroup>
   
 </Project>

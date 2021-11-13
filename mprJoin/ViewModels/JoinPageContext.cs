@@ -1,8 +1,7 @@
-﻿using Autodesk.Revit.UI.Events;
-
-namespace mprJoin.ViewModels
+﻿namespace mprJoin.ViewModels
 {
-    using Autodesk.Revit.UI;
+    using System.Collections.ObjectModel;
+    using Models;
 
     public class JoinPageContext
     {
@@ -10,7 +9,27 @@ namespace mprJoin.ViewModels
         {
             
         }
-        
-        
+
+        /// <summary>
+        /// Список с парами элементов для соединения
+        /// </summary>
+        public ObservableCollection<CustomElementPair> Pairs { get; set; } = new ()
+        {
+            new ()
+            {
+                WhatToJoinCategory = "Стены",
+                WithWhatToJoin = "Плиты"
+            },
+            new ()
+            {
+                WhatToJoinCategory = "Колоны",
+                WithWhatToJoin = "Балки"
+            },
+            new ()
+            {
+                WhatToJoinCategory = "Ограждения",
+                WithWhatToJoin = "Переходы"
+            }
+        };
     }
 }

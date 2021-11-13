@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
-    using Abstractions;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.UI;
     using CSharpFunctionalExtensions;
@@ -13,6 +12,7 @@
     using ModPlusAPI.Mvvm;
     using ModPlusAPI.Services;
     using ModPlusAPI.Windows;
+    using Services;
     using Settings;
     using Constants = Helpers.Constants;
 
@@ -20,19 +20,16 @@
     {
         private readonly UIApplication _uiApplication;
         private readonly PluginSetting _pluginSetting;
-        private readonly RevitTask _revitTask;
-        private readonly ICollectorService _collectorService;
+        private readonly CollectorService _collectorService;
         private readonly Lazy<List<SelectedCategory>> _selectedCategories;
-        private readonly IElementConnectorService _elementConnectorService;
+        private readonly ElementConnectorService _elementConnectorService;
 
         public ContiguityPageContext(
             UIApplication uiApplication, 
             PluginSetting pluginSetting,
-            RevitTask revitTask,
-            ICollectorService collectorService,
-            IElementConnectorService elementConnectorService)
+            CollectorService collectorService,
+            ElementConnectorService elementConnectorService)
         {
-            _revitTask = revitTask;
             _collectorService = collectorService;
             _pluginSetting = pluginSetting;
             _uiApplication = uiApplication;
@@ -93,12 +90,15 @@
                         _elementConnectorService.DoContiguityAction(elements, Option, (FirstElementPoint, SecondElementPoint))
                             .OnFailure(err => resultService.ShowWithoutGrouping(err));
                     }, false, _uiApplication.ActiveUIDocument.Document);*/
-                    await _revitTask.Run(_ =>
+                    /*await _revitTask.Run(_ =>
                     {
                         _elementConnectorService
                             .DoContiguityAction(elements, Option, (FirstElementPoint, SecondElementPoint))
                             .OnFailure(err => resultService.ShowWithoutGrouping(err));
-                    });
+                    });*/
+                    _elementConnectorService
+                        .DoContiguityAction(elements, Option, (FirstElementPoint, SecondElementPoint))
+                        .OnFailure(err => resultService.ShowWithoutGrouping(err));
                 }
             }
             catch (Exception e)

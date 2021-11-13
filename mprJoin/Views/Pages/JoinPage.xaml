@@ -3,11 +3,43 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      
+      xmlns:vm="clr-namespace:mprJoin.ViewModels"
+      d:DataContext="{d:DesignInstance vm:JoinPageContext}"
       mc:Ignorable="d"
-      Title="JoinPage" Height="450" Width="800">
+      Title="JoinPage">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ListBox
+            Grid.Row="0"
+            ItemsSource="{Binding Pairs}"
+            >
+            <ListBoxItem
+                Name="ListBoxItem">
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.4*"/>
+                            <ColumnDefinition Width="0.2*"/>
+                            <ColumnDefinition Width="0.4*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                    <Button
+                        Content="фыва"
+                        Grid.Column="0"
+                        />
+                    <TextBlock 
+                        Text="=>"
+                        Grid.Column="1"
+                        />
+                    <Button
+                        Content="фыва"
+                        Grid.Column="2"
+                        />
+                </DataTemplate>
+            </ListBoxItem>
+        </ListBox>
         
     </Grid>
 </Page>

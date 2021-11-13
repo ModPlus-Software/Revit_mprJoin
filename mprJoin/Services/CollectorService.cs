@@ -2,13 +2,12 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Abstractions;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.UI;
     using Enums;
 
     /// <inheritdoc/>
-    public class CollectorService : ICollectorService
+    public class CollectorService
     {
         /// <inheritdoc/>
         public FilteredElementCollector GetFilteredElementCollector(UIDocument doc, ScopeType scopeType)

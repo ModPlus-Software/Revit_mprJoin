@@ -4,7 +4,6 @@
     using Autodesk.Revit.Attributes;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.UI;
-    using Helpers;
     using ModPlusAPI.Windows;
     using Services;
     using Settings;
@@ -21,9 +20,7 @@
         /// <inheritdoc />
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            RevitExternalEventHandler.Init();
             var pluginSettings = new PluginSetting();
-            var revitTask = new RevitTask();
             var collectorService = new CollectorService();
             var elementConnectorService = new ElementConnectorService(commandData.Application.ActiveUIDocument);
             try
@@ -33,10 +30,10 @@
                     DataContext = new MainContext(),
                     JoinPageContext = new JoinPageContext(),
                     ContiguityPageContext = new ContiguityPageContext(
-                        commandData.Application, pluginSettings, revitTask, collectorService, elementConnectorService)
+                        commandData.Application, pluginSettings, collectorService, elementConnectorService)
                 };
 
-                ModPlus_Revit.ModPlus.ShowModeless(win);
+                ModPlus_Revit.ModPlus.ShowModal(win);
 
                 return Result.Succeeded;
             }

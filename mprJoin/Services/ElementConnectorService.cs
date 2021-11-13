@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Abstractions;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.DB.Structure;
     using Autodesk.Revit.UI;
@@ -10,7 +9,7 @@
     using Helpers;
     using Result = CSharpFunctionalExtensions.Result;
 
-    public class ElementConnectorService : IElementConnectorService
+    public class ElementConnectorService
     {
         private readonly Document _doc;
         

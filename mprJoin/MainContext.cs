@@ -5,7 +5,7 @@
     /// <summary>
     /// Main context
     /// </summary>
-    internal class MainContext : ObservableObject
+    public class MainContext : ObservableObject
     {
     }
 }

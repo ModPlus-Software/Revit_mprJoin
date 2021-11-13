@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using ModPlusAPI.Abstractions;
     using ModPlusAPI.Enums;
+    using mprJoin.Helpers;
 
     /// <inheritdoc />
     public class ModPlusConnector : IModPlusPlugin
@@ -18,16 +19,16 @@
         public string LName => "Join"; // todo lName
 
         /// <inheritdoc />
-        public string Description => "Description"; // todo Description
+        public string Description => ModPlusAPI.Language.GetItem(Constants.LangItem, "Description"); // todo Description
 
         /// <inheritdoc />
-        public string Author => string.Empty;
+        public string Author => "Алексей Никитенко";
 
         /// <inheritdoc />
         public string Price => "0";
 
         /// <inheritdoc />
-        public string FullDescription => "Full description"; // todo full description if need
+        public string FullDescription => ModPlusAPI.Language.GetItem(Constants.LangItem, "Description"); // todo full description if need
 
 #if R2017
         /// <inheritdoc/>
@@ -65,21 +66,39 @@
         public string ToolTipHelpImage => string.Empty;
 
         /// <inheritdoc />
-        public List<string> SubPluginsNames => new List<string>();
+        public List<string> SubPluginsNames => new List<string>
+        {
+                string.Empty
+        };
 
         /// <inheritdoc />
-        public List<string> SubPluginsLNames => new List<string>();
+        public List<string> SubPluginsLNames => new List<string>
+        {
+                string.Empty
+        };
 
         /// <inheritdoc />
-        public List<string> SubDescriptions => new List<string>();
+        public List<string> SubDescriptions => new List<string>
+        {
+                string.Empty
+        };
 
         /// <inheritdoc />
-        public List<string> SubFullDescriptions => new List<string>();
+        public List<string> SubFullDescriptions => new List<string>
+        {
+                string.Empty
+        };
 
         /// <inheritdoc />
-        public List<string> SubHelpImages => new List<string>();
+        public List<string> SubHelpImages => new List<string>
+        {
+                string.Empty
+        };
 
         /// <inheritdoc />
-        public List<string> SubClassNames => new List<string>();
+        public List<string> SubClassNames => new List<string>
+        {
+                string.Empty
+        };
     }
 }

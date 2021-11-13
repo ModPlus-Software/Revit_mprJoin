@@ -1,0 +1,118 @@
+﻿<Page x:Class="mprJoin.Views.Pages.ContiguityPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:vm="clr-namespace:mprJoin.ViewModels"
+      xmlns:options="clr-namespace:mprJoin.Enums"
+      xmlns:convs="clr-namespace:mprJoin.Views.Converters"
+      xmlns:mps="https://modplus.org/winfx/xaml/controls"
+      d:DataContext="{d:DesignInstance vm:ContiguityPageContext}"
+      mc:Ignorable="d"
+      Name="CuntigitePage"
+      Title="ContiguityPage">
+    
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/ModPlusStyle;component/Styles/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <convs:EnumToIntConverter x:Key="EnumToIntConverter"/>
+            <XmlDataProvider x:Key="Lang" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/mprJoin" />
+            <XmlDataProvider x:Key="LangCommon" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/Common" />
+        </ResourceDictionary>
+    </Page.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="0.05*"/>
+            <RowDefinition Height="150"/>
+        </Grid.RowDefinitions>
+        
+        <ListBox
+            Grid.Row="0"
+            ItemsSource="{Binding SelectedCategories}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.3*"/>
+                            <ColumnDefinition Width="0.7*"/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox 
+                            Grid.Column="0"
+                            IsChecked="{Binding IsSelected}"/>
+                        <TextBlock 
+                            Grid.Column="1"
+                            Text="{Binding Name}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        <StackPanel 
+            Grid.Column="0"
+            Grid.Row="1">
+            <CheckBox 
+                IsChecked="{Binding FirstElementPoint}"
+                Content="Конец элемента"/><!--{Binding Source={StaticResource Lang}, XPath=h4}-->
+            <CheckBox 
+                IsChecked="{Binding SecondElementPoint}"
+                Content="Налачо элемента"/><!--{Binding Source={StaticResource Lang}, XPath=h5}-->
+        </StackPanel>
+        
+        <ComboBox
+            SelectedIndex="{Binding Option, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:ContiguityOption}, Mode=TwoWay}"
+            Grid.Row="2">
+            <ComboBoxItem Content = "Инвертировать"/><!--{Binding Source={StaticResource Lang}, XPath=h1}-->
+            <ComboBoxItem Content = "Соединить"/><!--{Binding Source={StaticResource Lang}, XPath=h2}-->
+            <ComboBoxItem Content = "Отсоединить"/><!--{Binding Source={StaticResource Lang}, XPath=h3}-->
+        </ComboBox>
+        
+        <Button
+            VerticalAlignment="Bottom"
+            Style="{StaticResource ModPlusFlatButton}"
+            Name="BtnCreate"
+            Width="150"
+            Height="25"
+            Content="Создать"
+            Click="BtCreate_OnClick"
+            Grid.Row="3"/>
+        <mps:Card 
+            Grid.Row="3">
+            <Popup
+                Name="PopupCreate"
+                PlacementTarget="{Binding ElementName=BtnCreate}"
+                StaysOpen="False"
+                VerticalOffset="-4"
+                AllowsTransparency="True"
+                Placement="Top">
+                <ItemsControl>
+                    <Button
+                        Content="Выбранные элементы"
+                        Height="25"
+                        Command="{Binding Execute}"
+                        CommandParameter="{x:Static options:ScopeType.SelectedElement}"
+                        Style = "{StaticResource ModPlusFlatButton}"
+                        Click="BtClosePopupCreate_OnClick"/><!--{Binding Source={StaticResource Lang}, XPath=h6}-->
+                    <Button
+                        Content="На активном виде"
+                        Height="25"
+                        Command="{Binding Execute}"
+                        CommandParameter="{x:Static options:ScopeType.InActiveView}"
+                        Style = "{StaticResource ModPlusFlatButton}"
+                        Click="BtClosePopupCreate_OnClick"/><!--{Binding Source={StaticResource Lang}, XPath=h7}-->
+                    <Button
+                        Content="В проекте"
+                        Height="25"
+                        Command="{Binding Execute}"
+                        CommandParameter="{x:Static options:ScopeType.InProject}"
+                        Style = "{StaticResource ModPlusFlatButton}"
+                        Click="BtClosePopupCreate_OnClick"/><!--{Binding Source={StaticResource Lang}, XPath=h8}-->
+                </ItemsControl>
+            </Popup>
+        </mps:Card>
+    </Grid>
+</Page>

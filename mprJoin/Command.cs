@@ -4,6 +4,7 @@
     using Autodesk.Revit.Attributes;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.UI;
+    using ModPlus_Revit;
     using ModPlusAPI.Windows;
     using Services;
     using Settings;
@@ -20,21 +21,15 @@
         /// <inheritdoc />
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            var pluginSettings = new PluginSetting();
-            var collectorService = new CollectorService();
-            var elementConnectorService = new ElementConnectorService(commandData.Application.ActiveUIDocument);
             try
             {
                 var win = new MainWindow
                 {
-                    DataContext = new MainContext(),
-                    JoinPageContext = new JoinPageContext(),
-                    ContiguityPageContext = new ContiguityPageContext(
-                        commandData.Application, pluginSettings, collectorService, elementConnectorService)
+                    DataContext = new MainContext(commandData.Application),
                 };
 
-                ModPlus_Revit.ModPlus.ShowModal(win);
-
+                ModPlus.ShowModal(win);
+                
                 return Result.Succeeded;
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)

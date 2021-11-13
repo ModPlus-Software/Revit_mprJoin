@@ -9,6 +9,10 @@
     /// <inheritdoc />
     public class ModPlusConnector : IModPlusPlugin
     {
+        private static ModPlusConnector _instance;
+
+        public static ModPlusConnector Instance => _instance ??= new ModPlusConnector();
+        
         /// <inheritdoc />
         public SupportedProduct SupportedProduct => SupportedProduct.Revit;
 
@@ -19,16 +23,13 @@
         public string LName => "Join"; // todo lName
 
         /// <inheritdoc />
-        public string Description => ModPlusAPI.Language.GetItem(Constants.LangItem, "Description"); // todo Description
-
-        /// <inheritdoc />
-        public string Author => "Алексей Никитенко";
-
+        public string Description => ""; // todo Description
+        
         /// <inheritdoc />
         public string Price => "0";
 
         /// <inheritdoc />
-        public string FullDescription => ModPlusAPI.Language.GetItem(Constants.LangItem, "Description"); // todo full description if need
+        public string FullDescription => ""; // todo full description if need
 
 #if R2017
         /// <inheritdoc/>

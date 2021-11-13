@@ -6,12 +6,12 @@
     /// <summary>
     /// Класс с настройками для плагина
     /// </summary>
-    public class PluginSetting
+    public static class PluginSetting
     {
         /// <summary>
         /// Разрешенные категории для вкладки Примыкание
         /// </summary>
-        public List<BuiltInCategory> AllowedCategoriesToContiguity = new ()
+        public static List<BuiltInCategory> AllowedCategoriesToContiguity = new ()
         {
             BuiltInCategory.OST_Walls,
             BuiltInCategory.OST_StructuralFraming

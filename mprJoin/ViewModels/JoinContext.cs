@@ -3,9 +3,9 @@
     using System.Collections.ObjectModel;
     using Models;
 
-    public class JoinPageContext
+    public class JoinContext
     {
-        public JoinPageContext()
+        public JoinContext()
         {
             
         }

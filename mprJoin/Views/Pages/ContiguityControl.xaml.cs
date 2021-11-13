@@ -1,14 +1,16 @@
 ﻿namespace mprJoin.Views.Pages
 {
     using System.Windows;
-    using System.Windows.Controls;
-    using mprJoin.ViewModels;
 
-    public partial class ContiguityPage : Page
+    public partial class ContiguityControl 
     {
-        public ContiguityPage()
+        public ContiguityControl()
         {
             InitializeComponent();
+
+            ModPlusAPI.Windows.Helpers.WindowHelpers.ChangeStyleForResourceDictionary(Resources);
+            ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources);
+            ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources, "LangCommon");
         }
 
         private void BtCreate_OnClick(object sender, RoutedEventArgs e)

@@ -7,12 +7,13 @@
     using Autodesk.Revit.UI;
     using Enums;
     using Helpers;
-    using Result = CSharpFunctionalExtensions.Result;
+    using ModPlusAPI.Enums;
+    using ModPlusAPI.Services;
 
     public class ElementConnectorService
     {
         private readonly Document _doc;
-        
+
         /// <summary>
         /// ctor
         /// </summary>
@@ -23,19 +24,20 @@
         }
 
         /// <inheritdoc/>
-        public Result DoContiguityAction(List<Element> elements, ContiguityOption option, (bool, bool) beginAndAndOptions)
+        public void DoContiguityAction(List<Element> elements, ContiguityOption option, (bool, bool) beginAndAndOptions)
         {
-            var trName = ModPlusAPI.Language.GetItem(Constants.LangItem, "t1");
+            var trName = ModPlusAPI.Language.GetItem("t1");
+            var resultService = new ResultService();
             using (var tr = new Transaction(_doc, trName))
             {
                 tr.Start();
-                try
+                foreach (var element in elements)
                 {
-                    foreach (var element in elements)
+                    try
                     {
                         if (element.Location is not LocationCurve)
                             continue;
-                        
+
                         // Чет не знаю, как можно этот одинаковый код схлопнуть, выносить в стратегии не хочется, ибо случая всего 2
                         // а идеи что то нет, как избавиться от дублирования
                         var (start, end) = beginAndAndOptions;
@@ -63,9 +65,9 @@
                                             InvertJoin(wall, 1);
                                         break;
                                 }
-                                
+
                                 break;
-                            
+
                             case FamilyInstance familyInstance:
                                 switch (option)
                                 {
@@ -92,16 +94,16 @@
                                 break;
                         }
                     }
+                    catch (Exception exception)
+                    {
+                        resultService.Add(exception.Message, element.Id.ToString(), ResultItemType.Error);
+                    }
+                }
 
-                    tr.Commit();
-                }
-                catch (Exception e)
-                {
-                    return Result.Failure(e.ToString());
-                }
+                tr.Commit();
             }
 
-            return Result.Success();
+            resultService.ShowByType();
         }
 
         private void InvertJoin(Element element, int end)
@@ -113,7 +115,7 @@
                 else
                     WallUtils.AllowWallJoinAtEnd(wall, end);
             }
-            else if (element is FamilyInstance familyInstance 
+            else if (element is FamilyInstance familyInstance
                      && (BuiltInCategory)familyInstance.Category.Id.IntegerValue == BuiltInCategory.OST_StructuralFraming)
             {
                 if (StructuralFramingUtils.IsJoinAllowedAtEnd(familyInstance, end))

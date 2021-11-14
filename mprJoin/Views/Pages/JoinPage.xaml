@@ -7,6 +7,7 @@
              xmlns:models="clr-namespace:mprJoin.Models"
              xmlns:mps="https://modplus.org/winfx/xaml/controls"
              xmlns:vm="clr-namespace:mprJoin.ViewModels"
+             xmlns:options="clr-namespace:mprJoin.Enums"
              d:DataContext="{d:DesignInstance vm:JoinContext}"
              mc:Ignorable="d">
 
@@ -27,11 +28,38 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ListBox Grid.Row="0"
-                 ItemsSource="{Binding Pairs}"
-                 mps:RippleAssist.IsDisabled="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+                                    
+        <Button 
+            Grid.Column="0"
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Right"
+            ToolTip="{Binding Source={StaticResource Lang}, XPath=tp1}"
+            Command="{Binding DataContext.AddPair ,RelativeSource = {RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+            Margin="0 4 12 4"
+            Style="{StaticResource ModPlusFlatButtonForIcon}">
+            <Viewbox Width="24"
+                     Height="24">
+                <Canvas Width="24" Height="24">
+                    <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z" />
+                </Canvas>
+            </Viewbox>
+        </Button>
+        
+        <ListBox 
+            Grid.Column="0"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            ItemsSource="{Binding Pairs}"
+            mps:RippleAssist.IsDisabled="True">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:CustomElementPair}">
                     <Grid>
@@ -40,7 +68,13 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid 
+                            Grid.Row="0"
+                            Grid.Column="0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
@@ -53,10 +87,15 @@
 
                             <ComboBox Grid.Row="0"
                                       Grid.Column="0"
-                                      Grid.ColumnSpan="2" />
+                                      Grid.ColumnSpan="2"
+                                      ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.StringSelectedCategories}"
+                                      SelectedItem="{Binding WhatToJoinCategory}"/>
+                            
                             <Button Grid.Row="0"
                                     Grid.Column="2"
                                     Margin="0 4 4 4"
+                                    Command="{Binding DataContext.ChangeVisibilityForFilters, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                    CommandParameter="{Binding}"
                                     Style="{StaticResource ModPlusFlatButtonForIcon}">
                                 <Viewbox Width="24"
                                          Height="24">
@@ -68,37 +107,205 @@
                                 </Viewbox>
                             </Button>
 
+                            <!--Block с Or And-->
                             <ComboBox Grid.Row="1"
                                       Grid.Column="0"
                                       Margin="0"
+                                      Visibility="{Binding ShowFilters, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                      SelectedIndex="{Binding LogicConditions, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:LogicConditions}, Mode=TwoWay}"
                                       mps:ComboBoxAssist.IsBorderless="True">
-                                <ComboBoxItem>AND</ComboBoxItem>
-                                <ComboBoxItem>OR</ComboBoxItem>
+                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op1}"/>
+                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op2}"/>
                             </ComboBox>
-
-                            <ListBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Grid.ColumnSpan="2"
-                                     Margin="0" 
-                                     BorderThickness="0"
-                                     Background="Transparent"/>
+                            
+                            <!--Кнопка управляющая видимостью фильтров-->
+                            <Button 
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                ToolTip="Добавить пару"
+                                Visibility="{Binding ShowFilters, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Command="{Binding DataContext.AddFilter ,RelativeSource = {RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"
+                                Margin="0 4 12 4"
+                                Style="{StaticResource ModPlusFlatButtonForIcon}">
+                                <Viewbox Width="24"
+                                         Height="24">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Button>
                         </Grid>
-
-                        <Viewbox Grid.Column="1"
-                                 Width="24"
-                                 Height="24">
+                        
+                        <!--ListBox фильтров-->
+                        <ListBox
+                                Grid.Row="1" 
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Margin="20 0 0 0"
+                                Visibility="{Binding ShowFilters, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                ItemsSource="{Binding Filters}">
+                            
+                            <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox 
+                                                Grid.Column="0"
+                                                Text="{Binding ParameterName}"/>
+                                            <ComboBox
+                                                Grid.Column="1"
+                                                SelectedIndex="{Binding Conditions, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:Conditions}, Mode=TwoWay}">
+                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op3}" />
+                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op4}" />
+                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op5}" />
+                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op6}" />
+                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op7}" />
+                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op8}" />
+                                            </ComboBox>
+                                            <TextBox 
+                                                Grid.Column="2"
+                                                Text="{Binding ParameterValue}"/>
+                                            
+                                            <Button
+                                                    Grid.Column="3"
+                                                    Command="{Binding DataContext.RemoveFilter ,RelativeSource = {RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                                    CommandParameter="{Binding}"
+                                                    Margin="0 4 4 4"
+                                                    Style="{StaticResource ModPlusFlatButtonForIcon}">
+                                                <Viewbox Width="24"
+                                                         Height="24">
+                                                    <Canvas Width="24" Height="24">
+                                                        <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7" />
+                                                    </Canvas>
+                                                </Viewbox>
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        
+                        <Viewbox 
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            VerticalAlignment="Top"
+                            Margin="0 4 0 0"
+                            Width="24"
+                            Height="24">
                             <Canvas Width="24"
                                     Height="24">
                                 <Path Data="M3,8H5V16H3V8M7,8H9V16H7V8M11,8H13V16H11V8M15,19.25V4.75L22.25,12L15,19.25Z"
                                       Fill="{StaticResource DarkGrayBrush}" />
                             </Canvas>
                         </Viewbox>
-
-                        <Grid Grid.Column="2" />
+                        
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="2" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox 
+                                Grid.Column="0"
+                                Grid.Row="0"
+                                ItemsSource="{Binding WithWhatToJoin}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox 
+                                            IsChecked="{Binding IsSelected}"
+                                            Content="{Binding Name}"
+                                        />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            
+                            <Button Grid.Row="0"
+                                    Grid.Column="1"
+                                    Command="{Binding DataContext.RemovePair ,RelativeSource = {RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                    CommandParameter="{Binding}"
+                                    Margin="0 4 4 4"
+                                    Style="{StaticResource ModPlusFlatButtonForIcon}">
+                                <Viewbox Width="24"
+                                         Height="24">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Button>
+                        </Grid>
+                        
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        
+        <Button 
+            Grid.Column="0"
+            Name="BtnCreate"
+            Grid.Row="2"
+            VerticalAlignment="Bottom"
+            Click="BtCreate_OnClick"
+            Content="{Binding Source={StaticResource Lang}, XPath=h9}" />
+        <Popup
+            Grid.Column="0"
+            Grid.Row="2"
+           Name="PopupCreate"
+           AllowsTransparency="True"
+           Placement="Top"
+           PlacementTarget="{Binding ElementName=BtnCreate}"
+           StaysOpen="False"
+           VerticalOffset="-4">
+            <mps:Card>
+                <ItemsControl>
+                    <Button Height="25"
+                            Click="BtClosePopupCreate_OnClick"
+                            Command="{Binding Execute}"
+                            CommandParameter="{x:Static options:ScopeType.SelectedElement}"
+                            Content="{Binding Source={StaticResource Lang}, XPath=h6}"
+                            Style="{StaticResource ModPlusFlatButton}"
+                            HorizontalAlignment="Stretch"/>
+                    <Button Height="25"
+                            Click="BtClosePopupCreate_OnClick"
+                            Command="{Binding Execute}"
+                            CommandParameter="{x:Static options:ScopeType.InActiveView}"
+                            Content="{Binding Source={StaticResource Lang}, XPath=h7}"
+                            Style="{StaticResource ModPlusFlatButton}" 
+                            HorizontalAlignment="Stretch"/>
+                    <Button Height="25"
+                            Click="BtClosePopupCreate_OnClick"
+                            Command="{Binding Execute}"
+                            CommandParameter="{x:Static options:ScopeType.InProject}"
+                            Content="{Binding Source={StaticResource Lang}, XPath=h8}"
+                            Style="{StaticResource ModPlusFlatButton}" 
+                            HorizontalAlignment="Stretch"/>
+                </ItemsControl>
+            </mps:Card>
+        </Popup>
+        
+        <Button 
+            Grid.Column="1"
+            Grid.Row="2"
+            VerticalAlignment="Bottom"
+            Command="{Binding SaveSettings}"
+            >
+            <Viewbox Width="48" Height="48">
+                <Canvas Width="24" Height="24">
+                    <Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" 
+                          Data="M17,7V3H7V7H17M14,17A3,3 0 0,0 17,14A3,3 0 0,0 14,11A3,3 0 0,0 11,14A3,3 0 0,0 14,17M19,1L23,5V17A2,2 0 0,1 21,19H7C5.89,19 5,18.1 5,17V3A2,2 0 0,1 7,1H19M1,7H3V21H17V23H3A2,2 0 0,1 1,21V7Z" />
+                </Canvas>
+            </Viewbox>
+        </Button>
 
     </Grid>
 </UserControl>

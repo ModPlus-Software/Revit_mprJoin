@@ -45,22 +45,18 @@
 
         <StackPanel Grid.Row="1"
                     Grid.Column="0">
-            <CheckBox Content="Конец элемента"
+            <CheckBox Content="{Binding Source={StaticResource Lang}, XPath=h4}"
                       IsChecked="{Binding FirstElementPoint}" />
-            <!-- {Binding Source={StaticResource Lang}, XPath=h4} -->
-            <CheckBox Content="Налачо элемента"
+            <CheckBox Content="{Binding Source={StaticResource Lang}, XPath=h5}"
                       IsChecked="{Binding SecondElementPoint}" />
-            <!-- {Binding Source={StaticResource Lang}, XPath=h5} -->
         </StackPanel>
 
         <ComboBox Grid.Row="2"
                   SelectedIndex="{Binding Option, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:ContiguityOption}, Mode=TwoWay}">
-            <ComboBoxItem Content="Инвертировать" />
-            <!-- {Binding Source={StaticResource Lang}, XPath=h1} -->
-            <ComboBoxItem Content="Соединить" />
-            <!-- {Binding Source={StaticResource Lang}, XPath=h2} -->
-            <ComboBoxItem Content="Отсоединить" />
-            <!-- {Binding Source={StaticResource Lang}, XPath=h3} -->
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h1}" />
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h2}" />
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h3}" />
+            
         </ComboBox>
 
         <Button Name="BtnCreate"
@@ -81,26 +77,23 @@
                             Click="BtClosePopupCreate_OnClick"
                             Command="{Binding Execute}"
                             CommandParameter="{x:Static options:ScopeType.SelectedElement}"
-                            Content="Выбранные элементы"
+                            Content="{Binding Source={StaticResource Lang}, XPath=h6}"
                             Style="{StaticResource ModPlusFlatButton}"
                             HorizontalAlignment="Stretch"/>
-                    <!-- {Binding Source={StaticResource Lang}, XPath=h6} -->
                     <Button Height="25"
                             Click="BtClosePopupCreate_OnClick"
                             Command="{Binding Execute}"
                             CommandParameter="{x:Static options:ScopeType.InActiveView}"
-                            Content="На активном виде"
+                            Content="{Binding Source={StaticResource Lang}, XPath=h7}"
                             Style="{StaticResource ModPlusFlatButton}" 
                             HorizontalAlignment="Stretch"/>
-                    <!-- {Binding Source={StaticResource Lang}, XPath=h7} -->
                     <Button Height="25"
                             Click="BtClosePopupCreate_OnClick"
                             Command="{Binding Execute}"
                             CommandParameter="{x:Static options:ScopeType.InProject}"
-                            Content="В проекте"
+                            Content="{Binding Source={StaticResource Lang}, XPath=h8}"
                             Style="{StaticResource ModPlusFlatButton}" 
                             HorizontalAlignment="Stretch"/>
-                    <!-- {Binding Source={StaticResource Lang}, XPath=h8} -->
                 </ItemsControl>
             </mps:Card>
         </Popup>

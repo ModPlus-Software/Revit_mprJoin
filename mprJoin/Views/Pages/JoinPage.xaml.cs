@@ -1,7 +1,7 @@
-﻿using System.Windows.Controls;
-
-namespace mprJoin.Views.Pages
+﻿namespace mprJoin.Views.Pages
 {
+    using System.Windows;
+
     public partial class JoinPage 
     {
         public JoinPage()
@@ -11,6 +11,16 @@ namespace mprJoin.Views.Pages
             ModPlusAPI.Windows.Helpers.WindowHelpers.ChangeStyleForResourceDictionary(Resources);
             ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources);
             ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources, "LangCommon");
+        }
+
+        private void BtCreate_OnClick(object sender, RoutedEventArgs e)
+        {
+            PopupCreate.IsOpen = !PopupCreate.IsOpen;
+        }
+
+        private void BtClosePopupCreate_OnClick(object sender, RoutedEventArgs e)
+        {
+            PopupCreate.IsOpen = false;
         }
     }
 }

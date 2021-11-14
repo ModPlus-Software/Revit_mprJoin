@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using ModPlusAPI.Abstractions;
     using ModPlusAPI.Enums;
-    using mprJoin.Helpers;
 
     /// <inheritdoc />
     public class ModPlusConnector : IModPlusPlugin

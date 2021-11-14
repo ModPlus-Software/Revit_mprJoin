@@ -1,7 +1,6 @@
 ﻿namespace mprJoin
 {
     using Autodesk.Revit.UI;
-    using ModPlusAPI;
     using ModPlusAPI.Mvvm;
     using ViewModels;
 
@@ -13,7 +12,7 @@
         public MainContext(UIApplication uiApplication)
         {
             ContiguityContext = new ContiguityContext(uiApplication);
-            JoinContext = new JoinContext();
+            JoinContext = new JoinContext(uiApplication);
         }
         
         public ContiguityContext ContiguityContext { get; }

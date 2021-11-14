@@ -9,12 +9,11 @@
     using Enums;
     using Models;
     using ModPlusAPI.Mvvm;
-    using ModPlusAPI.Services;
     using ModPlusAPI.Windows;
     using Services;
     using Settings;
 
-    public class ContiguityContext
+    public class ContiguityContext : BaseContext
     {
         private readonly UIApplication _uiApplication;
         private readonly CollectorService _collectorService;
@@ -22,6 +21,7 @@
         private readonly ElementConnectorService _elementConnectorService;
 
         public ContiguityContext(UIApplication uiApplication)
+            : base(uiApplication)
         {
             _collectorService = new CollectorService();
             _uiApplication = uiApplication;
@@ -31,7 +31,7 @@
         /// <summary>
         /// Список моделей категорий для вывода пользователю
         /// </summary>
-        public List<SelectedCategory> SelectedCategories => _selectedCategories ??= GetSelectedCategories();
+        public List<SelectedCategory> SelectedCategories => _selectedCategories ??= GetSelectedCategories(PluginSetting.AllowedCategoriesToContiguity);
 
         /// <summary>
         /// Обрабатывать ли начало элемента
@@ -81,28 +81,5 @@
                 e.ShowInExceptionBox();
             }
         });
-
-        /// <summary>
-        /// Получить список моделей категорий
-        /// </summary>
-        /// <returns></returns>
-        private List<SelectedCategory> GetSelectedCategories()
-        {
-            var resultList = new List<SelectedCategory>();
-            foreach (Category category in _uiApplication.ActiveUIDocument.Document.Settings.Categories)
-            {
-                var builtInCategory = (BuiltInCategory)category.Id.IntegerValue;
-                if (PluginSetting.AllowedCategoriesToContiguity.Any(i => i == builtInCategory))
-                {
-                    resultList.Add(new SelectedCategory
-                    {
-                        Name = category.Name,
-                        IsSelected = true
-                    });
-                }
-            }
-
-            return resultList;
-        }
     }
 }

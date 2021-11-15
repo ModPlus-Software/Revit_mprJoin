@@ -6,7 +6,7 @@
     using Autodesk.Revit.UI;
     using ModPlus_Revit;
     using ModPlusAPI.Windows;
-    using RevitGeometryExporter;
+    //using RevitGeometryExporter;
     using Views;
 
     /// <summary>
@@ -19,8 +19,8 @@
         /// <inheritdoc />
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            ExportGeometryToXml.FolderName = @"C:\Temp";
-            ExportGeometryToXml.ExportUnits = ExportUnits.Mm;
+            //ExportGeometryToXml.FolderName = @"C:\Temp";
+            //ExportGeometryToXml.ExportUnits = ExportUnits.Mm;
             try
             {
                 var win = new MainWindow

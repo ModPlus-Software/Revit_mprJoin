@@ -10,22 +10,22 @@
         /// Категория элементов которые будут будут иметь высший приоритет при соединении
         /// </summary>
         public string WhatToJoinCategory { get; set; }
-        
+
         /// <summary>
         /// Категория которые будут присоединяться (т.е. у них будут образовываться вырезы)
         /// </summary>
         public List<SelectedCategory> WithWhatToJoin { get; set; }
-        
+
         /// <summary>
         /// Список фильтров
         /// </summary>
         public ObservableCollection<FilterModel> Filters { get; set; }
-        
+
         /// <summary>
         /// Логический оператор.
         /// </summary>
         public LogicConditions LogicConditions { get; set; }
-        
+
         /// <summary>
         /// Показывать фильтры.
         /// </summary>
@@ -33,15 +33,14 @@
 
         public CustomElementPair ToModel()
         {
-            var model = new CustomElementPair
+            var model = new CustomElementPair(WithWhatToJoin)
             {
                 WhatToJoinCategory = WhatToJoinCategory,
-                WithWhatToJoin = WithWhatToJoin,
                 LogicConditions = LogicConditions,
                 Filters = Filters,
                 ShowFilters = ShowFilters
             };
-            
+
             return model;
         }
     }

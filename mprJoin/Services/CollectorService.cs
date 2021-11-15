@@ -96,7 +96,7 @@
             if (param == null)
                 return false;
 
-            var paramValue = param.GetParameterValue().ToString();
+            var paramValue = param.GetParameterValue();
             switch (filter.Conditions)
             {
                 case Conditions.Begin:

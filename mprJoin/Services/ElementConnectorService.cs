@@ -46,62 +46,12 @@
                     {
                         if (element.Location is not LocationCurve)
                             continue;
-
-                        // Чет не знаю, как можно этот одинаковый код схлопнуть, выносить в стратегии не хочется, ибо случая всего 2
-                        // а идеи что то нет, как избавиться от дублирования
+                        
                         var (start, end) = beginAndAndOptions;
-                        switch (element)
-                        {
-                            case Wall wall:
-                                switch (option)
-                                {
-                                    case ContiguityOption.Join:
-                                        if (start)
-                                            WallUtils.AllowWallJoinAtEnd(wall, 0);
-                                        if (end)
-                                            WallUtils.AllowWallJoinAtEnd(wall, 1);
-                                        break;
-                                    case ContiguityOption.DisJoin:
-                                        if (start)
-                                            WallUtils.DisallowWallJoinAtEnd(wall, 0);
-                                        if (end)
-                                            WallUtils.DisallowWallJoinAtEnd(wall, 1);
-                                        break;
-                                    case ContiguityOption.Invert:
-                                        if (start)
-                                            InvertJoin(wall, 0);
-                                        if (end)
-                                            InvertJoin(wall, 1);
-                                        break;
-                                }
-
-                                break;
-
-                            case FamilyInstance familyInstance:
-                                switch (option)
-                                {
-                                    case ContiguityOption.Join:
-                                        if (start)
-                                            StructuralFramingUtils.AllowJoinAtEnd(familyInstance, 0);
-                                        if (end)
-                                            StructuralFramingUtils.AllowJoinAtEnd(familyInstance, 1);
-                                        break;
-                                    case ContiguityOption.DisJoin:
-                                        if (start)
-                                            StructuralFramingUtils.DisallowJoinAtEnd(familyInstance, 0);
-                                        if (end)
-                                            StructuralFramingUtils.DisallowJoinAtEnd(familyInstance, 1);
-                                        break;
-                                    case ContiguityOption.Invert:
-                                        if (start)
-                                            InvertJoin(familyInstance, 0);
-                                        if (end)
-                                            InvertJoin(familyInstance, 1);
-                                        break;
-                                }
-
-                                break;
-                        }
+                        if (start)
+                            ChangeEndJoinState(element, 0, option);
+                        if (end)
+                            ChangeEndJoinState(element, 1, option);
                     }
                     catch (Exception exception)
                     {
@@ -123,7 +73,7 @@
         public void JoinElements(Document document, List<CustomElementPair> pairs)
         {
             var resultService = new ResultService();
-            var trName = "транзакция";// ModPlusAPI.Language.GetItem("t2");
+            var trName = "транзакция"; // todo ModPlusAPI.Language.GetItem("t2");
             using (var tr = new Transaction(document, trName))
             {
                 tr.Start();
@@ -135,8 +85,9 @@
                         foreach (var intersectedElement in _collectorService.GetIntersectedElementByBoundingBoxFilter(
                             document, elementWhoWillJoin, pair.WhereToJoinElements).Where(i => !i.Id.Equals(elementWhoWillJoin.Id)))
                         {
-                            // Проверка на примыкание стен. Если стена примыкает к другой стене, то данная проверка (!JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin,
-                            // intersectedElement)) не ловит этот момент и 2 стены пытаются соединиться, поэтому получается ошибка
+                            // Проверка на примыкание стен. Если стена примыкает к другой стене, то данная проверка
+                            // (!JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin, intersectedElement))
+                            // не ловит этот момент и 2 стены пытаются соединиться, поэтому получается ошибка
                             if (intersectedElement is Wall wallWhereWillJoin &&
                                 elementWhoWillJoin is Wall wallWhoWillJoin)
                             {
@@ -189,23 +140,36 @@
             
             resultService.ShowByType();
         }
-
-        private void InvertJoin(Element element, int end)
+        
+        private void ChangeEndJoinState(Element element, int end, ContiguityOption joinType)
         {
             if (element is Wall wall)
             {
-                if (WallUtils.IsWallJoinAllowedAtEnd(wall, end))
-                    WallUtils.DisallowWallJoinAtEnd(wall, end);
-                else
-                    WallUtils.AllowWallJoinAtEnd(wall, end);
+                switch (joinType)
+                {
+                    case ContiguityOption.Join:
+                    case ContiguityOption.Invert when !WallUtils.IsWallJoinAllowedAtEnd(wall, end):
+                        WallUtils.AllowWallJoinAtEnd(wall, end);
+                        break;
+                    case ContiguityOption.DisJoin:
+                    case ContiguityOption.Invert when WallUtils.IsWallJoinAllowedAtEnd(wall, end):
+                        WallUtils.DisallowWallJoinAtEnd(wall, end);
+                        break;
+                }
             }
-            else if (element is FamilyInstance familyInstance
-                     && (BuiltInCategory)familyInstance.Category.Id.IntegerValue == BuiltInCategory.OST_StructuralFraming)
+            else if (element is FamilyInstance familyInstance)
             {
-                if (StructuralFramingUtils.IsJoinAllowedAtEnd(familyInstance, end))
-                    StructuralFramingUtils.DisallowJoinAtEnd(familyInstance, end);
-                else
-                    StructuralFramingUtils.AllowJoinAtEnd(familyInstance, end);
+                switch (joinType)
+                {
+                    case ContiguityOption.Join:
+                    case ContiguityOption.Invert when !StructuralFramingUtils.IsJoinAllowedAtEnd(familyInstance, end):
+                        StructuralFramingUtils.AllowJoinAtEnd(familyInstance, end);
+                        break;
+                    case ContiguityOption.DisJoin:
+                    case ContiguityOption.Invert when StructuralFramingUtils.IsJoinAllowedAtEnd(familyInstance, end):
+                        StructuralFramingUtils.DisallowJoinAtEnd(familyInstance, end);
+                        break;
+                }
             }
         }
     }

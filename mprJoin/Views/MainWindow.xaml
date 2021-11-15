@@ -5,8 +5,7 @@
                    xmlns:local="clr-namespace:mprJoin"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    xmlns:mps="https://modplus.org/winfx/xaml/controls"
-                   xmlns:pages="clr-namespace:mprJoin.Views.Pages"
-                   SizeToContent="WidthAndHeight"
+                   xmlns:controls="clr-namespace:mprJoin.Views.Controls"
                    ResizeMode="CanResizeWithGrip"
                    mc:Ignorable="d"
                    WindowStartupLocation="CenterScreen"
@@ -18,16 +17,14 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/ModPlusStyle;component/Styles/Controls.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <XmlDataProvider x:Key="Lang" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/mprJoin" />
-            <XmlDataProvider x:Key="LangCommon" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/Common" />
         </ResourceDictionary>
     </Window.Resources>
     <TabControl>
         <TabItem>
-            <pages:ContiguityControl DataContext="{Binding Path=ContiguityContext}"/>
+            <controls:ContiguityControl DataContext="{Binding Path=ContiguityContext}"/>
         </TabItem>
         <TabItem>
-            <pages:JoinPage DataContext="{Binding Path=JoinContext}"></pages:JoinPage>
+            <controls:JoinControl DataContext="{Binding Path=JoinContext}"/>
         </TabItem>
     </TabControl>
 </mps:ModPlusWindow>

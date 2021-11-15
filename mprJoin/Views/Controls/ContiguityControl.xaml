@@ -1,12 +1,12 @@
-﻿<UserControl x:Class="mprJoin.Views.Pages.ContiguityControl"
+﻿<UserControl x:Class="mprJoin.Views.Controls.ContiguityControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:ModPlusAPI.Converters;assembly=ModPlusAPI"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:mps="https://modplus.org/winfx/xaml/controls"
              xmlns:options="clr-namespace:mprJoin.Enums"
              xmlns:vm="clr-namespace:mprJoin.ViewModels"
+             xmlns:controls="clr-namespace:mprJoin.Views.Controls"
              d:DataContext="{d:DesignInstance vm:ContiguityContext}"
              mc:Ignorable="d">
 
@@ -16,12 +16,8 @@
                 <ResourceDictionary Source="pack://application:,,,/ModPlusStyle;component/Styles/Controls.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:EnumToIntConverter x:Key="EnumToIntConverter" />
-            <XmlDataProvider x:Key="Lang"
-                             Source="E:/ModPlus/Languages/en-US.xml"
-                             XPath="ModPlus/mprJoin" />
-            <XmlDataProvider x:Key="LangCommon"
-                             Source="E:/ModPlus/Languages/en-US.xml"
-                             XPath="ModPlus/Common" />
+            <XmlDataProvider x:Key="Lang" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/mprJoin" />
+            <XmlDataProvider x:Key="LangCommon" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/Common" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -59,43 +55,9 @@
             
         </ComboBox>
 
-        <Button Name="BtnCreate"
-                Grid.Row="3"
-                VerticalAlignment="Bottom"
-                Click="BtCreate_OnClick"
-                Content="Создать" />
-        <Popup Grid.Row="3"
-               Name="PopupCreate"
-               AllowsTransparency="True"
-               Placement="Top"
-               PlacementTarget="{Binding ElementName=BtnCreate}"
-               StaysOpen="False"
-               VerticalOffset="-4">
-            <mps:Card>
-                <ItemsControl>
-                    <Button Height="25"
-                            Click="BtClosePopupCreate_OnClick"
-                            Command="{Binding Execute}"
-                            CommandParameter="{x:Static options:ScopeType.SelectedElement}"
-                            Content="{Binding Source={StaticResource Lang}, XPath=h6}"
-                            Style="{StaticResource ModPlusFlatButton}"
-                            HorizontalAlignment="Stretch"/>
-                    <Button Height="25"
-                            Click="BtClosePopupCreate_OnClick"
-                            Command="{Binding Execute}"
-                            CommandParameter="{x:Static options:ScopeType.InActiveView}"
-                            Content="{Binding Source={StaticResource Lang}, XPath=h7}"
-                            Style="{StaticResource ModPlusFlatButton}" 
-                            HorizontalAlignment="Stretch"/>
-                    <Button Height="25"
-                            Click="BtClosePopupCreate_OnClick"
-                            Command="{Binding Execute}"
-                            CommandParameter="{x:Static options:ScopeType.InProject}"
-                            Content="{Binding Source={StaticResource Lang}, XPath=h8}"
-                            Style="{StaticResource ModPlusFlatButton}" 
-                            HorizontalAlignment="Stretch"/>
-                </ItemsControl>
-            </mps:Card>
-        </Popup>
+        <controls:SelectionOptionsButtonControl Grid.Row="3"
+                                                ButtonText="{Binding Source={StaticResource LangCommon}, XPath=create}"
+                                                ExecuteCommand="{Binding Path=Execute}"
+                                                HorizontalAlignment="Center"/>
     </Grid>
 </UserControl>

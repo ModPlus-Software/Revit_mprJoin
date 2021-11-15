@@ -49,10 +49,17 @@
         /// <summary>
         /// Добавить пару.
         /// </summary>
-        public ICommand AddPair => new RelayCommandWithoutParameter(() => _pairs.Add(new CustomElementPair
+        public ICommand AddPair => new RelayCommandWithoutParameter(() =>
         {
-            WithWhatToJoin = GetSelectedCategories(PluginSetting.AllowedCategoriesToJoin)
-        }));
+            try
+            {
+                _pairs.Add(new CustomElementPair(GetSelectedCategories(PluginSetting.AllowedCategoriesToJoin)));
+            }
+            catch (Exception exception)
+            {
+                exception.ShowInExceptionBox();
+            }
+        });
         
         /// <summary>
         /// Удалить пару.
@@ -85,8 +92,7 @@
         public ICommand SaveSettings => new RelayCommandWithoutParameter(() =>
         {
             var saveList = Pairs.Select(i => i.ToSaveMode()).ToList();
-            _userSettings.Set(
-                saveList, nameof(Pairs));
+            _userSettings.Set(saveList, nameof(Pairs));
         });
 
         /// <summary>
@@ -136,7 +142,7 @@
                         // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
                         // что у какого то элемента не получается посмотреть категорию
                         .WherePasses(new ElementMulticategoryFilter(PluginSetting.AllowedCategoriesToJoin))
-                        .Where(el => pair.WithWhatToJoin.Where(cat => cat.IsSelected).Select(cat => cat.Name).Any(cat =>
+                        .Where(el => pair.WithWhatToJoin.SelectedCategories.Where(cat => cat.IsSelected).Select(cat => cat.Name).Any(cat =>
                             cat.Equals(el.Category.Name, StringComparison.InvariantCultureIgnoreCase)))
                         .ToList();
                 }

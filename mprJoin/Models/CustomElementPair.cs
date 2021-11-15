@@ -13,11 +13,11 @@
     public class CustomElementPair : ObservableObject
     {
         private string _whatToJoinCategory;
-        private List<SelectedCategory> _withWhatToJoin;
         private bool _showFilters;
 
-        public CustomElementPair()
+        public CustomElementPair(List<SelectedCategory> selectedCategories)
         {
+            WithWhatToJoin = new SelectedCategoriesStorage(selectedCategories);
             Filters.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFilters));
         }
 
@@ -37,15 +37,7 @@
         /// <summary>
         /// Категория которые будут присоединяться (т.е. у них будут образовываться вырезы)
         /// </summary>
-        public List<SelectedCategory> WithWhatToJoin
-        {
-            get => _withWhatToJoin;
-            set
-            {
-                _withWhatToJoin = value;
-                OnPropertyChanged();
-            }
-        }
+        public SelectedCategoriesStorage WithWhatToJoin { get; }
         
         /// <summary>
         /// Элементы которые будут будут иметь высший приоритет при соединении
@@ -90,7 +82,7 @@
             var saveMode = new CustomElementPairForSave
             {
                 WhatToJoinCategory = WhatToJoinCategory,
-                WithWhatToJoin = WithWhatToJoin,
+                WithWhatToJoin = WithWhatToJoin.SelectedCategories,
                 LogicConditions = LogicConditions,
                 Filters = Filters,
                 ShowFilters = ShowFilters

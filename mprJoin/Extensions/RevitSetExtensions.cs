@@ -6,7 +6,7 @@
     /// <summary>
     /// Расширения для массивов ревита
     /// </summary>
-    public static class RevitSetExstantions
+    public static class RevitSetExtensions
     {
         /// <summary>
         /// Получение списка из ElementArray.

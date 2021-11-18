@@ -12,7 +12,7 @@
         private string _parameterValue;
 
         /// <summary>
-        /// Имя параметра
+        /// Имя параметра.
         /// </summary>
         public string ParameterName
         {
@@ -24,6 +24,9 @@
             }
         }
 
+        /// <summary>
+        /// Значение параметра.
+        /// </summary>
         public string ParameterValue
         {
             get => _parameterValue;

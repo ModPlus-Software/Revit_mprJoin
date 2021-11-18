@@ -9,6 +9,7 @@
     using Enums;
     using Models;
     using ModPlusAPI.Mvvm;
+    using ModPlusAPI.Services;
     using ModPlusAPI.Windows;
     using Services;
     using Settings;
@@ -19,6 +20,7 @@
         private readonly CollectorService _collectorService;
         private List<SelectedCategory> _selectedCategories;
         private readonly ElementConnectorService _elementConnectorService;
+        private readonly UserSettingsService _userSettings;
 
         public ContiguityContext(UIApplication uiApplication)
             : base(uiApplication)
@@ -26,6 +28,9 @@
             _collectorService = new CollectorService();
             _uiApplication = uiApplication;
             _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
+            _userSettings = new UserSettingsService(PluginSetting.SaveFileName);
+            var list = _userSettings.Get<List<SelectedCategory>>(nameof(SelectedCategories));
+            _selectedCategories = list.Any() ? list : null;
         }
 
         /// <summary>
@@ -44,9 +49,12 @@
         public bool SecondElementPoint { get; set; }
 
         /// <summary>
-        /// Опции для работы сервиса
+        /// Сохранение настроек
         /// </summary>
-        public ContiguityOption Option { get; set; }
+        public override ICommand SaveSettings => new RelayCommandWithoutParameter(() =>
+        {
+            _userSettings.Set(SelectedCategories, nameof(SelectedCategories));
+        });
 
         /// <summary>
         /// Команда выполнения

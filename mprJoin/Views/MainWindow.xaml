@@ -6,25 +6,44 @@
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                    xmlns:mps="https://modplus.org/winfx/xaml/controls"
                    xmlns:controls="clr-namespace:mprJoin.Views.Controls"
+                   xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
                    ResizeMode="CanResizeWithGrip"
                    mc:Ignorable="d"
                    WindowStartupLocation="CenterScreen"
                    MinHeight="300"
                    MinWidth="300"
+                   Name="Window"
                    d:DataContext="{d:DesignInstance local:MainContext, IsDesignTimeCreatable=False}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/ModPlusStyle;component/Styles/Controls.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <XmlDataProvider x:Key="Lang" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/mprJoin" />
+            <XmlDataProvider x:Key="LangCommon" Source="E:/ModPlus/Languages/en-US.xml" XPath="ModPlus/Common" />
         </ResourceDictionary>
     </Window.Resources>
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Closed">
+            <b:InvokeCommandAction Command="{Binding ElementName=Window, Path=DataContext.SaveAllConfiguration}"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
     <TabControl>
         <TabItem>
-            <controls:ContiguityControl DataContext="{Binding Path=ContiguityContext}"/>
+            <TabItem.Header>
+                <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=btnN1}"/>
+            </TabItem.Header>
+            <TabItem.Content>
+                <controls:ContiguityControl DataContext="{Binding Path=ContiguityContext}"/>
+            </TabItem.Content>
         </TabItem>
         <TabItem>
-            <controls:JoinControl DataContext="{Binding Path=JoinContext}"/>
+            <TabItem.Header>
+                <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=btnN2}"/>
+            </TabItem.Header>
+            <TabItem.Content>
+                <controls:JoinControl DataContext="{Binding Path=JoinContext}"/>
+            </TabItem.Content>
         </TabItem>
     </TabControl>
 </mps:ModPlusWindow>

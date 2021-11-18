@@ -1,15 +1,19 @@
-﻿namespace mprJoin.ViewModels
+﻿using mprJoin.Enums;
+
+namespace mprJoin.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows.Input;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.UI;
     using Models;
+    using ModPlusAPI.Mvvm;
 
     /// <summary>
     /// Базовый класс контекста для страниц
     /// </summary>
-    public class BaseContext
+    public abstract class BaseContext : ObservableObject
     {
         private static UIApplication _uiApplication;
         
@@ -17,11 +21,21 @@
         {
             _uiApplication = uiApplication;
         }
+
+        /// <summary>
+        /// Команда сохранения.
+        /// </summary>
+        public abstract ICommand SaveSettings { get; }
         
         /// <summary>
-        /// Получить список моделей категорий
+        /// Опции для работы сервиса
         /// </summary>
-        /// <returns></returns>
+        public ContiguityOption Option { get; set; }
+        
+        /// <summary>
+        /// Получить список моделей категорий.
+        /// <param name="allowedCategories">Список доступных категорий.</param>
+        /// </summary>
         protected static List<SelectedCategory> GetSelectedCategories(List<BuiltInCategory> allowedCategories)
         {
             var resultList = new List<SelectedCategory>();

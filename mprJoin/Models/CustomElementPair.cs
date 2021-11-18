@@ -18,7 +18,7 @@
         public CustomElementPair(List<SelectedCategory> selectedCategories)
         {
             WithWhatToJoin = new SelectedCategoriesStorage(selectedCategories);
-            Filters.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFilters));
+            FiltersForMainCategory.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFilters));
         }
 
         /// <summary>
@@ -50,10 +50,15 @@
         public List<Element> WhereToJoinElements { get; set; }
 
         /// <summary>
-        /// Список фильтров
+        /// Список фильтров для основной категории, к которой будут присоединяться другие элементы.
         /// </summary>
-        public ObservableCollection<FilterModel> Filters { get; set; } = new ();
-        
+        public ObservableCollection<FilterModel> FiltersForMainCategory { get; set; } = new ();
+
+        /// <summary>
+        /// Список фильтров для категорий которые будут присоединяться
+        /// </summary>
+        public ObservableCollection<FilterModel> FilterModelsForSubCategories { get; set; } = new ();
+
         /// <summary>
         /// Логический оператор.
         /// </summary>
@@ -72,7 +77,7 @@
             }
         }
 
-        public bool HasFilters => Filters.Any();
+        public bool HasFilters => FiltersForMainCategory.Any() || FilterModelsForSubCategories.Any();
 
         /// <summary>
         /// Получить модель для сохранения
@@ -84,7 +89,8 @@
                 WhatToJoinCategory = WhatToJoinCategory,
                 WithWhatToJoin = WithWhatToJoin.SelectedCategories,
                 LogicConditions = LogicConditions,
-                Filters = Filters,
+                FiltersForMainCategory = FiltersForMainCategory,
+                FilterModelsForSubCategories = FilterModelsForSubCategories,
                 ShowFilters = ShowFilters
             };
             return saveMode;

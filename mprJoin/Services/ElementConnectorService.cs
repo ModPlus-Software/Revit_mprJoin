@@ -35,7 +35,7 @@
         /// <param name="beginAndAndOptions">Сет из настроек начала и конца элемента.</param>
         public void DoContiguityAction(List<Element> elements, ContiguityOption option, (bool, bool) beginAndAndOptions)
         {
-            var trName = ModPlusAPI.Language.GetItem("t1");
+            var trName = "Транзакция"; // todo ModPlusAPI.Language.GetItem("t1");
             var resultService = new ResultService();
             using (var tr = new Transaction(_doc, trName))
             {
@@ -68,12 +68,13 @@
         /// <summary>
         /// Соединить элементы.
         /// </summary>
-        /// <param name="document">Документы</param>
-        /// <param name="pairs">Пары элементов</param>
-        public void JoinElements(Document document, List<CustomElementPair> pairs)
+        /// <param name="document">Документы.</param>
+        /// <param name="pairs">Пары элементов.</param>
+        /// <param name="option">Опции соединения.</param>
+        public void JoinElements(Document document, List<CustomElementPair> pairs, ContiguityOption option)
         {
             var resultService = new ResultService();
-            var trName = "транзакция"; // todo ModPlusAPI.Language.GetItem("t2");
+            var trName = "Tранзакция"; // todo ModPlusAPI.Language.GetItem("t2");
             using (var tr = new Transaction(document, trName))
             {
                 tr.Start();
@@ -101,28 +102,37 @@
 
                             try
                             {
-                                if (!JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin,
-                                    intersectedElement))
+                                switch (option)
                                 {
-                                    JoinGeometryUtils.JoinGeometry(document, elementWhoWillJoin, intersectedElement);
+                                    case ContiguityOption.Join:
+                                        if (!JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin,
+                                            intersectedElement))
+                                        {
+                                            JoinGeometryUtils.JoinGeometry(document, elementWhoWillJoin, intersectedElement);
 
-                                    // Проверка на правильный приоритет вырезания элементов
-                                    if (JoinGeometryUtils.IsCuttingElementInJoin(document, intersectedElement,
-                                        elementWhoWillJoin))
-                                    {
-                                        JoinGeometryUtils.SwitchJoinOrder(document, elementWhoWillJoin,
-                                            intersectedElement);
-                                    }
-                                }
-                                else
-                                {
-                                    // Проверка на правильный приоритет вырезания элементов
-                                    if (JoinGeometryUtils.IsCuttingElementInJoin(document, intersectedElement,
-                                        elementWhoWillJoin))
-                                    {
-                                        JoinGeometryUtils.SwitchJoinOrder(document, elementWhoWillJoin,
-                                            intersectedElement);
-                                    }
+                                            // Проверка на правильный приоритет вырезания элементов
+                                            if (JoinGeometryUtils.IsCuttingElementInJoin(document, intersectedElement,
+                                                elementWhoWillJoin))
+                                            {
+                                                JoinGeometryUtils.SwitchJoinOrder(document, elementWhoWillJoin,
+                                                    intersectedElement);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Проверка на правильный приоритет вырезания элементов
+                                            if (JoinGeometryUtils.IsCuttingElementInJoin(document, intersectedElement,
+                                                elementWhoWillJoin))
+                                            {
+                                                JoinGeometryUtils.SwitchJoinOrder(document, elementWhoWillJoin,
+                                                    intersectedElement);
+                                            }
+                                        }
+                                        
+                                        break;
+                                    case ContiguityOption.DisJoin:
+                                        JoinGeometryUtils.UnjoinGeometry(document, elementWhoWillJoin, intersectedElement);
+                                        break;
                                 }
                             }
                             catch (Exception exception)

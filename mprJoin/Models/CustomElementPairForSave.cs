@@ -19,7 +19,12 @@
         /// <summary>
         /// Список фильтров
         /// </summary>
-        public ObservableCollection<FilterModel> Filters { get; set; }
+        public ObservableCollection<FilterModel> FiltersForMainCategory { get; set; }
+        
+        /// <summary>
+        /// Список фильтров для категорий которые будут присоединяться
+        /// </summary>
+        public ObservableCollection<FilterModel> FilterModelsForSubCategories { get; set; } = new ();
 
         /// <summary>
         /// Логический оператор.
@@ -37,7 +42,8 @@
             {
                 WhatToJoinCategory = WhatToJoinCategory,
                 LogicConditions = LogicConditions,
-                Filters = Filters,
+                FiltersForMainCategory = FiltersForMainCategory,
+                FilterModelsForSubCategories = FilterModelsForSubCategories,
                 ShowFilters = ShowFilters
             };
 

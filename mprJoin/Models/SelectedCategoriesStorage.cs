@@ -4,6 +4,9 @@
     using System.Linq;
     using ModPlusAPI.Mvvm;
 
+    /// <summary>
+    /// Модель хранения списка выбранных категорий.
+    /// </summary>
     public class SelectedCategoriesStorage : ObservableObject
     {
         public SelectedCategoriesStorage(List<SelectedCategory> selectedCategories)
@@ -19,8 +22,14 @@
             }
         }
 
+        /// <summary>
+        /// Список выбранных категорий.
+        /// </summary>
         public List<SelectedCategory> SelectedCategories { get; }
 
+        /// <summary>
+        /// Строковое имя всех выбранных категорий, для View.
+        /// </summary>
         public string DisplayName => string.Join(", ", SelectedCategories.Where(c => c.IsSelected).Select(c => c.Name));
     }
 }

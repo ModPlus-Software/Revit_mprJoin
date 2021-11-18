@@ -49,10 +49,9 @@
 
         <ComboBox Grid.Row="2"
                   SelectedIndex="{Binding Option, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:ContiguityOption}, Mode=TwoWay}">
-            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h1}" />
             <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h2}" />
             <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h3}" />
-            
+            <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h1}" />
         </ComboBox>
 
         <controls:SelectionOptionsButtonControl Grid.Row="3"

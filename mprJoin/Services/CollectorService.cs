@@ -43,8 +43,8 @@
         /// Найти пересекаемые элементы по BoundingBox Filter.
         /// </summary>
         /// <param name="document">Документ.</param>
-        /// <param name="checkElement">Проверяемый элемент</param>
-        /// <param name="elementsWhereFindingIntersection">Элементы среди которых проводится поиск</param>
+        /// <param name="checkElement">Проверяемый элемент.</param>
+        /// <param name="elementsWhereFindingIntersection">Элементы среди которых проводится поиск.</param>
         public IEnumerable<Element> GetIntersectedElementByBoundingBoxFilter(Document document, Element checkElement,
             IEnumerable<Element> elementsWhereFindingIntersection)
         {
@@ -57,28 +57,28 @@
         /// <summary>
         /// Фильтрация элементов в паре.
         /// </summary>
-        /// <param name="pair">Пара</param>
+        /// <param name="pair">Пара.</param>
         public void FiltratePair(CustomElementPair pair)
         {
             switch (pair.LogicConditions)
             {
                 case LogicConditions.And:
                     pair.WhatToJoinElements = pair.WhatToJoinElements.Where(el =>
-                        pair.Filters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
-                            .All(filter => IsMatchBuFilter(el, filter))).ToList();
+                        pair.FiltersForMainCategory.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                            .All(filter => IsMatchByFilter(el, filter))).ToList();
                     
                     pair.WhereToJoinElements = pair.WhereToJoinElements.Where(el =>
-                        pair.Filters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
-                            .All(filter => IsMatchBuFilter(el, filter))).ToList();
+                        pair.FilterModelsForSubCategories.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                            .All(filter => IsMatchByFilter(el, filter))).ToList();
                     break;
                 case LogicConditions.Or:
                     pair.WhatToJoinElements = pair.WhatToJoinElements.Where(el =>
-                        pair.Filters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
-                            .Any(filter => IsMatchBuFilter(el, filter))).ToList();
+                        pair.FiltersForMainCategory.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                            .Any(filter => IsMatchByFilter(el, filter))).ToList();
                     
                     pair.WhereToJoinElements = pair.WhereToJoinElements.Where(el =>
-                        pair.Filters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
-                            .Any(filter => IsMatchBuFilter(el, filter))).ToList();
+                        pair.FilterModelsForSubCategories.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                            .Any(filter => IsMatchByFilter(el, filter))).ToList();
 
                     break;
             }
@@ -89,13 +89,14 @@
         /// </summary>
         /// <param name="element">Элемент.</param>
         /// <param name="filter">Фильтр.</param>
-        /// <returns></returns>
-        private bool IsMatchBuFilter(Element element, FilterModel filter)
+        private bool IsMatchByFilter(Element element, FilterModel filter)
         {
             var param = element.GetParameterFromInstanceOrType(filter.ParameterName);
             if (param == null)
                 return false;
 
+            if (string.IsNullOrEmpty(filter.ParameterValue))
+                return true;
             var paramValue = param.GetParameterValue();
             switch (filter.Conditions)
             {

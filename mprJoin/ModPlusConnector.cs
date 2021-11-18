@@ -19,16 +19,16 @@
         public string Name => nameof(mprJoin);
 
         /// <inheritdoc />
-        public string LName => "Join"; // todo lName
+        public string LName => "Соединение элементов"; // todo lName
 
         /// <inheritdoc />
-        public string Description => ""; // todo Description
+        public string Description => "Позволяет управлять примыканием стен и балок, а так же соединением элементов"; // todo Description
         
         /// <inheritdoc />
         public string Price => "0";
 
         /// <inheritdoc />
-        public string FullDescription => ""; // todo full description if need
+        public string FullDescription => ""; // todo full description if need - not need
 
 #if R2017
         /// <inheritdoc/>

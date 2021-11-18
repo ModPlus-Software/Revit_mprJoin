@@ -1,17 +1,10 @@
-﻿using System.ComponentModel;
-
-namespace mprJoin.Enums
+﻿namespace mprJoin.Enums
 {
     /// <summary>
     /// Опции для действия окна Примыкания
     /// </summary>
     public enum ContiguityOption
     {
-        /// <summary>
-        /// Инвертировть
-        /// </summary>
-        Invert,
-        
         /// <summary>
         /// Присоединить
         /// </summary>
@@ -20,6 +13,11 @@ namespace mprJoin.Enums
         /// <summary>
         /// Отсоединить
         /// </summary>
-        DisJoin
+        DisJoin,
+        
+        /// <summary>
+        /// Инвертировть
+        /// </summary>
+        Invert
     }
 }

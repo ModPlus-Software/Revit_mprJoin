@@ -3,7 +3,7 @@
     /// <summary>
     /// Логические операторы.
     /// </summary>
-    public enum LogicConditions
+    public enum LogicCondition
     {
         /// <summary>
         /// И.

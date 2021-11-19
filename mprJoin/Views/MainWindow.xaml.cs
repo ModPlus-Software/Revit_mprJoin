@@ -8,6 +8,8 @@
         public MainWindow()
         {
             InitializeComponent();
+
+            Title = ModPlusAPI.Language.GetPluginLocalName(new ModPlusConnector());
         }
     }
 }

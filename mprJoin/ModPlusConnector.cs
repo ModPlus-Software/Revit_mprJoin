@@ -8,10 +8,6 @@
     /// <inheritdoc />
     public class ModPlusConnector : IModPlusPlugin
     {
-        private static ModPlusConnector _instance;
-
-        public static ModPlusConnector Instance => _instance ??= new ModPlusConnector();
-        
         /// <inheritdoc />
         public SupportedProduct SupportedProduct => SupportedProduct.Revit;
 
@@ -19,16 +15,16 @@
         public string Name => nameof(mprJoin);
 
         /// <inheritdoc />
-        public string LName => "Соединение элементов"; // todo lName
+        public string LName => string.Empty;
 
         /// <inheritdoc />
-        public string Description => "Позволяет управлять примыканием стен и балок, а так же соединением элементов"; // todo Description
+        public string Description => string.Empty;
         
         /// <inheritdoc />
         public string Price => "0";
 
         /// <inheritdoc />
-        public string FullDescription => ""; // todo full description if need - not need
+        public string FullDescription => string.Empty;
 
 #if R2017
         /// <inheritdoc/>
@@ -66,39 +62,21 @@
         public string ToolTipHelpImage => string.Empty;
 
         /// <inheritdoc />
-        public List<string> SubPluginsNames => new List<string>
-        {
-                string.Empty
-        };
+        public List<string> SubPluginsNames => new ();
 
         /// <inheritdoc />
-        public List<string> SubPluginsLNames => new List<string>
-        {
-                string.Empty
-        };
+        public List<string> SubPluginsLNames => new ();
 
         /// <inheritdoc />
-        public List<string> SubDescriptions => new List<string>
-        {
-                string.Empty
-        };
+        public List<string> SubDescriptions => new ();
 
         /// <inheritdoc />
-        public List<string> SubFullDescriptions => new List<string>
-        {
-                string.Empty
-        };
+        public List<string> SubFullDescriptions => new ();
 
         /// <inheritdoc />
-        public List<string> SubHelpImages => new List<string>
-        {
-                string.Empty
-        };
+        public List<string> SubHelpImages => new ();
 
         /// <inheritdoc />
-        public List<string> SubClassNames => new List<string>
-        {
-                string.Empty
-        };
+        public List<string> SubClassNames => new ();
     }
 }

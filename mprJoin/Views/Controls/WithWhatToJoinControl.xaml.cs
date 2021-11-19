@@ -14,6 +14,9 @@
         public WithWhatToJoinControl()
         {
             InitializeComponent();
+            
+            ModPlusAPI.Windows.Helpers.WindowHelpers.ChangeStyleForResourceDictionary(Resources);
+            
             ChangeTextWidth();
         }
 

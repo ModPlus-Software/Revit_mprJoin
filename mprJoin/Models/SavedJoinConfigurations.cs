@@ -1,6 +1,7 @@
 namespace mprJoin.Models
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using Abstractions;
     using ModPlusAPI.Mvvm;
 
@@ -24,7 +25,7 @@ namespace mprJoin.Models
             }
         }
 
-        public List<CustomElementPairForSave> Pairs { get; set; } = new ();
+        public ObservableCollection<CustomElementPair> Pairs { get; set; } = new ();
 
         /// <summary>
         /// Является ли объект изменяемым.

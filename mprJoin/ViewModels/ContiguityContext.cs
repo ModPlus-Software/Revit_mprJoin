@@ -51,10 +51,10 @@
         /// <summary>
         /// Сохранение настроек
         /// </summary>
-        public override ICommand SaveSettings => new RelayCommandWithoutParameter(() =>
+        public override void SaveSettings()
         {
             _userSettings.Set(SelectedCategories, nameof(SelectedCategories));
-        });
+        }
 
         /// <summary>
         /// Команда выполнения

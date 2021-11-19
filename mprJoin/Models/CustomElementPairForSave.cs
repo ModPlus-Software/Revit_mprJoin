@@ -29,7 +29,7 @@
         /// <summary>
         /// Логический оператор.
         /// </summary>
-        public LogicConditions LogicConditions { get; set; }
+        public LogicCondition LogicCondition { get; set; }
 
         /// <summary>
         /// Показывать фильтры.
@@ -41,7 +41,7 @@
             var model = new CustomElementPair(WithWhatToJoin)
             {
                 WhatToJoinCategory = WhatToJoinCategory,
-                LogicConditions = LogicConditions,
+                LogicCondition = LogicCondition,
                 FiltersForMainCategory = FiltersForMainCategory,
                 FilterModelsForSubCategories = FilterModelsForSubCategories,
                 ShowFilters = ShowFilters

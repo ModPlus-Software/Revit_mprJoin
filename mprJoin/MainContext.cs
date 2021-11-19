@@ -28,9 +28,7 @@
         
         public JoinContext JoinContext { get; }
 
-        public ICommand SaveAllConfiguration => new RelayCommandWithoutParameter(() =>
-        {
-            _contexts.ForEach(i => i.SaveSettings.Execute(null));
-        });
+        public ICommand SaveAllConfiguration =>
+            new RelayCommandWithoutParameter(() => _contexts.ForEach(i => i.SaveSettings()));
     }
 }

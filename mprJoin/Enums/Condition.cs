@@ -3,7 +3,7 @@
     /// <summary>
     /// Условия для нахождения параметра.
     /// </summary>
-    public enum Conditions
+    public enum Condition
     {
         /// <summary>
         /// Равно.

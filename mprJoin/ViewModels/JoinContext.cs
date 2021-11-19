@@ -21,13 +21,12 @@
         /// <summary>
         /// Имя перманентной - постоянной конфигурации, которая сохраняет настройки всегда и ее нельзя удалить
         /// </summary>
-        private readonly string _standardConfigName = "Standard"; // todo ModPlusAPI.Language.GetItem("n1");
+        private readonly string _standardConfigName = ModPlusAPI.Language.GetItem("n1");
         private readonly UIApplication _uiApplication;
         private List<string> _stringSelectedCategories;
         private readonly CollectorService _collectorService;
         private readonly ElementConnectorService _elementConnectorService;
         private readonly UserSettingsService _userSettings;
-        private readonly ObservableCollection<CustomElementPair> _pairs;
         private readonly SavedJoinConfigurations _permanentConfigurations;
         private SavedJoinConfigurations _currentConfiguration;
 
@@ -38,7 +37,7 @@
             _collectorService = new CollectorService();
             _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
             _userSettings = new UserSettingsService(PluginSetting.SaveFileName);
-            _pairs = new ObservableCollection<CustomElementPair>();
+            Pairs = new ObservableCollection<CustomElementPair>();
             var configurationsList = _userSettings.Get<ObservableCollection<SavedJoinConfigurations>>(nameof(SavedJoinConfigurations));
             _permanentConfigurations = configurationsList.FirstOrDefault(i => i.Name.Equals(_standardConfigName)) ??
                 new SavedJoinConfigurations
@@ -55,7 +54,7 @@
             if (!Configurations.Contains(_permanentConfigurations))
                 Configurations.Add(_permanentConfigurations);
             _currentConfiguration = _permanentConfigurations;
-            _currentConfiguration.Pairs.Select(i => i.ToModel()).ToList().ForEach(i => _pairs.Add(i));
+            _currentConfiguration.Pairs.Select(i => i.ToModel()).ToList().ForEach(i => Pairs.Add(i));
         }
 
         /// <summary>
@@ -81,7 +80,7 @@
         /// <summary>
         /// Список с парами элементов для соединения
         /// </summary>
-        public ObservableCollection<CustomElementPair> Pairs => _pairs;
+        public ObservableCollection<CustomElementPair> Pairs { get; }
 
         /// <summary>
         /// Список моделей категорий для вывода пользователю в текстовом представлении
@@ -96,14 +95,14 @@
         {
             try
             {
-                _pairs.Add(new CustomElementPair(GetSelectedCategories(PluginSetting.AllowedCategoriesToJoin)));
+                CurrentConfiguration.Pairs.Add(new CustomElementPair(GetSelectedCategories(PluginSetting.AllowedCategoriesToJoin)));
             }
             catch (Exception exception)
             {
                 exception.ShowInExceptionBox();
             }
         });
-        
+
         /// <summary>
         /// Удалить пару.
         /// </summary>
@@ -111,7 +110,7 @@
         {
             try
             {
-                _pairs.Remove(pair);
+                Pairs.Remove(pair);
             }
             catch (Exception exception)
             {
@@ -122,14 +121,14 @@
         /// <summary>
         /// Удалить конфигурацию.
         /// </summary>
-        public ICommand DeleteConfiguration =>
-            new RelayCommand<SavedJoinConfigurations>(config =>
+        public ICommand DeleteConfiguration => new RelayCommandWithoutParameter(
+            () =>
             {
-                if (config.Name.Equals(_standardConfigName))
+                if (CurrentConfiguration.Name.Equals(_standardConfigName))
                     return;
-                Configurations.Remove(config);
+                Configurations.Remove(CurrentConfiguration);
                 CurrentConfiguration = _permanentConfigurations;
-            });
+            }, _ => CurrentConfiguration != null && CurrentConfiguration.IsEditable);
 
         /// <summary>
         /// Добавить конфигурацию.
@@ -156,7 +155,7 @@
                 exception.ShowInExceptionBox();
             }
         });
-        
+
         /// <summary>
         /// Добавить фильтр к паре.
         /// </summary>
@@ -171,7 +170,7 @@
                 exception.ShowInExceptionBox();
             }
         });
-        
+
         /// <summary>
         /// Удалить фильтр у пары.
         /// </summary>
@@ -184,7 +183,7 @@
                     pair.FiltersForMainCategory.Remove(filter);
                     return;
                 }
-                
+
                 if (pair.FilterModelsForSubCategories.Contains(filter))
                 {
                     pair.FilterModelsForSubCategories.Remove(filter);
@@ -196,14 +195,14 @@
         /// <summary>
         /// Сохранение настроек
         /// </summary>
-        public override ICommand SaveSettings => new RelayCommandWithoutParameter(() =>
+        public override void SaveSettings()
         {
             _permanentConfigurations.Pairs =
                 Pairs.ToList().Select(i => i.ToSaveMode()).ToList();
-            
+
             _userSettings.Set(Configurations, nameof(SavedJoinConfigurations));
-        });
-        
+        }
+
         /// <summary>
         /// Сохранение текущей конфигурации.
         /// </summary>
@@ -242,7 +241,7 @@
                     pair.WhatToJoinElements = _collectorService
                         .GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
                         .WhereElementIsNotElementType()
-                        
+
                         // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
                         // что у какого то элемента не получается посмотреть категорию
                         .WherePasses(new ElementMulticategoryFilter(PluginSetting.AllowedCategoriesToJoin))
@@ -255,7 +254,7 @@
                     pair.WhereToJoinElements = _collectorService
                         .GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
                         .WhereElementIsNotElementType()
-                        
+
                         // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
                         // что у какого то элемента не получается посмотреть категорию
                         .WherePasses(new ElementMulticategoryFilter(PluginSetting.AllowedCategoriesToJoin))
@@ -264,7 +263,7 @@
                         .ToList();
                 }
 
-                pairs.ForEach(_collectorService.FiltratePair);
+                pairs.ForEach(p => p.ApplyFilters());
                 _elementConnectorService.JoinElements(_uiApplication.ActiveUIDocument.Document, pairs, Option);
             }
             catch (Exception e)

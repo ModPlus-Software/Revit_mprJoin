@@ -21,11 +21,6 @@ namespace mprJoin.ViewModels
         {
             _uiApplication = uiApplication;
         }
-
-        /// <summary>
-        /// Команда сохранения.
-        /// </summary>
-        public abstract ICommand SaveSettings { get; }
         
         /// <summary>
         /// Опции для работы сервиса
@@ -54,5 +49,7 @@ namespace mprJoin.ViewModels
 
             return resultList;
         }
+
+        public abstract void SaveSettings();
     }
 }

@@ -37,6 +37,6 @@
             }
         }
         
-        public Conditions Conditions { get; set; }
+        public Condition Condition { get; set; }
     }
 }

@@ -20,7 +20,6 @@
 
             ModPlusAPI.Windows.Helpers.WindowHelpers.ChangeStyleForResourceDictionary(Resources);
             ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources);
-            ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources, "LangCommon");
         }
 
         public ICommand ExecuteCommand

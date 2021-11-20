@@ -3,7 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
     using System.Linq;
+    using System.Windows.Input;
     using System.Xml.Serialization;
     using Autodesk.Revit.DB;
     using Enums;
@@ -18,44 +21,20 @@
         private string _whatToJoinCategory;
         private bool _showFilters;
 
-        public CustomElementPair(ObservableCollection<SelectedCategory> categories)
-        {
-            FiltersForMainCategory = new ObservableCollection<FilterModel>();
-            FilterModelsForSubCategories = new ObservableCollection<FilterModel>();
-            FiltersForMainCategory.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFilters));
-            WithWhatToJoin = new ObservableCollection<SelectedCategory>();
-            WithWhatToJoin = categories;
-            foreach (var selectedCategory in WithWhatToJoin)
-            {
-                selectedCategory.PropertyChanged += (_, args) =>
-                {
-                    if (args.PropertyName == nameof(SelectedCategory.IsSelected))
-                        OnPropertyChanged(nameof(DisplayName));
-                };
-            }
-        }
-
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <remarks>Конструктор для сохранения пользовательских настроек. Требуется безпараметрический конструктор.</remarks>
         public CustomElementPair()
         {
-            FiltersForMainCategory = new ObservableCollection<FilterModel>();
-            FilterModelsForSubCategories = new ObservableCollection<FilterModel>();
-            FiltersForMainCategory.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFilters));
+            WhatJoinFilters = new ObservableCollection<Filter>();
+            WhereJoinFilters = new ObservableCollection<Filter>();
+            WhatJoinFilters.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFilters));
             WithWhatToJoin = new ObservableCollection<SelectedCategory>();
-            WithWhatToJoin.CollectionChanged += (_, _) =>
-            {
-                foreach (var selectedCategory in WithWhatToJoin)
-                {
-                    selectedCategory.PropertyChanged += (_, args) =>
-                    {
-                        if (args.PropertyName == nameof(SelectedCategory.IsSelected))
-                            OnPropertyChanged(nameof(DisplayName));
-                    };
-                }
-            };
+            WithWhatToJoin.CollectionChanged += WithWhatToJoinOnCollectionChanged;
+        }
+
+        public CustomElementPair(IEnumerable<SelectedCategory> categories)
+            : this()
+        {
+            foreach (var selectedCategory in categories)
+                WithWhatToJoin.Add(selectedCategory);
         }
 
         /// <summary>
@@ -76,13 +55,12 @@
         /// </summary>
         public ObservableCollection<SelectedCategory> WithWhatToJoin { get; set; }
 
-
-            /// <summary>
+        /// <summary>
         /// Элементы которые будут будут иметь высший приоритет при соединении
         /// </summary>
         [XmlIgnore]
         public List<Element> WhatToJoinElements { get; set; }
-        
+
         /// <summary>
         /// Элементы которые будут присоединяться (т.е. у них будут образовываться вырезы)
         /// </summary>
@@ -92,18 +70,18 @@
         /// <summary>
         /// Список фильтров для основной категории, к которой будут присоединяться другие элементы.
         /// </summary>
-        public ObservableCollection<FilterModel> FiltersForMainCategory { get; set; }
+        public ObservableCollection<Filter> WhatJoinFilters { get; set; }
 
         /// <summary>
         /// Список фильтров для категорий которые будут присоединяться
         /// </summary>
-        public ObservableCollection<FilterModel> FilterModelsForSubCategories { get; set; }
+        public ObservableCollection<Filter> WhereJoinFilters { get; set; }
 
         /// <summary>
         /// Логический оператор.
         /// </summary>
         public LogicCondition LogicCondition { get; set; }
-        
+
         /// <summary>
         /// Строковое имя всех выбранных категорий, для View.
         /// </summary>
@@ -122,7 +100,36 @@
             }
         }
 
-        public bool HasFilters => FiltersForMainCategory.Any() || FilterModelsForSubCategories.Any();
+        public bool HasFilters => WhatJoinFilters.Any() || WhereJoinFilters.Any();
+
+        /// <summary>
+        /// Добавить фильтр к паре.
+        /// </summary>
+        public ICommand AddWhatJoinFilter => 
+            new RelayCommandWithoutParameter(() => WhatJoinFilters.Add(new Filter()));
+
+        /// <summary>
+        /// Добавить фильтр к паре.
+        /// </summary>
+        public ICommand AddWhereJointFilter => 
+            new RelayCommandWithoutParameter(() => WhereJoinFilters.Add(new Filter()));
+
+        /// <summary>
+        /// Удалить фильтр в левом списке
+        /// </summary>
+        public ICommand RemoveWhatJoinFilter =>
+            new RelayCommand<Filter>(filter => WhatJoinFilters.Remove(filter));
+        
+        /// <summary>
+        /// Удалить фильтр в правом списке
+        /// </summary>
+        public ICommand RemoveWhereJoinFilter =>
+            new RelayCommand<Filter>(filter => WhereJoinFilters.Remove(filter));
+
+        /// <summary>
+        /// Отображение фильтров для пары.
+        /// </summary>
+        public ICommand ChangeVisibilityForFilters => new RelayCommandWithoutParameter(() => ShowFilters = !ShowFilters);
 
         public void ApplyFilters()
         {
@@ -130,20 +137,20 @@
             {
                 case LogicCondition.And:
                     WhatToJoinElements = WhatToJoinElements.Where(el =>
-                        FiltersForMainCategory.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                        WhatJoinFilters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
                             .All(filter => IsMatchByFilter(el, filter))).ToList();
 
                     WhereToJoinElements = WhereToJoinElements.Where(el =>
-                        FilterModelsForSubCategories.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                        WhereJoinFilters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
                             .All(filter => IsMatchByFilter(el, filter))).ToList();
                     break;
                 case LogicCondition.Or:
                     WhatToJoinElements = WhatToJoinElements.Where(el =>
-                        FiltersForMainCategory.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                        WhatJoinFilters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
                             .Any(filter => IsMatchByFilter(el, filter))).ToList();
 
                     WhereToJoinElements = WhereToJoinElements.Where(el =>
-                        FilterModelsForSubCategories.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                        WhereJoinFilters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
                             .Any(filter => IsMatchByFilter(el, filter))).ToList();
 
                     break;
@@ -157,7 +164,7 @@
         /// </summary>
         /// <param name="element">Элемент.</param>
         /// <param name="filter">Фильтр.</param>
-        private bool IsMatchByFilter(Element element, FilterModel filter)
+        private bool IsMatchByFilter(Element element, Filter filter)
         {
             if (string.IsNullOrEmpty(filter.ParameterName))
                 return true;
@@ -167,7 +174,7 @@
 
             if (string.IsNullOrEmpty(filter.ParameterValue))
                 return true;
-            
+
             var paramValue = param.GetParameterValue();
             switch (filter.Condition)
             {
@@ -186,6 +193,30 @@
             }
 
             return true;
+        }
+
+        private void WithWhatToJoinOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var selectedCategory in e.NewItems.OfType<SelectedCategory>())
+                {
+                    selectedCategory.PropertyChanged += SelectedCategoryOnPropertyChanged;
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var selectedCategory in e.OldItems.OfType<SelectedCategory>())
+                {
+                    selectedCategory.PropertyChanged -= SelectedCategoryOnPropertyChanged;
+                }
+            }
+        }
+
+        private void SelectedCategoryOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(SelectedCategory.IsSelected))
+                OnPropertyChanged(nameof(DisplayName));
         }
     }
 }

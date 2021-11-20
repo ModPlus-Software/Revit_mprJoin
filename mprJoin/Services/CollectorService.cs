@@ -43,7 +43,7 @@
         /// <param name="checkElement">Проверяемый элемент.</param>
         /// <param name="elementsWhereFindingIntersection">Элементы среди которых проводится поиск.</param>
         public IEnumerable<Element> GetIntersectedElementByBoundingBoxFilter(
-            Document document, Element checkElement, IEnumerable<Element> elementsWhereFindingIntersection)
+            Document document, Element checkElement, List<Element> elementsWhereFindingIntersection)
         {
             var box = checkElement.get_BoundingBox(null);
             var boundingBoxFilter = new BoundingBoxIntersectsFilter(new Outline(box.Min, box.Max));

@@ -1,9 +1,7 @@
-﻿using System.Collections.ObjectModel;
-
-namespace mprJoin.ViewModels
+﻿namespace mprJoin.ViewModels
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows.Input;
     using Autodesk.Revit.DB;
@@ -38,7 +36,8 @@ namespace mprJoin.ViewModels
         /// <summary>
         /// Список моделей категорий для вывода пользователю
         /// </summary>
-        public ObservableCollection<SelectedCategory> SelectedCategories => _selectedCategories ??= GetSelectedCategories(PluginSetting.AllowedCategoriesToContiguity);
+        public ObservableCollection<SelectedCategory> SelectedCategories =>
+            _selectedCategories ??= new ObservableCollection<SelectedCategory>(GetSelectedCategories(PluginSetting.AllowedCategoriesToContiguity));
 
         /// <summary>
         /// Обрабатывать ли начало элемента
@@ -49,14 +48,6 @@ namespace mprJoin.ViewModels
         /// Обрабатывать ли конец элемента
         /// </summary>
         public bool SecondElementPoint { get; set; }
-
-        /// <summary>
-        /// Сохранение настроек
-        /// </summary>
-        public override void SaveSettings()
-        {
-            _userSettings.Set(SelectedCategories, nameof(SelectedCategories));
-        }
 
         /// <summary>
         /// Команда выполнения
@@ -91,5 +82,13 @@ namespace mprJoin.ViewModels
                 e.ShowInExceptionBox();
             }
         });
+
+        /// <summary>
+        /// Сохранение настроек
+        /// </summary>
+        public override void SaveSettings()
+        {
+            _userSettings.Set(SelectedCategories, nameof(SelectedCategories));
+        }
     }
 }

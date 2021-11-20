@@ -1,12 +1,14 @@
 ﻿namespace mprJoin.Models
 {
+    using System.Collections.ObjectModel;
+    using System.Windows.Input;
     using Enums;
     using ModPlusAPI.Mvvm;
 
     /// <summary>
     /// Модель фильтра.
     /// </summary>
-    public class FilterModel : ObservableObject
+    public class Filter : ObservableObject
     {
         private string _parameterName;
         private string _parameterValue;

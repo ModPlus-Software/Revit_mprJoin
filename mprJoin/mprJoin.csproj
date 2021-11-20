@@ -31,7 +31,7 @@
     <Description>2018</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'R2019'  or '$(Configuration)'=='Debug'">
+  <PropertyGroup Condition="'$(Configuration)' == 'R2019'">
     <TargetFramework>net47</TargetFramework>
     <Description>2019</Description>
   </PropertyGroup>
@@ -46,7 +46,7 @@
     <Description>2021</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'R2022'">
+  <PropertyGroup Condition="'$(Configuration)' == 'R2022' or '$(Configuration)'=='Debug'">
     <TargetFramework>net48</TargetFramework>
     <Description>2022</Description>
   </PropertyGroup>
@@ -80,7 +80,7 @@
         <PackageReference Include="ModPlus.Revit.Module.2018" Version="7.8.5" ExcludeAssets="runtime" />
       </ItemGroup>
     </When>
-    <When Condition="'$(Configuration)'=='R2019'  or '$(Configuration)'=='Debug'">
+    <When Condition="'$(Configuration)'=='R2019'">
       <ItemGroup>
         <PackageReference Include="ModPlus.Revit.API.2019" Version="3.0.0" ExcludeAssets="runtime" />
         <PackageReference Include="ModPlus.Revit.Module.2019" Version="7.8.5" ExcludeAssets="runtime" />
@@ -98,7 +98,7 @@
         <PackageReference Include="ModPlus.Revit.Module.2021" Version="7.8.5" ExcludeAssets="runtime" />
       </ItemGroup>
     </When>
-    <When Condition="'$(Configuration)'=='R2022'">
+    <When Condition="'$(Configuration)'=='R2022' or '$(Configuration)'=='Debug'">
       <ItemGroup>
         <PackageReference Include="ModPlus.Revit.API.2022" Version="3.0.0" ExcludeAssets="runtime" />
         <PackageReference Include="ModPlus.Revit.Module.2022" Version="7.8.5" ExcludeAssets="runtime" />
@@ -111,9 +111,6 @@
     <EmbeddedResource Remove="Helpers\**" />
     <None Remove="Helpers\**" />
     <Page Remove="Helpers\**" />
-    <Compile Update="Views\Controls\FilterInputFormControl.xaml.cs">
-      <DependentUpon>FilterInputFormControl.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>

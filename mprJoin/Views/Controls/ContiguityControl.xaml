@@ -55,7 +55,7 @@
         </ComboBox>
 
         <controls:SelectionOptionsButtonControl Grid.Row="3"
-                                                ButtonText="{Binding Source={StaticResource LangCommon}, XPath=create}"
+                                                ButtonText="{Binding Source={StaticResource LangCommon}, XPath=execute}"
                                                 ExecuteCommand="{Binding Path=Execute}"
                                                 HorizontalAlignment="Center"/>
     </Grid>

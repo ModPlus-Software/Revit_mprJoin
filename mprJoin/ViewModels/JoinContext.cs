@@ -18,17 +18,13 @@
 
     public class JoinContext : BaseContext
     {
-        /// <summary>
-        /// Имя перманентной - постоянной конфигурации, которая сохраняет настройки всегда и ее нельзя удалить
-        /// </summary>
-        private readonly string _standardConfigName = ModPlusAPI.Language.GetItem("n1");
         private readonly UIApplication _uiApplication;
         private List<string> _stringSelectedCategories;
         private readonly CollectorService _collectorService;
         private readonly ElementConnectorService _elementConnectorService;
         private readonly UserSettingsService _userSettings;
-        private readonly SavedJoinConfigurations _permanentConfigurations;
-        private SavedJoinConfigurations _currentConfiguration;
+        private readonly JoinConfigurations _permanentConfigurations;
+        private JoinConfigurations _currentConfiguration;
 
         public JoinContext(UIApplication uiApplication)
             : base(uiApplication)
@@ -37,16 +33,16 @@
             _collectorService = new CollectorService();
             _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
             _userSettings = new UserSettingsService(PluginSetting.SaveFileName);
-            var configurationsList = _userSettings.Get<ObservableCollection<SavedJoinConfigurations>>(nameof(SavedJoinConfigurations));
-            _permanentConfigurations = configurationsList.FirstOrDefault(i => i.Name.Equals(_standardConfigName)) ??
-                new SavedJoinConfigurations
+            var configurationsList = _userSettings.Get<ObservableCollection<JoinConfigurations>>(nameof(JoinConfigurations));
+            _permanentConfigurations = configurationsList.FirstOrDefault(i => !i.IsEditable) ??
+                new JoinConfigurations
                 {
-                    Name = _standardConfigName,
+                    Name = ModPlusAPI.Language.GetItem("n1"),
                     IsEditable = false
                 };
 
             Configurations = configurationsList.Any()
-                ? configurationsList : new ObservableCollection<SavedJoinConfigurations>
+                ? configurationsList : new ObservableCollection<JoinConfigurations>
                 {
                     _permanentConfigurations
                 };
@@ -58,7 +54,7 @@
         /// <summary>
         /// Текущая выбранная конфигурация.
         /// </summary>
-        public SavedJoinConfigurations CurrentConfiguration
+        public JoinConfigurations CurrentConfiguration
         {
             get => _currentConfiguration;
             set
@@ -71,7 +67,7 @@
         /// <summary>
         /// Конфигурации в проекте.
         /// </summary>
-        public ObservableCollection<SavedJoinConfigurations> Configurations { get; set; }
+        public ObservableCollection<JoinConfigurations> Configurations { get; set; }
 
         /// <summary>
         /// Список моделей категорий для вывода пользователю в текстовом представлении
@@ -98,17 +94,8 @@
         /// <summary>
         /// Удалить пару.
         /// </summary>
-        public ICommand RemovePair => new RelayCommand<CustomElementPair>(pair =>
-        {
-            try
-            {
-                CurrentConfiguration.Pairs.Remove(pair);
-            }
-            catch (Exception exception)
-            {
-                exception.ShowInExceptionBox();
-            }
-        });
+        public ICommand RemovePair => 
+            new RelayCommand<CustomElementPair>(pair => CurrentConfiguration.Pairs.Remove(pair));
 
         /// <summary>
         /// Удалить конфигурацию.
@@ -116,8 +103,6 @@
         public ICommand DeleteConfiguration => new RelayCommandWithoutParameter(
             () =>
             {
-                if (CurrentConfiguration.Name.Equals(_standardConfigName))
-                    return;
                 Configurations.Remove(CurrentConfiguration);
                 CurrentConfiguration = _permanentConfigurations;
             }, _ => CurrentConfiguration != null && CurrentConfiguration.IsEditable);
@@ -127,63 +112,12 @@
         /// </summary>
         public ICommand AddConfiguration => new RelayCommandWithoutParameter(() =>
         {
-            var newConfiguration = new SavedJoinConfigurations
+            var newConfiguration = new JoinConfigurations
             {
                 Name = DateTime.Now.ToString(CultureInfo.CurrentCulture)
             };
             Configurations.Add(newConfiguration);
             CurrentConfiguration = newConfiguration;
-        });
-
-        /// <summary>
-        /// Добавить фильтр к паре.
-        /// </summary>
-        public ICommand AddFilterMainFilter => new RelayCommand<CustomElementPair>(pair =>
-        {
-            try
-            {
-                pair.FiltersForMainCategory.Add(new FilterModel());
-            }
-            catch (Exception exception)
-            {
-                exception.ShowInExceptionBox();
-            }
-        });
-
-        /// <summary>
-        /// Добавить фильтр к паре.
-        /// </summary>
-        public ICommand AddFilterSubFilter => new RelayCommand<CustomElementPair>(pair =>
-        {
-            try
-            {
-                pair.FilterModelsForSubCategories.Add(new FilterModel());
-            }
-            catch (Exception exception)
-            {
-                exception.ShowInExceptionBox();
-            }
-        });
-
-        /// <summary>
-        /// Удалить фильтр у пары.
-        /// </summary>
-        public ICommand RemoveFilter => new RelayCommand<FilterModel>(filter =>
-        {
-            foreach (var pair in CurrentConfiguration.Pairs)
-            {
-                if (pair.FiltersForMainCategory.Contains(filter))
-                {
-                    pair.FiltersForMainCategory.Remove(filter);
-                    return;
-                }
-
-                if (pair.FilterModelsForSubCategories.Contains(filter))
-                {
-                    pair.FilterModelsForSubCategories.Remove(filter);
-                    return;
-                }
-            }
         });
 
         /// <summary>
@@ -203,7 +137,7 @@
                 e.ShowInExceptionBox();
             }
         });
-        
+
         /// <summary>
         /// Переместить пару вниз.
         /// </summary>
@@ -220,20 +154,6 @@
                 e.ShowInExceptionBox();
             }
         });
-
-        /// <summary>
-        /// Сохранение настроек
-        /// </summary>
-        public override void SaveSettings()
-        {
-            _userSettings.Set(Configurations, nameof(SavedJoinConfigurations));
-        }
-
-        /// <summary>
-        /// Отображение фильтров для пары.
-        /// </summary>
-        public ICommand ChangeVisibilityForFilters =>
-            new RelayCommand<CustomElementPair>(pair => pair.ShowFilters = !pair.ShowFilters);
 
         /// <summary>
         /// Команда выполнения
@@ -291,5 +211,13 @@
                 e.ShowInExceptionBox();
             }
         });
+
+        /// <summary>
+        /// Сохранение настроек
+        /// </summary>
+        public override void SaveSettings()
+        {
+            _userSettings.Set(Configurations, nameof(JoinConfigurations));
+        }
     }
 }

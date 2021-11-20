@@ -1,14 +1,12 @@
 namespace mprJoin.Models
 {
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using Abstractions;
     using ModPlusAPI.Mvvm;
 
     /// <summary>
     /// Объект конфигурации, которая будет сохранена в файл.
     /// </summary>
-    public class SavedJoinConfigurations : ObservableObject, ICloneable<SavedJoinConfigurations>
+    public class JoinConfigurations : ObservableObject
     {
         private string _name;
 
@@ -31,15 +29,5 @@ namespace mprJoin.Models
         /// Является ли объект изменяемым.
         /// </summary>
         public bool IsEditable { get; set; } = true;
-        
-        /// <inheritdoc/>
-        public SavedJoinConfigurations Clone()
-        {
-            return new SavedJoinConfigurations
-            {
-                Name = _name,
-                Pairs = Pairs
-            };
-        }
     }
 }

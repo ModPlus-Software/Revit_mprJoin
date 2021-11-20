@@ -35,7 +35,7 @@
         /// <param name="beginAndAndOptions">Сет из настроек начала и конца элемента.</param>
         public void DoContiguityAction(List<Element> elements, ContiguityOption option, (bool, bool) beginAndAndOptions)
         {
-            var trName = "Транзакция"; // todo ModPlusAPI.Language.GetItem("t1");
+            var trName = ModPlusAPI.Language.GetItem("t1");
             var resultService = new ResultService();
             using (var tr = new Transaction(_doc, trName))
             {
@@ -46,7 +46,7 @@
                     {
                         if (element.Location is not LocationCurve)
                             continue;
-                        
+
                         var (start, end) = beginAndAndOptions;
                         if (start)
                             ChangeEndJoinState(element, 0, option);
@@ -68,14 +68,14 @@
         /// <summary>
         /// Соединить элементы.
         /// </summary>
-        /// <param name="document">Документы.</param>
+        /// <param name="doc">Документы.</param>
         /// <param name="pairs">Пары элементов.</param>
         /// <param name="option">Опции соединения.</param>
-        public void JoinElements(Document document, List<CustomElementPair> pairs, ContiguityOption option)
+        public void JoinElements(Document doc, List<CustomElementPair> pairs, ContiguityOption option)
         {
             var resultService = new ResultService();
-            var trName = "Tранзакция"; // todo ModPlusAPI.Language.GetItem("t2");
-            using (var tr = new Transaction(document, trName))
+            var trName = ModPlusAPI.Language.GetItem("t2");
+            using (var tr = new Transaction(doc, trName))
             {
                 tr.Start();
 
@@ -83,19 +83,24 @@
                 {
                     foreach (var elementWhoWillJoin in pair.WhatToJoinElements)
                     {
-                        foreach (var intersectedElement in _collectorService.GetIntersectedElementByBoundingBoxFilter(
-                            document, elementWhoWillJoin, pair.WhereToJoinElements).Where(i => !i.Id.Equals(elementWhoWillJoin.Id)))
+                        foreach (var intersectedElement in _collectorService
+                            .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements)
+                            .Where(i => !i.Id.Equals(elementWhoWillJoin.Id)))
                         {
                             // Проверка на примыкание стен. Если стена примыкает к другой стене, то данная проверка
                             // (!JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin, intersectedElement))
                             // не ловит этот момент и 2 стены пытаются соединиться, поэтому получается ошибка
                             if (intersectedElement is Wall wallWhereWillJoin &&
-                                elementWhoWillJoin is Wall wallWhoWillJoin)
+                                elementWhoWillJoin is Wall { Location: LocationCurve whoWillJoinCurve })
                             {
-                                if (((LocationCurve)wallWhoWillJoin.Location).get_ElementsAtJoin(0).ToList()
+                                if (whoWillJoinCurve
+                                    .get_ElementsAtJoin(0)
+                                    .ToList()
                                     .Any(i => i.Id.Equals(wallWhereWillJoin.Id)))
                                     continue;
-                                if (((LocationCurve)wallWhoWillJoin.Location).get_ElementsAtJoin(1).ToList()
+                                if (whoWillJoinCurve
+                                    .get_ElementsAtJoin(1)
+                                    .ToList()
                                     .Any(i => i.Id.Equals(wallWhereWillJoin.Id)))
                                     continue;
                             }
@@ -105,34 +110,34 @@
                                 switch (option)
                                 {
                                     case ContiguityOption.Join:
-                                        if (!JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin,
+                                        if (!JoinGeometryUtils.AreElementsJoined(doc, elementWhoWillJoin,
                                             intersectedElement))
                                         {
-                                            JoinGeometryUtils.JoinGeometry(document, elementWhoWillJoin, intersectedElement);
+                                            JoinGeometryUtils.JoinGeometry(doc, elementWhoWillJoin, intersectedElement);
 
                                             // Проверка на правильный приоритет вырезания элементов
-                                            if (JoinGeometryUtils.IsCuttingElementInJoin(document, intersectedElement,
-                                                elementWhoWillJoin))
+                                            if (JoinGeometryUtils.IsCuttingElementInJoin(
+                                                doc, intersectedElement, elementWhoWillJoin))
                                             {
-                                                JoinGeometryUtils.SwitchJoinOrder(document, elementWhoWillJoin,
-                                                    intersectedElement);
+                                                JoinGeometryUtils.SwitchJoinOrder(
+                                                    doc, elementWhoWillJoin, intersectedElement);
                                             }
                                         }
                                         else
                                         {
                                             // Проверка на правильный приоритет вырезания элементов
-                                            if (JoinGeometryUtils.IsCuttingElementInJoin(document, intersectedElement,
-                                                elementWhoWillJoin))
+                                            if (JoinGeometryUtils.IsCuttingElementInJoin(
+                                                doc, intersectedElement, elementWhoWillJoin))
                                             {
-                                                JoinGeometryUtils.SwitchJoinOrder(document, elementWhoWillJoin,
-                                                    intersectedElement);
+                                                JoinGeometryUtils.SwitchJoinOrder(
+                                                    doc, elementWhoWillJoin, intersectedElement);
                                             }
                                         }
-                                        
+
                                         break;
                                     case ContiguityOption.DisJoin:
-                                        if (JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin, intersectedElement))
-                                            JoinGeometryUtils.UnjoinGeometry(document, elementWhoWillJoin, intersectedElement);
+                                        if (JoinGeometryUtils.AreElementsJoined(doc, elementWhoWillJoin, intersectedElement))
+                                            JoinGeometryUtils.UnjoinGeometry(doc, elementWhoWillJoin, intersectedElement);
                                         break;
                                 }
                             }
@@ -145,13 +150,13 @@
                         }
                     }
                 }
-                
+
                 tr.Commit();
             }
-            
+
             resultService.ShowByType();
         }
-        
+
         private void ChangeEndJoinState(Element element, int end, ContiguityOption joinType)
         {
             if (element is Wall wall)

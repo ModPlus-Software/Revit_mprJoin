@@ -8,8 +8,8 @@
     /// </summary>
     public partial class WithWhatToJoinControl
     {
-        public static readonly DependencyProperty StorageProperty = DependencyProperty.Register(
-            "Storage", typeof(CustomElementPair), typeof(WithWhatToJoinControl), new PropertyMetadata(default(CustomElementPair)));
+        public static readonly DependencyProperty PairProperty = DependencyProperty.Register(
+            "Pair", typeof(CustomElementPair), typeof(WithWhatToJoinControl), new PropertyMetadata(default(CustomElementPair)));
 
         public WithWhatToJoinControl()
         {
@@ -20,10 +20,10 @@
             ChangeTextWidth();
         }
 
-        public CustomElementPair Storage
+        public CustomElementPair Pair
         {
-            get => (CustomElementPair)GetValue(StorageProperty);
-            set => SetValue(StorageProperty, value);
+            get => (CustomElementPair)GetValue(PairProperty);
+            set => SetValue(PairProperty, value);
         }
 
         private void ComboBox_OnSizeChanged(object sender, SizeChangedEventArgs e)

@@ -1,4 +1,5 @@
-﻿using mprJoin.Enums;
+﻿using System.Collections.ObjectModel;
+using mprJoin.Enums;
 
 namespace mprJoin.ViewModels
 {
@@ -31,9 +32,9 @@ namespace mprJoin.ViewModels
         /// Получить список моделей категорий.
         /// <param name="allowedCategories">Список доступных категорий.</param>
         /// </summary>
-        protected static List<SelectedCategory> GetSelectedCategories(List<BuiltInCategory> allowedCategories)
+        protected static ObservableCollection<SelectedCategory> GetSelectedCategories(List<BuiltInCategory> allowedCategories)
         {
-            var resultList = new List<SelectedCategory>();
+            var resultList = new ObservableCollection<SelectedCategory>();
             foreach (Category category in _uiApplication.ActiveUIDocument.Document.Settings.Categories)
             {
                 var builtInCategory = (BuiltInCategory)category.Id.IntegerValue;

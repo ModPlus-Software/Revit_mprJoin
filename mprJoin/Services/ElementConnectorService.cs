@@ -131,7 +131,8 @@
                                         
                                         break;
                                     case ContiguityOption.DisJoin:
-                                        JoinGeometryUtils.UnjoinGeometry(document, elementWhoWillJoin, intersectedElement);
+                                        if (JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin, intersectedElement))
+                                            JoinGeometryUtils.UnjoinGeometry(document, elementWhoWillJoin, intersectedElement);
                                         break;
                                 }
                             }

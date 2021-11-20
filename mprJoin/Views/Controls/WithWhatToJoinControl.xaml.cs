@@ -9,7 +9,7 @@
     public partial class WithWhatToJoinControl
     {
         public static readonly DependencyProperty StorageProperty = DependencyProperty.Register(
-            "Storage", typeof(SelectedCategoriesStorage), typeof(WithWhatToJoinControl), new PropertyMetadata(default(SelectedCategoriesStorage)));
+            "Storage", typeof(CustomElementPair), typeof(WithWhatToJoinControl), new PropertyMetadata(default(CustomElementPair)));
 
         public WithWhatToJoinControl()
         {
@@ -20,9 +20,9 @@
             ChangeTextWidth();
         }
 
-        public SelectedCategoriesStorage Storage
+        public CustomElementPair Storage
         {
-            get => (SelectedCategoriesStorage)GetValue(StorageProperty);
+            get => (CustomElementPair)GetValue(StorageProperty);
             set => SetValue(StorageProperty, value);
         }
 

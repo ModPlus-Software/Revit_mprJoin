@@ -47,6 +47,8 @@
         {
             var box = checkElement.get_BoundingBox(null);
             var boundingBoxFilter = new BoundingBoxIntersectsFilter(new Outline(box.Min, box.Max));
+            if (!elementsWhereFindingIntersection.Any())
+                return new List<Element>();
             return new FilteredElementCollector(document, elementsWhereFindingIntersection.Select(i => i.Id).ToList())
                 .WhereElementIsNotElementType()
                 .WherePasses(boundingBoxFilter)

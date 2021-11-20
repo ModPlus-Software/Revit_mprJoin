@@ -16,7 +16,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <ComboBox ItemsSource="{Binding ElementName=ThisControl, Path=Storage.SelectedCategories}"
+        <ComboBox ItemsSource="{Binding ElementName=ThisControl, Path=Storage.WithWhatToJoin}"
                   Name="ComboBox"
                   SizeChanged="ComboBox_OnSizeChanged">
             <ComboBox.ItemTemplate>
@@ -26,6 +26,7 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
+        
         <TextBlock Name="TextBlock"
                    VerticalAlignment="Center"
                    Text="{Binding ElementName=ThisControl, Path=Storage.DisplayName, UpdateSourceTrigger=PropertyChanged}"

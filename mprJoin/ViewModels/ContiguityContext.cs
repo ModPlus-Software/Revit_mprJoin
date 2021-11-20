@@ -1,4 +1,6 @@
-﻿namespace mprJoin.ViewModels
+﻿using System.Collections.ObjectModel;
+
+namespace mprJoin.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +20,7 @@
     {
         private readonly UIApplication _uiApplication;
         private readonly CollectorService _collectorService;
-        private List<SelectedCategory> _selectedCategories;
+        private ObservableCollection<SelectedCategory> _selectedCategories;
         private readonly ElementConnectorService _elementConnectorService;
         private readonly UserSettingsService _userSettings;
 
@@ -29,14 +31,14 @@
             _uiApplication = uiApplication;
             _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
             _userSettings = new UserSettingsService(PluginSetting.SaveFileName);
-            var list = _userSettings.Get<List<SelectedCategory>>(nameof(SelectedCategories));
+            var list = _userSettings.Get<ObservableCollection<SelectedCategory>>(nameof(SelectedCategories));
             _selectedCategories = list.Any() ? list : null;
         }
 
         /// <summary>
         /// Список моделей категорий для вывода пользователю
         /// </summary>
-        public List<SelectedCategory> SelectedCategories => _selectedCategories ??= GetSelectedCategories(PluginSetting.AllowedCategoriesToContiguity);
+        public ObservableCollection<SelectedCategory> SelectedCategories => _selectedCategories ??= GetSelectedCategories(PluginSetting.AllowedCategoriesToContiguity);
 
         /// <summary>
         /// Обрабатывать ли начало элемента

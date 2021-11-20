@@ -37,7 +37,6 @@
             _collectorService = new CollectorService();
             _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
             _userSettings = new UserSettingsService(PluginSetting.SaveFileName);
-            Pairs = new ObservableCollection<CustomElementPair>();
             var configurationsList = _userSettings.Get<ObservableCollection<SavedJoinConfigurations>>(nameof(SavedJoinConfigurations));
             _permanentConfigurations = configurationsList.FirstOrDefault(i => i.Name.Equals(_standardConfigName)) ??
                 new SavedJoinConfigurations
@@ -54,7 +53,6 @@
             if (!Configurations.Contains(_permanentConfigurations))
                 Configurations.Add(_permanentConfigurations);
             _currentConfiguration = _permanentConfigurations;
-            _currentConfiguration.Pairs.Select(i => i.ToModel()).ToList().ForEach(i => Pairs.Add(i));
         }
 
         /// <summary>
@@ -66,8 +64,6 @@
             set
             {
                 _currentConfiguration = value;
-                Pairs.Clear();
-                value.Pairs.ForEach(i => Pairs.Add(i.ToModel()));
                 OnPropertyChanged();
             }
         }
@@ -76,11 +72,6 @@
         /// Конфигурации в проекте.
         /// </summary>
         public ObservableCollection<SavedJoinConfigurations> Configurations { get; set; }
-
-        /// <summary>
-        /// Список с парами элементов для соединения
-        /// </summary>
-        public ObservableCollection<CustomElementPair> Pairs { get; }
 
         /// <summary>
         /// Список моделей категорий для вывода пользователю в текстовом представлении
@@ -95,7 +86,8 @@
         {
             try
             {
-                CurrentConfiguration.Pairs.Add(new CustomElementPair(GetSelectedCategories(PluginSetting.AllowedCategoriesToJoin)));
+                CurrentConfiguration.Pairs.Add(
+                    new CustomElementPair(GetSelectedCategories(PluginSetting.AllowedCategoriesToJoin)));
             }
             catch (Exception exception)
             {
@@ -110,7 +102,7 @@
         {
             try
             {
-                Pairs.Remove(pair);
+                CurrentConfiguration.Pairs.Remove(pair);
             }
             catch (Exception exception)
             {
@@ -135,8 +127,10 @@
         /// </summary>
         public ICommand AddConfiguration => new RelayCommandWithoutParameter(() =>
         {
-            var newConfiguration = _currentConfiguration.Clone();
-            newConfiguration.Name = DateTime.Now.ToString(CultureInfo.CurrentCulture);
+            var newConfiguration = new SavedJoinConfigurations
+            {
+                Name = DateTime.Now.ToString(CultureInfo.CurrentCulture)
+            };
             Configurations.Add(newConfiguration);
             CurrentConfiguration = newConfiguration;
         });
@@ -176,7 +170,7 @@
         /// </summary>
         public ICommand RemoveFilter => new RelayCommand<FilterModel>(filter =>
         {
-            foreach (var pair in Pairs)
+            foreach (var pair in CurrentConfiguration.Pairs)
             {
                 if (pair.FiltersForMainCategory.Contains(filter))
                 {
@@ -193,23 +187,47 @@
         });
 
         /// <summary>
+        /// Переместить пару вниз.
+        /// </summary>
+        public ICommand ReplaceDown => new RelayCommand<CustomElementPair>(pair =>
+        {
+            try
+            {
+                var index = CurrentConfiguration.Pairs.IndexOf(pair);
+                var maxIndex = CurrentConfiguration.Pairs.Count;
+                if (index + 1 < maxIndex)
+                    CurrentConfiguration.Pairs.Move(index, index + 1);
+            }
+            catch (Exception e)
+            {
+                e.ShowInExceptionBox();
+            }
+        });
+        
+        /// <summary>
+        /// Переместить пару вниз.
+        /// </summary>
+        public ICommand ReplaceUp => new RelayCommand<CustomElementPair>(pair =>
+        {
+            try
+            {
+                var index = CurrentConfiguration.Pairs.IndexOf(pair);
+                if (index > 0)
+                    CurrentConfiguration.Pairs.Move(index, index - 1);
+            }
+            catch (Exception e)
+            {
+                e.ShowInExceptionBox();
+            }
+        });
+
+        /// <summary>
         /// Сохранение настроек
         /// </summary>
         public override void SaveSettings()
         {
-            _permanentConfigurations.Pairs =
-                Pairs.ToList().Select(i => i.ToSaveMode()).ToList();
-
             _userSettings.Set(Configurations, nameof(SavedJoinConfigurations));
         }
-
-        /// <summary>
-        /// Сохранение текущей конфигурации.
-        /// </summary>
-        public ICommand SaveCurrentConfiguration => new RelayCommand<SavedJoinConfigurations>(config =>
-        {
-            config.Pairs = Pairs.ToList().Select(i => i.ToSaveMode()).ToList();
-        });
 
         /// <summary>
         /// Отображение фильтров для пары.
@@ -224,7 +242,7 @@
         {
             try
             {
-                var pairs = Pairs.ToList();
+                var pairs = CurrentConfiguration.Pairs.ToList();
                 if (!pairs.Any())
                 {
                     MessageBox.Show(ModPlusAPI.Language.GetItem("e2"), MessageBoxIcon.Alert);
@@ -235,6 +253,8 @@
                 {
                     if (string.IsNullOrEmpty(pair.WhatToJoinCategory))
                     {
+                        pair.WhatToJoinElements = new List<Element>();
+                        pair.WhereToJoinElements = new List<Element>();
                         continue;
                     }
 
@@ -258,7 +278,7 @@
                         // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
                         // что у какого то элемента не получается посмотреть категорию
                         .WherePasses(new ElementMulticategoryFilter(PluginSetting.AllowedCategoriesToJoin))
-                        .Where(el => pair.WithWhatToJoin.SelectedCategories.Where(cat => cat.IsSelected).Select(cat => cat.Name).Any(cat =>
+                        .Where(el => pair.WithWhatToJoin.Where(cat => cat.IsSelected).Select(cat => cat.Name).Any(cat =>
                             cat.Equals(el.Category.Name, StringComparison.InvariantCultureIgnoreCase)))
                         .ToList();
                 }

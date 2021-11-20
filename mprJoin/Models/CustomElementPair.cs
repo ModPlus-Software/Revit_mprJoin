@@ -18,10 +18,44 @@
         private string _whatToJoinCategory;
         private bool _showFilters;
 
-        public CustomElementPair(List<SelectedCategory> selectedCategories)
+        public CustomElementPair(ObservableCollection<SelectedCategory> categories)
         {
-            WithWhatToJoin = new SelectedCategoriesStorage(selectedCategories);
+            FiltersForMainCategory = new ObservableCollection<FilterModel>();
+            FilterModelsForSubCategories = new ObservableCollection<FilterModel>();
             FiltersForMainCategory.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFilters));
+            WithWhatToJoin = new ObservableCollection<SelectedCategory>();
+            WithWhatToJoin = categories;
+            foreach (var selectedCategory in WithWhatToJoin)
+            {
+                selectedCategory.PropertyChanged += (_, args) =>
+                {
+                    if (args.PropertyName == nameof(SelectedCategory.IsSelected))
+                        OnPropertyChanged(nameof(DisplayName));
+                };
+            }
+        }
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <remarks>Конструктор для сохранения пользовательских настроек. Требуется безпараметрический конструктор.</remarks>
+        public CustomElementPair()
+        {
+            FiltersForMainCategory = new ObservableCollection<FilterModel>();
+            FilterModelsForSubCategories = new ObservableCollection<FilterModel>();
+            FiltersForMainCategory.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasFilters));
+            WithWhatToJoin = new ObservableCollection<SelectedCategory>();
+            WithWhatToJoin.CollectionChanged += (_, _) =>
+            {
+                foreach (var selectedCategory in WithWhatToJoin)
+                {
+                    selectedCategory.PropertyChanged += (_, args) =>
+                    {
+                        if (args.PropertyName == nameof(SelectedCategory.IsSelected))
+                            OnPropertyChanged(nameof(DisplayName));
+                    };
+                }
+            };
         }
 
         /// <summary>
@@ -40,9 +74,10 @@
         /// <summary>
         /// Категория которые будут присоединяться (т.е. у них будут образовываться вырезы)
         /// </summary>
-        public SelectedCategoriesStorage WithWhatToJoin { get; }
-        
-        /// <summary>
+        public ObservableCollection<SelectedCategory> WithWhatToJoin { get; set; }
+
+
+            /// <summary>
         /// Элементы которые будут будут иметь высший приоритет при соединении
         /// </summary>
         [XmlIgnore]
@@ -57,17 +92,22 @@
         /// <summary>
         /// Список фильтров для основной категории, к которой будут присоединяться другие элементы.
         /// </summary>
-        public ObservableCollection<FilterModel> FiltersForMainCategory { get; set; } = new ();
+        public ObservableCollection<FilterModel> FiltersForMainCategory { get; set; }
 
         /// <summary>
         /// Список фильтров для категорий которые будут присоединяться
         /// </summary>
-        public ObservableCollection<FilterModel> FilterModelsForSubCategories { get; set; } = new ();
+        public ObservableCollection<FilterModel> FilterModelsForSubCategories { get; set; }
 
         /// <summary>
         /// Логический оператор.
         /// </summary>
         public LogicCondition LogicCondition { get; set; }
+        
+        /// <summary>
+        /// Строковое имя всех выбранных категорий, для View.
+        /// </summary>
+        public string DisplayName => string.Join(", ", WithWhatToJoin.Where(c => c.IsSelected).Select(c => c.Name));
 
         /// <summary>
         /// Показывать фильтры.
@@ -83,23 +123,6 @@
         }
 
         public bool HasFilters => FiltersForMainCategory.Any() || FilterModelsForSubCategories.Any();
-
-        /// <summary>
-        /// Получить модель для сохранения
-        /// </summary>
-        public CustomElementPairForSave ToSaveMode()
-        {
-            var saveMode = new CustomElementPairForSave
-            {
-                WhatToJoinCategory = WhatToJoinCategory,
-                WithWhatToJoin = WithWhatToJoin.SelectedCategories,
-                LogicCondition = LogicCondition,
-                FiltersForMainCategory = FiltersForMainCategory,
-                FilterModelsForSubCategories = FilterModelsForSubCategories,
-                ShowFilters = ShowFilters
-            };
-            return saveMode;
-        }
 
         public void ApplyFilters()
         {
@@ -136,6 +159,8 @@
         /// <param name="filter">Фильтр.</param>
         private bool IsMatchByFilter(Element element, FilterModel filter)
         {
+            if (string.IsNullOrEmpty(filter.ParameterName))
+                return true;
             var param = element.GetParameterFromInstanceOrType(filter.ParameterName);
             if (param == null)
                 return false;
@@ -151,9 +176,9 @@
                 case Condition.NotBegin:
                     return !paramValue.StartsWith(filter.ParameterValue, StringComparison.InvariantCultureIgnoreCase);
                 case Condition.Contains:
-                    return paramValue.IndexOf(filter.ParameterValue, StringComparison.InvariantCultureIgnoreCase) > 0;
+                    return paramValue.IndexOf(filter.ParameterValue, StringComparison.InvariantCultureIgnoreCase) >= 0;
                 case Condition.NotContains:
-                    return paramValue.IndexOf(filter.ParameterValue, StringComparison.InvariantCultureIgnoreCase) == 0;
+                    return paramValue.IndexOf(filter.ParameterValue, StringComparison.InvariantCultureIgnoreCase) == -1;
                 case Condition.Equals:
                     return paramValue.Equals(filter.ParameterValue, StringComparison.InvariantCultureIgnoreCase);
                 case Condition.NotEquals:

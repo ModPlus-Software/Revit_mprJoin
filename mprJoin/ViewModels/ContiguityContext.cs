@@ -73,8 +73,10 @@
                 }
                 else
                 {
-                    _elementConnectorService.DoContiguityAction(elements, Option,
-                        (FirstElementPoint, SecondElementPoint));
+                    _elementConnectorService.DoContiguityAction(
+                        elements,
+                        Option,
+                        new Tuple<bool, bool>(FirstElementPoint, SecondElementPoint));
                 }
             }
             catch (Exception e)

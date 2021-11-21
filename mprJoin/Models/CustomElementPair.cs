@@ -78,9 +78,14 @@
         public ObservableCollection<Filter> WhereJoinFilters { get; set; }
 
         /// <summary>
-        /// Логический оператор.
+        /// Логический оператор для элементов основной категории
         /// </summary>
-        public LogicCondition LogicCondition { get; set; }
+        public LogicCondition WhatJoinLogicCondition { get; set; }
+
+        /// <summary>
+        /// Логический оператор для элементов, которые будут присоединяться
+        /// </summary>
+        public LogicCondition WhereJoinLogicCondition { get; set; }
 
         /// <summary>
         /// Строковое имя всех выбранных категорий, для View.
@@ -133,30 +138,35 @@
 
         public void ApplyFilters()
         {
-            switch (LogicCondition)
+            WhatToJoinElements = WhatJoinLogicCondition switch
             {
-                case LogicCondition.And:
-                    WhatToJoinElements = WhatToJoinElements.Where(el =>
-                        WhatJoinFilters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
-                            .All(filter => IsMatchByFilter(el, filter))).ToList();
+                LogicCondition.And => WhatToJoinElements
+                    .Where(el => WhatJoinFilters
+                        .Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                        .All(filter => IsMatchByFilter(el, filter)))
+                    .ToList(),
+                LogicCondition.Or => WhatToJoinElements
+                    .Where(el => WhatJoinFilters
+                        .Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                        .Any(filter => IsMatchByFilter(el, filter)))
+                    .ToList(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
-                    WhereToJoinElements = WhereToJoinElements.Where(el =>
-                        WhereJoinFilters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
-                            .All(filter => IsMatchByFilter(el, filter))).ToList();
-                    break;
-                case LogicCondition.Or:
-                    WhatToJoinElements = WhatToJoinElements.Where(el =>
-                        WhatJoinFilters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
-                            .Any(filter => IsMatchByFilter(el, filter))).ToList();
-
-                    WhereToJoinElements = WhereToJoinElements.Where(el =>
-                        WhereJoinFilters.Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
-                            .Any(filter => IsMatchByFilter(el, filter))).ToList();
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            WhereToJoinElements = WhereJoinLogicCondition switch
+            {
+                LogicCondition.And => WhereToJoinElements
+                    .Where(el => WhereJoinFilters
+                        .Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                        .All(filter => IsMatchByFilter(el, filter)))
+                    .ToList(),
+                LogicCondition.Or => WhereToJoinElements
+                    .Where(el => WhereJoinFilters
+                        .Where(filter => !string.IsNullOrEmpty(filter.ParameterName))
+                        .Any(filter => IsMatchByFilter(el, filter)))
+                    .ToList(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
         /// <summary>

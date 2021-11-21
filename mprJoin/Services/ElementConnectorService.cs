@@ -33,7 +33,7 @@
         /// <param name="elements">Набор элементов.</param>
         /// <param name="option">Опции примыканий.</param>
         /// <param name="beginAndAndOptions">Сет из настроек начала и конца элемента.</param>
-        public void DoContiguityAction(List<Element> elements, ContiguityOption option, (bool, bool) beginAndAndOptions)
+        public void DoContiguityAction(List<Element> elements, ContiguityOption option, Tuple<bool, bool> beginAndAndOptions)
         {
             var trName = ModPlusAPI.Language.GetItem("t1");
             var resultService = new ResultService();
@@ -47,7 +47,8 @@
                         if (element.Location is not LocationCurve)
                             continue;
 
-                        var (start, end) = beginAndAndOptions;
+                        var start = beginAndAndOptions.Item1;
+                        var end = beginAndAndOptions.Item2;
                         if (start)
                             ChangeEndJoinState(element, 0, option);
                         if (end)

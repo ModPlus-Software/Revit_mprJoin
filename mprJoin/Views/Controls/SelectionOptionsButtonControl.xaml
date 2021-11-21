@@ -32,22 +32,19 @@
                VerticalOffset="-4">
             <mps:Card>
                 <ItemsControl>
-                    <Button Height="25"
-                            HorizontalAlignment="Stretch"
+                    <Button HorizontalAlignment="Stretch"
                             Click="ClosePopup_OnClick"
                             Command="{Binding ElementName=ThisControl, Path=ExecuteCommand}"
                             CommandParameter="{x:Static options:ScopeType.SelectedElement}"
                             Content="{Binding Source={StaticResource Lang}, XPath=h6}"
                             Style="{StaticResource ModPlusFlatButton}" />
-                    <Button Height="25"
-                            HorizontalAlignment="Stretch"
+                    <Button HorizontalAlignment="Stretch"
                             Click="ClosePopup_OnClick"
                             Command="{Binding ElementName=ThisControl, Path=ExecuteCommand}"
                             CommandParameter="{x:Static options:ScopeType.InActiveView}"
                             Content="{Binding Source={StaticResource Lang}, XPath=h7}"
                             Style="{StaticResource ModPlusFlatButton}" />
-                    <Button Height="25"
-                            HorizontalAlignment="Stretch"
+                    <Button HorizontalAlignment="Stretch"
                             Click="ClosePopup_OnClick"
                             Command="{Binding ElementName=ThisControl, Path=ExecuteCommand}"
                             CommandParameter="{x:Static options:ScopeType.InProject}"

@@ -94,13 +94,13 @@
                     Command="{Binding Path=AddConfiguration}"
                     CommandParameter="{Binding}"
                     Style="{StaticResource ModPlusFlatButtonForIcon}"
-                    ToolTip="{Binding Source={StaticResource Lang}, XPath=tp3}"
+                    ToolTip="{Binding Source={StaticResource Lang}, XPath=tp9}"
                     Content="{StaticResource AddIcon}"/>
 
             <Button Grid.Column="3"
                     MinWidth="0"
                     Command="{Binding DeleteConfiguration}"
-                    ToolTip="{Binding Source={StaticResource Lang}, XPath=tp4}"
+                    ToolTip="{Binding Source={StaticResource Lang}, XPath=tp3}"
                     Style="{StaticResource ModPlusFlatButtonForIcon}">
                 <Viewbox Width="24"
                          Height="24">
@@ -213,8 +213,10 @@
                                       Margin="0"
                                       VerticalAlignment="Center"
                                       mps:ComboBoxAssist.IsBorderless="True"
-                                      SelectedIndex="{Binding Path=LogicCondition, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:LogicCondition}, Mode=TwoWay}"
-                                      ToolTip="{Binding Source={StaticResource Lang}, XPath=tp6}">
+                                      SelectedIndex="{Binding Path=WhatJoinLogicCondition, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:LogicCondition}, Mode=TwoWay}"
+                                      ToolTip="{Binding Source={StaticResource Lang}, XPath=tp6}"
+                                      ToolTipService.InitialShowDelay="200"
+                                      ToolTipService.ShowDuration="15000">
                                 <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op1}" />
                                 <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op2}" />
                             </ComboBox>
@@ -239,6 +241,7 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBox Grid.Column="0"
                                                      Text="{Binding Path=ParameterName, Mode=TwoWay}"
+                                                     mps:HintAssist.Hint="{Binding Source={StaticResource LangCommon}, XPath=parameter}"
                                                      Margin="1"/>
 
                                             <ComboBox Grid.Column="1"
@@ -254,6 +257,7 @@
                                             </ComboBox>
                                             <TextBox Grid.Column="2"
                                                      Text="{Binding Path=ParameterValue, Mode=TwoWay}" 
+                                                     mps:HintAssist.Hint="{Binding Source={StaticResource LangCommon}, XPath=value}"
                                                      Margin="1"/>
 
                                             <Button Grid.Column="3"
@@ -274,13 +278,18 @@
                               Grid.Column="3"
                               Grid.ColumnSpan="2"
                               Visibility="{Binding Path=ShowFilters, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
                             <!-- Добавление вспомогательных фильтров -->
-                            <Button Grid.Column="0"
+                            <Button Grid.Row="0"
+                                    Grid.Column="0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Command="{Binding Path=AddWhereJointFilter}"
@@ -288,8 +297,24 @@
                                     ToolTip="{Binding Source={StaticResource Lang}, XPath=tp8}"
                                     Content="{StaticResource AddIcon}"/>
 
+                            <!-- Block с Or And -->
+                            <ComboBox Grid.Row="1"
+                                      Grid.Column="0"
+                                      Margin="0"
+                                      VerticalAlignment="Center"
+                                      mps:ComboBoxAssist.IsBorderless="True"
+                                      SelectedIndex="{Binding Path=WhereJoinLogicCondition, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:LogicCondition}, Mode=TwoWay}"
+                                      ToolTip="{Binding Source={StaticResource Lang}, XPath=tp6}"
+                                      ToolTipService.InitialShowDelay="200"
+                                      ToolTipService.ShowDuration="15000">
+                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op1}" />
+                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op2}" />
+                            </ComboBox>
+
                             <!-- ListBox c фильтрами для вспомогательных категорий -->
-                            <ListBox Grid.Column="1"
+                            <ListBox Grid.Row="0"
+                                     Grid.RowSpan="2"
+                                     Grid.Column="1"
                                      Margin="20 0 0 0"
                                      mps:ListBoxAssist.ListBoxItemPadding="0"
                                      Background="Transparent"
@@ -306,6 +331,7 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBox Grid.Column="0"
                                                      Text="{Binding Path=ParameterName, Mode=TwoWay}"
+                                                     mps:HintAssist.Hint="{Binding Source={StaticResource LangCommon}, XPath=parameter}"
                                                      Margin="1"/>
 
                                             <ComboBox Grid.Column="1"
@@ -321,6 +347,7 @@
                                             </ComboBox>
                                             <TextBox Grid.Column="2"
                                                      Text="{Binding Path=ParameterValue, Mode=TwoWay}" 
+                                                     mps:HintAssist.Hint="{Binding Source={StaticResource LangCommon}, XPath=value}"
                                                      Margin="1"/>
 
                                             <Button Grid.Column="3"

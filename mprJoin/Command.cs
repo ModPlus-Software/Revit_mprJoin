@@ -20,13 +20,15 @@
         {
             try
             {
-                
+#if !DEBUG
+                ModPlusAPI.Statistic.SendCommandStarting(ModPlusConnector.Instance);
+#endif
                 var win = new MainWindow();
                 var context = new MainContext(commandData.Application, win);
                 win.DataContext = context;
 
                 ModPlus.ShowModal(win);
-                
+
                 return Result.Succeeded;
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)

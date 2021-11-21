@@ -8,11 +8,13 @@
     using Autodesk.Revit.UI;
     using Enums;
     using Models;
+    using ModPlus_Revit;
     using ModPlusAPI.Mvvm;
     using ModPlusAPI.Services;
     using ModPlusAPI.Windows;
     using Services;
     using Settings;
+    using Views;
 
     public class ContiguityContext : BaseContext
     {
@@ -22,8 +24,8 @@
         private readonly ElementConnectorService _elementConnectorService;
         private readonly UserSettingsService _userSettings;
 
-        public ContiguityContext(UIApplication uiApplication)
-            : base(uiApplication)
+        public ContiguityContext(UIApplication uiApplication, MainWindow mainWindow)
+            : base(uiApplication, mainWindow)
         {
             _collectorService = new CollectorService();
             _uiApplication = uiApplication;
@@ -56,8 +58,12 @@
         {
             try
             {
+                if (scope == ScopeType.SelectedElement)
+                    MainWindow.Hide();
+                
                 var selectedCategories = SelectedCategories.Where(i => i.IsSelected).Select(i => i.Name).ToList();
-                var elements = _collectorService.GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
+                var elements = _collectorService
+                    .GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
                     .WhereElementIsNotElementType()
 
                     // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
@@ -83,6 +89,9 @@
             {
                 e.ShowInExceptionBox();
             }
+
+            if (scope == ScopeType.SelectedElement)
+                ModPlus.ShowModal(MainWindow);
         });
 
         /// <summary>

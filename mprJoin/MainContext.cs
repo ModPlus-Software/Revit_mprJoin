@@ -5,6 +5,7 @@
     using Autodesk.Revit.UI;
     using ModPlusAPI.Mvvm;
     using ViewModels;
+    using Views;
 
     /// <summary>
     /// Main context
@@ -13,10 +14,10 @@
     {
         private readonly List<BaseContext> _contexts;
 
-        public MainContext(UIApplication uiApplication)
+        public MainContext(UIApplication uiApplication, MainWindow mainWindow)
         {
-            ContiguityContext = new ContiguityContext(uiApplication);
-            JoinContext = new JoinContext(uiApplication);
+            ContiguityContext = new ContiguityContext(uiApplication, mainWindow);
+            JoinContext = new JoinContext(uiApplication, mainWindow);
             _contexts = new List<BaseContext>
             {
                 ContiguityContext,

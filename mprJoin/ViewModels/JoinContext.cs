@@ -10,11 +10,13 @@
     using Autodesk.Revit.UI;
     using Enums;
     using Models;
+    using ModPlus_Revit;
     using ModPlusAPI.Mvvm;
     using ModPlusAPI.Services;
     using ModPlusAPI.Windows;
     using Services;
     using Settings;
+    using Views;
 
     public class JoinContext : BaseContext
     {
@@ -26,8 +28,8 @@
         private readonly JoinConfigurations _permanentConfigurations;
         private JoinConfigurations _currentConfiguration;
 
-        public JoinContext(UIApplication uiApplication)
-            : base(uiApplication)
+        public JoinContext(UIApplication uiApplication, MainWindow mainWindow)
+            : base(uiApplication, mainWindow)
         {
             _uiApplication = uiApplication;
             _collectorService = new CollectorService();
@@ -162,6 +164,9 @@
         {
             try
             {
+                if (scope == ScopeType.SelectedElement)
+                    MainWindow.Hide();
+                
                 var pairs = CurrentConfiguration.Pairs.ToList();
                 if (!pairs.Any())
                 {
@@ -210,6 +215,9 @@
             {
                 e.ShowInExceptionBox();
             }
+
+            if (scope == ScopeType.SelectedElement)
+                ModPlus.ShowModal(MainWindow);
         });
 
         /// <summary>

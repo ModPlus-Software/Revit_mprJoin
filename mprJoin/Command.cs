@@ -20,10 +20,10 @@
         {
             try
             {
-                var win = new MainWindow
-                {
-                    DataContext = new MainContext(commandData.Application),
-                };
+                
+                var win = new MainWindow();
+                var context = new MainContext(commandData.Application, win);
+                win.DataContext = context;
 
                 ModPlus.ShowModal(win);
                 

@@ -7,6 +7,7 @@
     using Enums;
     using Models;
     using ModPlusAPI.Mvvm;
+    using Views;
 
     /// <summary>
     /// Базовый класс контекста для страниц
@@ -15,11 +16,17 @@
     {
         private static UIApplication _uiApplication;
         
-        protected BaseContext(UIApplication uiApplication)
+        protected BaseContext(UIApplication uiApplication, MainWindow mainWindow)
         {
+            MainWindow = mainWindow;
             _uiApplication = uiApplication;
         }
-        
+
+        /// <summary>
+        /// <see cref="Views.MainWindow"/> instance
+        /// </summary>
+        public MainWindow MainWindow { get; }
+
         /// <summary>
         /// Опции для работы сервиса
         /// </summary>

@@ -4,6 +4,7 @@
     using System.Linq;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.UI;
+    using Autodesk.Revit.UI.Selection;
     using Enums;
 
     /// <summary>
@@ -27,7 +28,10 @@
                     return new FilteredElementCollector(doc.Document, doc.Document.ActiveView.Id);
                 
                 case ScopeType.SelectedElement:
-                    var selectedElementIds = doc.Selection.GetElementIds();
+                    var selectedElementIds = doc.Selection
+                        .PickObjects(ObjectType.Element)
+                        .Select(e => doc.Document.GetElement(e).Id)
+                        .ToList();
                     return selectedElementIds.Any()
                         ? new FilteredElementCollector(doc.Document, selectedElementIds)
                         : new FilteredElementCollector(doc.Document, new List<ElementId> { ElementId.InvalidElementId });

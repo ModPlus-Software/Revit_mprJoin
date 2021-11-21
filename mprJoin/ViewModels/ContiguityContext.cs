@@ -9,6 +9,7 @@
     using Enums;
     using Models;
     using ModPlus_Revit;
+    using ModPlusAPI;
     using ModPlusAPI.Mvvm;
     using ModPlusAPI.Services;
     using ModPlusAPI.Windows;
@@ -44,12 +45,24 @@
         /// <summary>
         /// Обрабатывать ли начало элемента
         /// </summary>
-        public bool FirstElementPoint { get; set; }
+        public bool FirstElementPoint 
+        {
+            get => bool.TryParse(
+                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(FirstElementPoint)), out var b) && b;
+            set => UserConfigFile.SetValue(
+                ModPlusConnector.Instance.Name, nameof(FirstElementPoint), value.ToString(), true);
+        }
 
         /// <summary>
         /// Обрабатывать ли конец элемента
         /// </summary>
-        public bool SecondElementPoint { get; set; }
+        public bool SecondElementPoint
+        {
+            get => bool.TryParse(
+                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(SecondElementPoint)), out var b) && b;
+            set => UserConfigFile.SetValue(
+                ModPlusConnector.Instance.Name, nameof(SecondElementPoint), value.ToString(), true);
+        }
 
         /// <summary>
         /// Команда выполнения

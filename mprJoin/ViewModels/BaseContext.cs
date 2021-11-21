@@ -1,11 +1,13 @@
 ﻿namespace mprJoin.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.UI;
     using Enums;
     using Models;
+    using ModPlusAPI;
     using ModPlusAPI.Mvvm;
     using Views;
 
@@ -30,7 +32,13 @@
         /// <summary>
         /// Опции для работы сервиса
         /// </summary>
-        public ContiguityOption Option { get; set; }
+        public ContiguityOption Option
+        {
+            get => Enum.TryParse(
+                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(Option)), out ContiguityOption b) ? b : ContiguityOption.Join;
+            set => UserConfigFile.SetValue(
+                ModPlusConnector.Instance.Name, nameof(Option), value.ToString(), true);
+        }
         
         /// <summary>
         /// Получить список моделей категорий.

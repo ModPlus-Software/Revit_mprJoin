@@ -16,7 +16,7 @@
         DisJoin,
         
         /// <summary>
-        /// Инвертировть
+        /// Инвертировать
         /// </summary>
         Invert
     }

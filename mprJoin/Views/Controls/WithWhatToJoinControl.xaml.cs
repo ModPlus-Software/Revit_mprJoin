@@ -1,6 +1,7 @@
 ﻿namespace mprJoin.Views.Controls
 {
     using System.Windows;
+    using System.Windows.Controls;
     using Models;
 
     /// <summary>
@@ -35,6 +36,12 @@
         {
             if (!double.IsNaN(ComboBox.ActualWidth) && ComboBox.ActualWidth > 0.0)
                 TextBlock.Width = ComboBox.ActualWidth - 40;
+        }
+
+        private void ComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboBox.SelectedItem != null)
+                ComboBox.SelectedItem = null;
         }
     }
 }

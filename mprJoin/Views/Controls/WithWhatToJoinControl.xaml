@@ -18,7 +18,8 @@
     <Grid>
         <ComboBox ItemsSource="{Binding ElementName=ThisControl, Path=Pair.WithWhatToJoin}"
                   Name="ComboBox"
-                  SizeChanged="ComboBox_OnSizeChanged">
+                  SizeChanged="ComboBox_OnSizeChanged"
+                  SelectionChanged="ComboBox_OnSelectionChanged">
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:SelectedCategory}">
                     <CheckBox Content="{Binding Path=Name}"

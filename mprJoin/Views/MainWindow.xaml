@@ -46,5 +46,13 @@
                 <controls:JoinControl DataContext="{Binding Path=JoinContext}"/>
             </TabItem.Content>
         </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=btnN3}"/>
+            </TabItem.Header>
+            <TabItem.Content>
+                <controls:CutControl DataContext="{Binding Path=CutContext}"/>
+            </TabItem.Content>
+        </TabItem>
     </TabControl>
 </mps:ModPlusWindow>

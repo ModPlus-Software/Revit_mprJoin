@@ -22,10 +22,12 @@ namespace mprJoin
         {
             ContiguityContext = new ContiguityContext(uiApplication, mainWindow);
             JoinContext = new JoinContext(uiApplication, mainWindow);
+            CutContext = new CutContext(uiApplication, mainWindow);
             _contexts = new List<BaseContext>
             {
                 ContiguityContext,
                 JoinContext,
+                CutContext
             };
             _userSettingsService = new UserSettingsService(PluginSetting.SaveFileName);
             SelectedTab = _userSettingsService.Get<int>(nameof(SelectedTab));
@@ -36,6 +38,8 @@ namespace mprJoin
         public ContiguityContext ContiguityContext { get; }
         
         public JoinContext JoinContext { get; }
+        
+        public CutContext CutContext { get; }
 
         public ICommand SaveAllConfiguration =>
             new RelayCommandWithoutParameter(() =>

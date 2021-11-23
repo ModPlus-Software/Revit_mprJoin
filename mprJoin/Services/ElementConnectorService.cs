@@ -140,7 +140,69 @@
                                         if (JoinGeometryUtils.AreElementsJoined(doc, elementWhoWillJoin, intersectedElement))
                                             JoinGeometryUtils.UnjoinGeometry(doc, elementWhoWillJoin, intersectedElement);
                                         break;
-                                    case JoinOption.Cut:
+                                }
+                            }
+                            catch (Exception exception)
+                            {
+                                resultService.Add(
+                                    exception.Message,
+                                    elementWhoWillJoin.Id.ToString(), ResultItemType.Error);
+                            }
+                        }
+                    }
+                }
+
+                tr.Commit();
+            }
+
+            resultService.ShowByType();
+        }
+        
+        /// <summary>
+        /// Вырезать элементы.
+        /// </summary>
+        /// <param name="doc">Документы.</param>
+        /// <param name="pairs">Пары элементов.</param>
+        /// <param name="option">Опции соединения.</param>
+        public void CutElements(Document doc, List<CustomElementPair> pairs, CutOptions option)
+        {
+            var resultService = new ResultService();
+            var trName = "trans";// todo ModPlusAPI.Language.GetItem("t3");
+            using (var tr = new Transaction(doc, trName))
+            {
+                tr.Start();
+
+                foreach (var pair in pairs)
+                {
+                    foreach (var elementWhoWillJoin in pair.WhatToJoinElements)
+                    {
+                        foreach (var intersectedElement in _collectorService
+                            .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements)
+                            .Where(i => !i.Id.Equals(elementWhoWillJoin.Id)))
+                        {
+                            // Проверка на примыкание стен. Если стена примыкает к другой стене, то данная проверка
+                            // (!JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin, intersectedElement))
+                            // не ловит этот момент и 2 стены пытаются соединиться, поэтому получается ошибка
+                            if (intersectedElement is Wall wallWhereWillJoin &&
+                                elementWhoWillJoin is Wall { Location: LocationCurve whoWillJoinCurve })
+                            {
+                                if (whoWillJoinCurve
+                                    .get_ElementsAtJoin(0)
+                                    .ToList()
+                                    .Any(i => i.Id.Equals(wallWhereWillJoin.Id)))
+                                    continue;
+                                if (whoWillJoinCurve
+                                    .get_ElementsAtJoin(1)
+                                    .ToList()
+                                    .Any(i => i.Id.Equals(wallWhereWillJoin.Id)))
+                                    continue;
+                            }
+
+                            try
+                            {
+                                switch (option)
+                                {
+                                    case CutOptions.Cut:
                                         if (!InstanceVoidCutUtils.IsVoidInstanceCuttingElement(elementWhoWillJoin))
                                             continue;
                                         if (InstanceVoidCutUtils.GetElementsBeingCut(elementWhoWillJoin).Contains(intersectedElement.Id))

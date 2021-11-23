@@ -3,16 +3,11 @@
     /// <summary>
     /// Опции для соединения и вырезания геометрии.
     /// </summary>
-    public enum JoinOption
+    public enum CutOptions
     {
         /// <summary>
-        /// Присоединить
+        /// Вырезать.
         /// </summary>
-        Join,
-        
-        /// <summary>
-        /// Отсоединить
-        /// </summary>
-        DisJoin
+        Cut
     }
 }

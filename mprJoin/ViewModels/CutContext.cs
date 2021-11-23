@@ -16,19 +16,20 @@
     using Settings;
     using Views;
 
-    public class JoinContext : BaseJoinCutContext
+    public class CutContext : BaseJoinCutContext
     {
+        private readonly string _cutConfigurationFieldName = "CutConfiguration";
         private readonly UIApplication _uiApplication;
-        private readonly ElementConnectorService _elementConnectorService;
         private readonly UserSettingsService _userSettings;
+        private readonly ElementConnectorService _elementConnectorService;
 
-        public JoinContext(UIApplication uiApplication, MainWindow mainWindow)
+        public CutContext(UIApplication uiApplication, MainWindow mainWindow) 
             : base(uiApplication, mainWindow)
         {
             _uiApplication = uiApplication;
-            _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
             _userSettings = new UserSettingsService(PluginSetting.SaveFileName);
-            var configurationsList = _userSettings.Get<ObservableCollection<JoinConfigurations>>(nameof(JoinConfigurations));
+            _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
+            var configurationsList = _userSettings.Get<ObservableCollection<JoinConfigurations>>(_cutConfigurationFieldName);
             PermanentConfiguration = configurationsList.FirstOrDefault(i => !i.IsEditable) ??
                                      new JoinConfigurations
                                      {
@@ -43,21 +44,21 @@
                 };
             if (!Configurations.Contains(PermanentConfiguration))
                 Configurations.Add(PermanentConfiguration);
-            JoinOption = _userSettings.Get<JoinOption>(nameof(JoinOption));
-            AllowedCategories = PluginSetting.AllowedCategoriesToJoin;
+            CutOptions = _userSettings.Get<CutOptions>(nameof(CutOptions));
+            AllowedCategories = PluginSetting.AllowedCategoriesToCut;
         }
         
         /// <summary>
         /// Опции для работы сервиса.
         /// </summary>
-        public JoinOption JoinOption
+        public CutOptions CutOptions
         {
             get => Enum.TryParse(
-                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(JoinOption)), out JoinOption b) ? b : JoinOption.Join;
+                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(CutOptions)), out CutOptions b) ? b : CutOptions.Cut;
             set => UserConfigFile.SetValue(
-                ModPlusConnector.Instance.Name, nameof(JoinOption), value.ToString(), true);
+                ModPlusConnector.Instance.Name, nameof(CutOptions), value.ToString(), true);
         }
-
+        
         /// <summary>
         /// Команда выполнения.
         /// </summary>
@@ -76,7 +77,7 @@
                 }
 
                 SetElements(pairs, scope);
-                _elementConnectorService.JoinElements(_uiApplication.ActiveUIDocument.Document, pairs, JoinOption);
+                _elementConnectorService.CutElements(_uiApplication.ActiveUIDocument.Document, pairs, CutOptions);
             }
             catch (Exception e)
             {
@@ -86,14 +87,11 @@
             if (scope == ScopeType.SelectedElement)
                 ModPlus.ShowModal(MainWindow);
         });
-
-        /// <summary>
-        /// Сохранение настроек
-        /// </summary>
+        
         public override void SaveSettings()
         {
-            _userSettings.Set(Configurations, nameof(JoinConfigurations));
-            _userSettings.Set(JoinOption, nameof(JoinOption));
+            _userSettings.Set(Configurations, _cutConfigurationFieldName);
+            _userSettings.Set(CutOptions, nameof(CutOptions));
         }
     }
 }

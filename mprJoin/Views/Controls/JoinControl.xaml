@@ -427,7 +427,7 @@
                       SelectedIndex="{Binding JoinOption, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:JoinOption}, Mode=TwoWay}">
                 <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h2}" />
                 <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h3}" />
-                <ComboBoxItem Content="Вырезать"/>
+                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h11}"/>
             </ComboBox>
 
             <controls:SelectionOptionsButtonControl Grid.Row="0"

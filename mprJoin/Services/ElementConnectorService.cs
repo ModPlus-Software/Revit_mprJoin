@@ -72,7 +72,7 @@
         /// <param name="doc">Документы.</param>
         /// <param name="pairs">Пары элементов.</param>
         /// <param name="option">Опции соединения.</param>
-        public void JoinElements(Document doc, List<CustomElementPair> pairs, ContiguityOption option)
+        public void JoinElements(Document doc, List<CustomElementPair> pairs, JoinOption option)
         {
             var resultService = new ResultService();
             var trName = ModPlusAPI.Language.GetItem("t2");
@@ -110,7 +110,7 @@
                             {
                                 switch (option)
                                 {
-                                    case ContiguityOption.Join:
+                                    case JoinOption.Join:
                                         if (!JoinGeometryUtils.AreElementsJoined(doc, elementWhoWillJoin,
                                             intersectedElement))
                                         {
@@ -136,9 +136,16 @@
                                         }
 
                                         break;
-                                    case ContiguityOption.DisJoin:
+                                    case JoinOption.DisJoin:
                                         if (JoinGeometryUtils.AreElementsJoined(doc, elementWhoWillJoin, intersectedElement))
                                             JoinGeometryUtils.UnjoinGeometry(doc, elementWhoWillJoin, intersectedElement);
+                                        break;
+                                    case JoinOption.Cut:
+                                        if (!InstanceVoidCutUtils.IsVoidInstanceCuttingElement(elementWhoWillJoin))
+                                            continue;
+                                        if (InstanceVoidCutUtils.GetElementsBeingCut(elementWhoWillJoin).Contains(intersectedElement.Id))
+                                            continue;
+                                        InstanceVoidCutUtils.AddInstanceVoidCut(doc, intersectedElement, elementWhoWillJoin);
                                         break;
                                 }
                             }

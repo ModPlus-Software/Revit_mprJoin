@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
    <PropertyGroup>
-    <Version>1.0.1.0</Version>
+    <Version>0.0.0.1</Version>
     <RootNamespace>mprJoin</RootNamespace>
     <AssemblyName>$(RootNamespace)</AssemblyName>
     <LangVersion>latest</LangVersion>
@@ -31,7 +31,7 @@
     <Description>2018</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'R2019'">
+  <PropertyGroup Condition="'$(Configuration)' == 'R2019'  or '$(Configuration)'=='Debug'">
     <TargetFramework>net47</TargetFramework>
     <Description>2019</Description>
   </PropertyGroup>
@@ -46,7 +46,7 @@
     <Description>2021</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'R2022' or '$(Configuration)'=='Debug'">
+  <PropertyGroup Condition="'$(Configuration)' == 'R2022'">
     <TargetFramework>net48</TargetFramework>
     <Description>2022</Description>
   </PropertyGroup>
@@ -71,16 +71,16 @@
     <When Condition="'$(Configuration)'=='R2017'">
       <ItemGroup>
         <PackageReference Include="ModPlus.Revit.API.2017" Version="2.0.0" ExcludeAssets="runtime" />
-        <PackageReference Include="ModPlus.Revit.Module.2017" Version="7.8.6" ExcludeAssets="runtime" />
+        <PackageReference Include="ModPlus.Revit.Module.2017" Version="7.8.5" ExcludeAssets="runtime" />
       </ItemGroup>
     </When>
     <When Condition="'$(Configuration)'=='R2018'">
       <ItemGroup>
         <PackageReference Include="ModPlus.Revit.API.2018" Version="2.0.0" ExcludeAssets="runtime" />
-        <PackageReference Include="ModPlus.Revit.Module.2018" Version="7.8.6" ExcludeAssets="runtime" />
+        <PackageReference Include="ModPlus.Revit.Module.2018" Version="7.8.5" ExcludeAssets="runtime" />
       </ItemGroup>
     </When>
-    <When Condition="'$(Configuration)'=='R2019'">
+    <When Condition="'$(Configuration)'=='R2019'  or '$(Configuration)'=='Debug'">
       <ItemGroup>
         <PackageReference Include="ModPlus.Revit.API.2019" Version="3.0.0" ExcludeAssets="runtime" />
         <PackageReference Include="ModPlus.Revit.Module.2019" Version="7.8.6" ExcludeAssets="runtime" />
@@ -89,22 +89,32 @@
     <When Condition="'$(Configuration)'=='R2020'">
       <ItemGroup>
         <PackageReference Include="ModPlus.Revit.API.2020" Version="3.0.0" ExcludeAssets="runtime" />
-        <PackageReference Include="ModPlus.Revit.Module.2020" Version="7.8.6" ExcludeAssets="runtime" />
+        <PackageReference Include="ModPlus.Revit.Module.2020" Version="7.8.5" ExcludeAssets="runtime" />
       </ItemGroup>
     </When>
     <When Condition="'$(Configuration)'=='R2021'">
       <ItemGroup>
         <PackageReference Include="ModPlus.Revit.API.2021" Version="3.0.0" ExcludeAssets="runtime" />
-        <PackageReference Include="ModPlus.Revit.Module.2021" Version="7.8.6" ExcludeAssets="runtime" />
+        <PackageReference Include="ModPlus.Revit.Module.2021" Version="7.8.5" ExcludeAssets="runtime" />
       </ItemGroup>
     </When>
-    <When Condition="'$(Configuration)'=='R2022' or '$(Configuration)'=='Debug'">
+    <When Condition="'$(Configuration)'=='R2022'">
       <ItemGroup>
         <PackageReference Include="ModPlus.Revit.API.2022" Version="3.0.0" ExcludeAssets="runtime" />
-        <PackageReference Include="ModPlus.Revit.Module.2022" Version="7.8.6" ExcludeAssets="runtime" />
+        <PackageReference Include="ModPlus.Revit.Module.2022" Version="7.8.5" ExcludeAssets="runtime" />
       </ItemGroup>
     </When>
   </Choose>
+
+  <ItemGroup>
+    <Compile Remove="Helpers\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <None Remove="Helpers\**" />
+    <Page Remove="Helpers\**" />
+    <Compile Update="Views\Controls\FilterInputFormControl.xaml.cs">
+      <DependentUpon>FilterInputFormControl.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" ExcludeAssets="runtime" />
@@ -114,11 +124,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\mprJoin_32x32.png" />
-    <Resource Include="Resources\mprJoin_16x16.png" />
   </ItemGroup>
   
 </Project>

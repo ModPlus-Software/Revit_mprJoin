@@ -11,6 +11,7 @@
     using Enums;
     using Models;
     using ModPlus_Revit;
+    using ModPlusAPI;
     using ModPlusAPI.Mvvm;
     using ModPlusAPI.Services;
     using ModPlusAPI.Windows;
@@ -51,6 +52,18 @@
             if (!Configurations.Contains(_permanentConfigurations))
                 Configurations.Add(_permanentConfigurations);
             _currentConfiguration = _permanentConfigurations;
+            JoinOption = _userSettings.Get<JoinOption>(nameof(JoinOption));
+        }
+        
+        /// <summary>
+        /// Опции для работы сервиса
+        /// </summary>
+        public JoinOption JoinOption
+        {
+            get => Enum.TryParse(
+                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(JoinOption)), out JoinOption b) ? b : JoinOption.Join;
+            set => UserConfigFile.SetValue(
+                ModPlusConnector.Instance.Name, nameof(JoinOption), value.ToString(), true);
         }
 
         /// <summary>
@@ -209,7 +222,7 @@
                 }
 
                 pairs.ForEach(p => p.ApplyFilters());
-                _elementConnectorService.JoinElements(_uiApplication.ActiveUIDocument.Document, pairs, Option);
+                _elementConnectorService.JoinElements(_uiApplication.ActiveUIDocument.Document, pairs, JoinOption);
             }
             catch (Exception e)
             {
@@ -226,6 +239,7 @@
         public override void SaveSettings()
         {
             _userSettings.Set(Configurations, nameof(JoinConfigurations));
+            _userSettings.Set(JoinOption, nameof(JoinOption));
         }
     }
 }

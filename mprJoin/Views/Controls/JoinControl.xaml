@@ -424,9 +424,10 @@
             <ComboBox Grid.Row="0"
                       Grid.Column="0"
                       HorizontalAlignment="Right"
-                      SelectedIndex="{Binding Option, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:ContiguityOption}, Mode=TwoWay}">
+                      SelectedIndex="{Binding JoinOption, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:JoinOption}, Mode=TwoWay}">
                 <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h2}" />
                 <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h3}" />
+                <ComboBoxItem Content="Вырезать"/>
             </ComboBox>
 
             <controls:SelectionOptionsButtonControl Grid.Row="0"

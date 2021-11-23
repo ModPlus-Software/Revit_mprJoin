@@ -30,6 +30,7 @@
             BuiltInCategory.OST_StructuralColumns,
             BuiltInCategory.OST_StructuralFraming,
             BuiltInCategory.OST_StructuralFoundation,
+            BuiltInCategory.OST_Roofs
         };
 
         /// <summary>

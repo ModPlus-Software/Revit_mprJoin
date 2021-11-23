@@ -30,17 +30,6 @@
         public MainWindow MainWindow { get; }
 
         /// <summary>
-        /// Опции для работы сервиса
-        /// </summary>
-        public ContiguityOption Option
-        {
-            get => Enum.TryParse(
-                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(Option)), out ContiguityOption b) ? b : ContiguityOption.Join;
-            set => UserConfigFile.SetValue(
-                ModPlusConnector.Instance.Name, nameof(Option), value.ToString(), true);
-        }
-        
-        /// <summary>
         /// Получить список моделей категорий.
         /// <param name="allowedCategories">Список доступных категорий.</param>
         /// </summary>
@@ -55,7 +44,7 @@
                     yield return new SelectedCategory
                     {
                         Name = category.Name,
-                        IsSelected = true
+                        IsSelected = false
                     };
                 }
             }

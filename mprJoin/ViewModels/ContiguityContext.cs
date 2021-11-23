@@ -34,6 +34,18 @@
             _userSettings = new UserSettingsService(PluginSetting.SaveFileName);
             var list = _userSettings.Get<ObservableCollection<SelectedCategory>>(nameof(SelectedCategories));
             _selectedCategories = list.Any() ? list : null;
+            ContiguityOption = _userSettings.Get<ContiguityOption>(nameof(ContiguityOption));
+        }
+        
+        /// <summary>
+        /// Опции для работы сервиса
+        /// </summary>
+        public ContiguityOption ContiguityOption
+        {
+            get => Enum.TryParse(
+                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(ContiguityOption)), out ContiguityOption b) ? b : ContiguityOption.Join;
+            set => UserConfigFile.SetValue(
+                ModPlusConnector.Instance.Name, nameof(ContiguityOption), value.ToString(), true);
         }
 
         /// <summary>
@@ -88,13 +100,13 @@
                     .ToList();
                 if (!elements.Any())
                 {
-                    MessageBox.Show(ModPlusAPI.Language.GetItem("e1"), MessageBoxIcon.Alert);
+                    MessageBox.Show(Language.GetItem("e1"), MessageBoxIcon.Alert);
                 }
                 else
                 {
                     _elementConnectorService.DoContiguityAction(
                         elements,
-                        Option,
+                        ContiguityOption,
                         new Tuple<bool, bool>(FirstElementPoint, SecondElementPoint));
                 }
             }
@@ -113,6 +125,7 @@
         public override void SaveSettings()
         {
             _userSettings.Set(SelectedCategories, nameof(SelectedCategories));
+            _userSettings.Set(ContiguityOption, nameof(ContiguityOption));
         }
     }
 }

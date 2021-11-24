@@ -107,16 +107,6 @@
   </Choose>
 
   <ItemGroup>
-    <Compile Remove="Helpers\**" />
-    <EmbeddedResource Remove="Helpers\**" />
-    <None Remove="Helpers\**" />
-    <Page Remove="Helpers\**" />
-    <Compile Update="Views\Controls\FilterInputFormControl.xaml.cs">
-      <DependentUpon>FilterInputFormControl.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" ExcludeAssets="runtime" />
     <PackageReference Include="ModPlusAPI" Version="7.14.1" ExcludeAssets="runtime" />
     <PackageReference Include="ModPlusStyle" Version="4.1.0" ExcludeAssets="runtime" />
@@ -124,6 +114,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\mprJoin_16x16.png" />
+    <Resource Include="Resources\mprJoin_32x32.png" />
   </ItemGroup>
   
 </Project>

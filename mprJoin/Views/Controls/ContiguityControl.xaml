@@ -48,7 +48,7 @@
         </StackPanel>
 
         <ComboBox Grid.Row="2"
-                  SelectedIndex="{Binding Path=Option, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:ContiguityOption}, Mode=TwoWay}">
+                  SelectedIndex="{Binding Path=ContiguityOption, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:ContiguityOption}, Mode=TwoWay}">
             <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h2}" />
             <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h3}" />
             <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h1}" />

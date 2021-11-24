@@ -30,6 +30,18 @@
             BuiltInCategory.OST_StructuralColumns,
             BuiltInCategory.OST_StructuralFraming,
             BuiltInCategory.OST_StructuralFoundation,
+            BuiltInCategory.OST_Roofs
+        };
+        
+        /// <summary>
+        /// Разрешенные категории для Вырезания элементов.
+        /// </summary>
+        public static readonly List<BuiltInCategory> AllowedCategoriesToCut = new ()
+        {
+            BuiltInCategory.OST_Columns,
+            BuiltInCategory.OST_GenericModel,
+            BuiltInCategory.OST_StructuralColumns,
+            BuiltInCategory.OST_StructuralFraming,
         };
 
         /// <summary>

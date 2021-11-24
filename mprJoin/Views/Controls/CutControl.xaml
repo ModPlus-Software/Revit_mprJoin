@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="mprJoin.Views.Controls.JoinControl"
+﻿<UserControl x:Class="mprJoin.Views.Controls.CutControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:mprJoin.Views.Controls"
@@ -9,7 +9,7 @@
              xmlns:mps="https://modplus.org/winfx/xaml/controls"
              xmlns:options="clr-namespace:mprJoin.Enums"
              xmlns:vm="clr-namespace:mprJoin.ViewModels"
-             d:DataContext="{d:DesignInstance vm:JoinContext}"
+             d:DataContext="{d:DesignInstance vm:CutContext}"
              mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -425,9 +425,8 @@
             <ComboBox Grid.Row="0"
                       Grid.Column="0"
                       HorizontalAlignment="Right"
-                      SelectedIndex="{Binding JoinOption, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:JoinOption}, Mode=TwoWay}">
-                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h2}" />
-                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h3}" />
+                      SelectedIndex="{Binding CutOptions, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:CutOptions}, Mode=TwoWay}">
+                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h11}"/>
             </ComboBox>
 
             <controls:SelectionOptionsButtonControl Grid.Row="0"

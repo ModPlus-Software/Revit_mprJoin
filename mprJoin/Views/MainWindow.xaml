@@ -28,7 +28,8 @@
             <b:InvokeCommandAction Command="{Binding ElementName=Window, Path=DataContext.SaveAllConfiguration}"/>
         </b:EventTrigger>
     </b:Interaction.Triggers>
-    <TabControl>
+    <TabControl
+        SelectedIndex="{Binding SelectedTab}">
         <TabItem>
             <TabItem.Header>
                 <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=btnN1}"/>
@@ -43,6 +44,14 @@
             </TabItem.Header>
             <TabItem.Content>
                 <controls:JoinControl DataContext="{Binding Path=JoinContext}"/>
+            </TabItem.Content>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=btnN3}"/>
+            </TabItem.Header>
+            <TabItem.Content>
+                <controls:CutControl DataContext="{Binding Path=CutContext}"/>
             </TabItem.Content>
         </TabItem>
     </TabControl>

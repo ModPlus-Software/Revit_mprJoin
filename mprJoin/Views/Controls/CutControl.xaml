@@ -413,28 +413,13 @@
             </Button>
         </StackPanel>
 
-        <Grid Grid.Row="2"
-              Grid.Column="0"
-              Grid.ColumnSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            
-            <!-- Combobox с опциями -->
-            <ComboBox Grid.Row="0"
-                      Grid.Column="0"
-                      HorizontalAlignment="Right"
-                      SelectedIndex="{Binding CutOptions, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:CutOptions}, Mode=TwoWay}">
-                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h11}"/>
-            </ComboBox>
 
-            <controls:SelectionOptionsButtonControl Grid.Row="0"
-                                                    Grid.Column="1"
-                                                    HorizontalAlignment="Left"
-                                                    ButtonText="{Binding Source={StaticResource LangCommon}, XPath=execute}"
-                                                    ExecuteCommand="{Binding Path=Execute}" />
-        </Grid>
+        <controls:SelectionOptionsButtonControl Grid.Row="2"
+                                                Grid.Column="0"
+                                                Grid.ColumnSpan="2"
+                                                HorizontalAlignment="Center"
+                                                ButtonText="{Binding Source={StaticResource LangCommon}, XPath=execute}"
+                                                ExecuteCommand="{Binding Path=Execute}" />
 
     </Grid>
 </UserControl>

@@ -20,20 +20,24 @@ namespace mprJoin
 
         public MainContext(UIApplication uiApplication, MainWindow mainWindow)
         {
-            ContiguityContext = new ContiguityContext(uiApplication, mainWindow);
-            JoinContext = new JoinContext(uiApplication, mainWindow);
-            CutContext = new CutContext(uiApplication, mainWindow);
+            _userSettingsService = new UserSettingsService(PluginSetting.SaveFileName);
+            ContiguityContext = new ContiguityContext(uiApplication, mainWindow, _userSettingsService);
+            JoinContext = new JoinContext(uiApplication, mainWindow, _userSettingsService);
+            CutContext = new CutContext(uiApplication, mainWindow, _userSettingsService);
             _contexts = new List<BaseContext>
             {
                 ContiguityContext,
                 JoinContext,
                 CutContext
             };
-            _userSettingsService = new UserSettingsService(PluginSetting.SaveFileName);
+            
             SelectedTab = _userSettingsService.Get<int>(nameof(SelectedTab));
         }
-        
-        public int SelectedTab { get; set; }
+
+        public int SelectedTab
+        {
+            get; set;
+        }
         
         public ContiguityContext ContiguityContext { get; }
         

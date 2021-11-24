@@ -20,15 +20,13 @@
     {
         private readonly UIApplication _uiApplication;
         private readonly ElementConnectorService _elementConnectorService;
-        private readonly UserSettingsService _userSettings;
 
-        public JoinContext(UIApplication uiApplication, MainWindow mainWindow)
-            : base(uiApplication, mainWindow)
+        public JoinContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService)
+            : base(uiApplication, mainWindow, userSettingsService)
         {
             _uiApplication = uiApplication;
             _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
-            _userSettings = new UserSettingsService(PluginSetting.SaveFileName);
-            var configurationsList = _userSettings.Get<ObservableCollection<JoinConfigurations>>(nameof(JoinConfigurations));
+            var configurationsList = userSettingsService.Get<ObservableCollection<JoinConfigurations>>(nameof(JoinConfigurations));
             PermanentConfiguration = configurationsList.FirstOrDefault(i => !i.IsEditable) ??
                                      new JoinConfigurations
                                      {
@@ -43,20 +41,14 @@
                 };
             if (!Configurations.Contains(PermanentConfiguration))
                 Configurations.Add(PermanentConfiguration);
-            JoinOption = _userSettings.Get<JoinOption>(nameof(JoinOption));
+            JoinOption = UserSettingsService.Get<JoinOption>(nameof(JoinOption));
             AllowedCategories = PluginSetting.AllowedCategoriesToJoin;
         }
         
         /// <summary>
         /// Опции для работы сервиса.
         /// </summary>
-        public JoinOption JoinOption
-        {
-            get => Enum.TryParse(
-                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(JoinOption)), out JoinOption b) ? b : JoinOption.Join;
-            set => UserConfigFile.SetValue(
-                ModPlusConnector.Instance.Name, nameof(JoinOption), value.ToString(), true);
-        }
+        public JoinOption JoinOption { get; set; }
 
         /// <summary>
         /// Команда выполнения.
@@ -92,8 +84,8 @@
         /// </summary>
         public override void SaveSettings()
         {
-            _userSettings.Set(Configurations, nameof(JoinConfigurations));
-            _userSettings.Set(JoinOption, nameof(JoinOption));
+            UserSettingsService.Set(Configurations, nameof(JoinConfigurations));
+            UserSettingsService.Set(JoinOption, nameof(JoinOption));
         }
     }
 }

@@ -20,16 +20,14 @@
     {
         private readonly string _cutConfigurationFieldName = "CutConfiguration";
         private readonly UIApplication _uiApplication;
-        private readonly UserSettingsService _userSettings;
         private readonly ElementConnectorService _elementConnectorService;
 
-        public CutContext(UIApplication uiApplication, MainWindow mainWindow) 
-            : base(uiApplication, mainWindow)
+        public CutContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService) 
+            : base(uiApplication, mainWindow, userSettingsService)
         {
             _uiApplication = uiApplication;
-            _userSettings = new UserSettingsService(PluginSetting.SaveFileName);
             _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
-            var configurationsList = _userSettings.Get<ObservableCollection<JoinConfigurations>>(_cutConfigurationFieldName);
+            var configurationsList = UserSettingsService.Get<ObservableCollection<JoinConfigurations>>(_cutConfigurationFieldName);
             PermanentConfiguration = configurationsList.FirstOrDefault(i => !i.IsEditable) ??
                                      new JoinConfigurations
                                      {
@@ -44,19 +42,8 @@
                 };
             if (!Configurations.Contains(PermanentConfiguration))
                 Configurations.Add(PermanentConfiguration);
-            CutOptions = _userSettings.Get<CutOptions>(nameof(CutOptions));
+            
             AllowedCategories = PluginSetting.AllowedCategoriesToCut;
-        }
-        
-        /// <summary>
-        /// Опции для работы сервиса.
-        /// </summary>
-        public CutOptions CutOptions
-        {
-            get => Enum.TryParse(
-                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(CutOptions)), out CutOptions b) ? b : CutOptions.Cut;
-            set => UserConfigFile.SetValue(
-                ModPlusConnector.Instance.Name, nameof(CutOptions), value.ToString(), true);
         }
         
         /// <summary>
@@ -77,7 +64,7 @@
                 }
 
                 SetElements(pairs, scope);
-                _elementConnectorService.CutElements(_uiApplication.ActiveUIDocument.Document, pairs, CutOptions);
+                _elementConnectorService.CutElements(_uiApplication.ActiveUIDocument.Document, pairs);
             }
             catch (Exception e)
             {
@@ -90,8 +77,7 @@
         
         public override void SaveSettings()
         {
-            _userSettings.Set(Configurations, _cutConfigurationFieldName);
-            _userSettings.Set(CutOptions, nameof(CutOptions));
+            UserSettingsService.Set(Configurations, _cutConfigurationFieldName);
         }
     }
 }

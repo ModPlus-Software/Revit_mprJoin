@@ -23,30 +23,25 @@
         private readonly CollectorService _collectorService;
         private ObservableCollection<SelectedCategory> _selectedCategories;
         private readonly ElementConnectorService _elementConnectorService;
-        private readonly UserSettingsService _userSettings;
 
-        public ContiguityContext(UIApplication uiApplication, MainWindow mainWindow)
-            : base(uiApplication, mainWindow)
+        public ContiguityContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService)
+            : base(uiApplication, mainWindow, userSettingsService)
         {
             _collectorService = new CollectorService();
             _uiApplication = uiApplication;
             _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
-            _userSettings = new UserSettingsService(PluginSetting.SaveFileName);
-            var list = _userSettings.Get<ObservableCollection<SelectedCategory>>(nameof(SelectedCategories));
+            var list = UserSettingsService.Get<ObservableCollection<SelectedCategory>>(nameof(SelectedCategories));
             _selectedCategories = list.Any() ? list : null;
-            ContiguityOption = _userSettings.Get<ContiguityOption>(nameof(ContiguityOption));
+            
+            ContiguityOption = UserSettingsService.Get<ContiguityOption>(nameof(ContiguityOption));
+            FirstEnd = UserSettingsService.Get<bool>(nameof(FirstEnd));
+            SecondEnd = UserSettingsService.Get<bool>(nameof(SecondEnd));
         }
         
         /// <summary>
         /// Опции для работы сервиса
         /// </summary>
-        public ContiguityOption ContiguityOption
-        {
-            get => Enum.TryParse(
-                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(ContiguityOption)), out ContiguityOption b) ? b : ContiguityOption.Join;
-            set => UserConfigFile.SetValue(
-                ModPlusConnector.Instance.Name, nameof(ContiguityOption), value.ToString(), true);
-        }
+        public ContiguityOption ContiguityOption { get; set; }
 
         /// <summary>
         /// Список моделей категорий для вывода пользователю
@@ -57,24 +52,12 @@
         /// <summary>
         /// Обрабатывать ли начало элемента
         /// </summary>
-        public bool FirstElementPoint 
-        {
-            get => bool.TryParse(
-                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(FirstElementPoint)), out var b) && b;
-            set => UserConfigFile.SetValue(
-                ModPlusConnector.Instance.Name, nameof(FirstElementPoint), value.ToString(), true);
-        }
+        public bool FirstEnd { get; set; }
 
         /// <summary>
         /// Обрабатывать ли конец элемента
         /// </summary>
-        public bool SecondElementPoint
-        {
-            get => bool.TryParse(
-                UserConfigFile.GetValue(ModPlusConnector.Instance.Name, nameof(SecondElementPoint)), out var b) && b;
-            set => UserConfigFile.SetValue(
-                ModPlusConnector.Instance.Name, nameof(SecondElementPoint), value.ToString(), true);
-        }
+        public bool SecondEnd { get; set; }
 
         /// <summary>
         /// Команда выполнения
@@ -107,7 +90,7 @@
                     _elementConnectorService.DoContiguityAction(
                         elements,
                         ContiguityOption,
-                        new Tuple<bool, bool>(FirstElementPoint, SecondElementPoint));
+                        new Tuple<bool, bool>(FirstEnd, SecondEnd));
                 }
             }
             catch (Exception e)
@@ -124,8 +107,10 @@
         /// </summary>
         public override void SaveSettings()
         {
-            _userSettings.Set(SelectedCategories, nameof(SelectedCategories));
-            _userSettings.Set(ContiguityOption, nameof(ContiguityOption));
+            UserSettingsService.Set(SelectedCategories, nameof(SelectedCategories));
+            UserSettingsService.Set(ContiguityOption, nameof(ContiguityOption));
+            UserSettingsService.Set(FirstEnd, nameof(FirstEnd));
+            UserSettingsService.Set(SecondEnd, nameof(SecondEnd));
         }
     }
 }

@@ -9,6 +9,7 @@
     using Models;
     using ModPlusAPI;
     using ModPlusAPI.Mvvm;
+    using ModPlusAPI.Services;
     using Views;
 
     /// <summary>
@@ -18,9 +19,10 @@
     {
         private static UIApplication _uiApplication;
         
-        protected BaseContext(UIApplication uiApplication, MainWindow mainWindow)
+        protected BaseContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService)
         {
             MainWindow = mainWindow;
+            UserSettingsService = userSettingsService;
             _uiApplication = uiApplication;
         }
 
@@ -28,6 +30,11 @@
         /// <see cref="Views.MainWindow"/> instance
         /// </summary>
         public MainWindow MainWindow { get; }
+
+        /// <summary>
+        /// User settings service
+        /// </summary>
+        public UserSettingsService UserSettingsService { get; }
 
         /// <summary>
         /// Получить список моделей категорий.

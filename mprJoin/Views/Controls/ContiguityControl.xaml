@@ -42,9 +42,9 @@
         <StackPanel Grid.Row="1"
                     Grid.Column="0">
             <CheckBox Content="{Binding Source={StaticResource Lang}, XPath=h4}"
-                      IsChecked="{Binding FirstElementPoint}" />
+                      IsChecked="{Binding FirstEnd}" />
             <CheckBox Content="{Binding Source={StaticResource Lang}, XPath=h5}"
-                      IsChecked="{Binding SecondElementPoint}" />
+                      IsChecked="{Binding SecondEnd}" />
         </StackPanel>
 
         <ComboBox Grid.Row="2"

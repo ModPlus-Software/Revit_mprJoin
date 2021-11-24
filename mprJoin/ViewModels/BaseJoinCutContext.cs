@@ -11,6 +11,7 @@
     using Enums;
     using Models;
     using ModPlusAPI.Mvvm;
+    using ModPlusAPI.Services;
     using ModPlusAPI.Windows;
     using Services;
     using Settings;
@@ -19,17 +20,18 @@
     public abstract class BaseJoinCutContext : BaseContext
     {
         private List<string> _stringSelectedCategories;
-        protected List<BuiltInCategory> AllowedCategories;
         private readonly CollectorService _collectorService;
         private readonly UIApplication _uiApplication;
 
-        protected BaseJoinCutContext(UIApplication uiApplication, MainWindow mainWindow) 
-            : base(uiApplication, mainWindow)
+        protected BaseJoinCutContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService) 
+            : base(uiApplication, mainWindow, userSettingsService)
         {
             _collectorService = new CollectorService();
             _uiApplication = uiApplication;
         }
-        
+
+        public List<BuiltInCategory> AllowedCategories { get; protected set; }
+
         public JoinConfigurations PermanentConfiguration { get; set; }
 
         /// <summary>
@@ -87,7 +89,7 @@
             {
                 Configurations.Remove(CurrentConfiguration);
                 CurrentConfiguration = PermanentConfiguration;
-            }, _ => CurrentConfiguration != null && CurrentConfiguration.IsEditable);
+            }, _ => CurrentConfiguration is { IsEditable: true });
 
         /// <summary>
         /// Добавить конфигурацию.

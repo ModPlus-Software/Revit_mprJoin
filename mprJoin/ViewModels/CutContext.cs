@@ -66,6 +66,10 @@
                 SetElements(pairs, scope);
                 _elementConnectorService.CutElements(_uiApplication.ActiveUIDocument.Document, pairs);
             }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+            {
+                // ignore
+            }
             catch (Exception e)
             {
                 e.ShowInExceptionBox();

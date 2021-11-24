@@ -70,6 +70,10 @@
                 SetElements(pairs, scope);
                 _elementConnectorService.JoinElements(_uiApplication.ActiveUIDocument.Document, pairs, JoinOption);
             }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+            {
+                // ignore
+            }
             catch (Exception e)
             {
                 e.ShowInExceptionBox();

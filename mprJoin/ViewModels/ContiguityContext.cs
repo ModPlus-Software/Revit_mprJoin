@@ -68,7 +68,7 @@
             {
                 if (scope == ScopeType.SelectedElement)
                     MainWindow.Hide();
-                
+
                 var selectedCategories = SelectedCategories.Where(i => i.IsSelected).Select(i => i.Name).ToList();
                 var elements = _collectorService
                     .GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
@@ -92,6 +92,10 @@
                         ContiguityOption,
                         new Tuple<bool, bool>(FirstEnd, SecondEnd));
                 }
+            }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+            {
+                // ignore
             }
             catch (Exception e)
             {

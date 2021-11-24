@@ -151,6 +151,10 @@
 
         public void SetElements(List<CustomElementPair> pairs, ScopeType scope)
         {
+            var collector = _collectorService
+                .GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
+                .WhereElementIsNotElementType();
+
             foreach (var pair in pairs)
             {
                 if (string.IsNullOrEmpty(pair.WhatToJoinCategory))
@@ -160,9 +164,7 @@
                     continue;
                 }
 
-                pair.WhatToJoinElements = _collectorService
-                    .GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
-                    .WhereElementIsNotElementType()
+                pair.WhatToJoinElements = collector
 
                     // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
                     // что у какого то элемента не получается посмотреть категорию
@@ -173,9 +175,7 @@
                             StringComparison.InvariantCultureIgnoreCase))
                     .ToList();
 
-                pair.WhereToJoinElements = _collectorService
-                    .GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
-                    .WhereElementIsNotElementType()
+                pair.WhereToJoinElements = collector
 
                     // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
                     // что у какого то элемента не получается посмотреть категорию

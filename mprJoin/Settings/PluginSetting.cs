@@ -42,6 +42,10 @@
             BuiltInCategory.OST_GenericModel,
             BuiltInCategory.OST_StructuralColumns,
             BuiltInCategory.OST_StructuralFraming,
+            BuiltInCategory.OST_ElectricalEquipment,
+            BuiltInCategory.OST_MechanicalEquipment,
+            BuiltInCategory.OST_SpecialityEquipment,
+            BuiltInCategory.OST_PlumbingFixtures,
         };
 
         /// <summary>

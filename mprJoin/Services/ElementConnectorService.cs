@@ -85,8 +85,7 @@
                     foreach (var elementWhoWillJoin in pair.WhatToJoinElements)
                     {
                         foreach (var intersectedElement in _collectorService
-                            .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements)
-                            .Where(i => !i.Id.Equals(elementWhoWillJoin.Id)))
+                            .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements))
                         {
                             // Проверка на примыкание стен. Если стена примыкает к другой стене, то данная проверка
                             // (!JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin, intersectedElement))
@@ -157,13 +156,14 @@
 
             resultService.ShowByType();
         }
-        
+
         /// <summary>
         /// Вырезать элементы.
         /// </summary>
         /// <param name="doc">Документы.</param>
         /// <param name="pairs">Пары элементов.</param>
-        public void CutElements(Document doc, List<CustomElementPair> pairs)
+        /// <param name="cutOptions">Опции вырезания.</param>
+        public void CutElements(Document doc, List<CustomElementPair> pairs, CutOptions cutOptions)
         {
             var resultService = new ResultService();
             var trName = ModPlusAPI.Language.GetItem("t3");
@@ -176,16 +176,30 @@
                     foreach (var elementWhoWillJoin in pair.WhatToJoinElements)
                     {
                         foreach (var intersectedElement in _collectorService
-                            .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements)
-                            .Where(i => !i.Id.Equals(elementWhoWillJoin.Id)))
+                            .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements))
                         {
                             try
                             {
-                                if (!InstanceVoidCutUtils.IsVoidInstanceCuttingElement(elementWhoWillJoin))
-                                    continue;
-                                if (InstanceVoidCutUtils.GetElementsBeingCut(elementWhoWillJoin).Contains(intersectedElement.Id))
-                                    continue;
-                                InstanceVoidCutUtils.AddInstanceVoidCut(doc, intersectedElement, elementWhoWillJoin);
+                                switch (cutOptions)
+                                {
+                                    case CutOptions.Cut:
+                                        if (!InstanceVoidCutUtils.IsVoidInstanceCuttingElement(elementWhoWillJoin))
+                                            continue;
+                                        if (InstanceVoidCutUtils.GetElementsBeingCut(elementWhoWillJoin).Contains(intersectedElement.Id))
+                                            continue;
+                                        InstanceVoidCutUtils.AddInstanceVoidCut(doc, intersectedElement, elementWhoWillJoin);
+                                        break;
+                                    
+                                    case CutOptions.CancelCut:
+                                        foreach (var id in InstanceVoidCutUtils.GetElementsBeingCut(elementWhoWillJoin))
+                                        {
+                                            var el = _doc.GetElement(id);
+                                            if (el is not FamilyInstance)
+                                                InstanceVoidCutUtils.RemoveInstanceVoidCut(doc, el, elementWhoWillJoin);
+                                        }
+                                        
+                                        break;
+                                }
                             }
                             catch (Exception exception)
                             {

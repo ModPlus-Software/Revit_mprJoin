@@ -42,9 +42,14 @@
                 };
             if (!Configurations.Contains(PermanentConfiguration))
                 Configurations.Add(PermanentConfiguration);
-            
+            CutOptions = UserSettingsService.Get<CutOptions>(nameof(CutOptions));
             AllowedCategories = PluginSetting.AllowedCategoriesToCut;
         }
+        
+        /// <summary>
+        /// Опции для работы сервиса.
+        /// </summary>
+        public CutOptions CutOptions { get; set; }
         
         /// <summary>
         /// Команда выполнения.
@@ -64,7 +69,7 @@
                 }
 
                 SetElements(pairs, scope);
-                _elementConnectorService.CutElements(_uiApplication.ActiveUIDocument.Document, pairs);
+                _elementConnectorService.CutElements(_uiApplication.ActiveUIDocument.Document, pairs, CutOptions);
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
@@ -81,6 +86,7 @@
         
         public override void SaveSettings()
         {
+            UserSettingsService.Set(CutOptions, nameof(CutOptions));
             UserSettingsService.Set(Configurations, _cutConfigurationFieldName);
         }
     }

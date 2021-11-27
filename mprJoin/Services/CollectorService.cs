@@ -6,6 +6,7 @@
     using Autodesk.Revit.UI;
     using Autodesk.Revit.UI.Selection;
     using Enums;
+    using ModPlus_Revit.Utils;
 
     /// <summary>
     /// Сервис выбора элементов
@@ -50,12 +51,15 @@
             Document document, Element checkElement, List<Element> elementsWhereFindingIntersection)
         {
             var box = checkElement.get_BoundingBox(null);
-            var boundingBoxFilter = new BoundingBoxIntersectsFilter(new Outline(box.Min, box.Max));
+            var line = Line.CreateBound(box.Min, box.Max);
+            var extraLength = 100.MmToFt(); // Увеличение BoundingBox для поиска пересечений.
+            var boundingBoxFilter = new BoundingBoxIntersectsFilter(new Outline(box.Min - (line.Direction * extraLength), box.Max + (line.Direction * extraLength)));
             if (!elementsWhereFindingIntersection.Any())
                 return new List<Element>();
             return new FilteredElementCollector(document, elementsWhereFindingIntersection.Select(i => i.Id).ToList())
                 .WhereElementIsNotElementType()
                 .WherePasses(boundingBoxFilter)
+                .Where(i => !i.Id.Equals(checkElement.Id))
                 .ToList();
         }
     }

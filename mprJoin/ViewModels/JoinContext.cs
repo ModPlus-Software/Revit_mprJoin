@@ -59,7 +59,7 @@
             {
                 if (scope == ScopeType.SelectedElement)
                     MainWindow.Hide();
-                
+
                 var pairs = CurrentConfiguration.Pairs.ToList();
                 if (!pairs.Any())
                 {

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
    <PropertyGroup>
-    <Version>1.1.7.0</Version>
+    <Version>1.2.8.0</Version>
     <RootNamespace>mprJoin</RootNamespace>
     <AssemblyName>$(RootNamespace)</AssemblyName>
     <LangVersion>latest</LangVersion>

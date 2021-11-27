@@ -47,7 +47,7 @@
         </TabItem>
         <TabItem>
             <TabItem.Header>
-                <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=h11}"/>
+                <TextBlock Text="{Binding Source={StaticResource Lang}, XPath=btnN3}"/>
             </TabItem.Header>
             <TabItem.Content>
                 <controls:CutControl DataContext="{Binding Path=CutContext}"/>

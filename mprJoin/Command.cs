@@ -15,6 +15,11 @@
     [Transaction(TransactionMode.Manual)]
     public class Command : IExternalCommand
     {
+        /// <summary>
+        /// Revit event
+        /// </summary>
+        public static RevitEvent RevitEvent { get; private set; }
+
         /// <inheritdoc />
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -23,11 +28,12 @@
 #if !DEBUG
                 ModPlusAPI.Statistic.SendCommandStarting(ModPlusConnector.Instance);
 #endif
+                RevitEvent = new RevitEvent();
                 var win = new MainWindow();
                 var context = new MainContext(commandData.Application, win);
                 win.DataContext = context;
 
-                ModPlus.ShowModal(win);
+                ModPlus.ShowModeless(win);
 
                 return Result.Succeeded;
             }

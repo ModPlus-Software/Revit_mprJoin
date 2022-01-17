@@ -20,18 +20,9 @@
 
         /// <inheritdoc />
         public string Name => nameof(mprJoin);
-
-        /// <inheritdoc />
-        public string LName => string.Empty;
-
-        /// <inheritdoc />
-        public string Description => string.Empty;
         
         /// <inheritdoc />
         public string Price => "0";
-
-        /// <inheritdoc />
-        public string FullDescription => string.Empty;
 
 #if R2017
         /// <inheritdoc/>
@@ -70,15 +61,6 @@
 
         /// <inheritdoc />
         public List<string> SubPluginsNames => new ();
-
-        /// <inheritdoc />
-        public List<string> SubPluginsLNames => new ();
-
-        /// <inheritdoc />
-        public List<string> SubDescriptions => new ();
-
-        /// <inheritdoc />
-        public List<string> SubFullDescriptions => new ();
 
         /// <inheritdoc />
         public List<string> SubHelpImages => new ();

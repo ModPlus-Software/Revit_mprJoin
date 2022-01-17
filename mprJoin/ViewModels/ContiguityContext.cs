@@ -32,12 +32,12 @@
             _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
             var list = UserSettingsService.Get<ObservableCollection<SelectedCategory>>(nameof(SelectedCategories));
             _selectedCategories = list.Any() ? list : null;
-            
+
             ContiguityOption = UserSettingsService.Get<ContiguityOption>(nameof(ContiguityOption));
             FirstEnd = UserSettingsService.Get<bool>(nameof(FirstEnd));
             SecondEnd = UserSettingsService.Get<bool>(nameof(SecondEnd));
         }
-        
+
         /// <summary>
         /// Опции для работы сервиса
         /// </summary>
@@ -64,46 +64,52 @@
         /// </summary>
         public ICommand Execute => new RelayCommand<ScopeType>(scope =>
         {
-            try
-            {
-                if (scope == ScopeType.SelectedElement)
-                    MainWindow.Hide();
-
-                var selectedCategories = SelectedCategories.Where(i => i.IsSelected).Select(i => i.Name).ToList();
-                var elements = _collectorService
-                    .GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
-                    .WhereElementIsNotElementType()
-
-                    // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
-                    // что у какого то элемента не получается посмотреть категорию
-                    .WherePasses(new ElementMulticategoryFilter(PluginSetting.AllowedCategoriesToContiguity))
-
-                    // Оставляет только выбранные
-                    .Where(element => selectedCategories.Contains(element.Category.Name))
-                    .ToList();
-                if (!elements.Any())
+            Command.RevitEvent.Run(
+                () =>
                 {
-                    MessageBox.Show(Language.GetItem("e1"), MessageBoxIcon.Alert);
-                }
-                else
-                {
-                    _elementConnectorService.DoContiguityAction(
-                        elements,
-                        ContiguityOption,
-                        new Tuple<bool, bool>(FirstEnd, SecondEnd));
-                }
-            }
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
-            {
-                // ignore
-            }
-            catch (Exception e)
-            {
-                e.ShowInExceptionBox();
-            }
+                    try
+                    {
+                        if (scope == ScopeType.SelectedElement)
+                            MainWindow.Hide();
 
-            if (scope == ScopeType.SelectedElement)
-                ModPlus.ShowModal(MainWindow);
+                        var selectedCategories = SelectedCategories.Where(i => i.IsSelected).Select(i => i.Name).ToList();
+                        var elements = _collectorService
+                            .GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
+                            .WhereElementIsNotElementType()
+
+                            // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
+                            // что у какого то элемента не получается посмотреть категорию
+                            .WherePasses(new ElementMulticategoryFilter(PluginSetting.AllowedCategoriesToContiguity))
+
+                            // Оставляет только выбранные
+                            .Where(element => selectedCategories.Contains(element.Category.Name))
+                            .ToList();
+                        if (!elements.Any())
+                        {
+                            MessageBox.Show(Language.GetItem("e1"), MessageBoxIcon.Alert);
+                        }
+                        else
+                        {
+                            _elementConnectorService.DoContiguityAction(
+                                elements,
+                                ContiguityOption,
+                                new Tuple<bool, bool>(FirstEnd, SecondEnd));
+                        }
+                    }
+                    catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+                    {
+                        // ignore
+                    }
+                    catch (Exception e)
+                    {
+                        e.ShowInExceptionBox();
+                    }
+                    finally
+                    {
+                        if (scope == ScopeType.SelectedElement)
+                            ModPlus.ShowModeless(MainWindow);
+                    }
+                }, false);
         });
 
         /// <summary>

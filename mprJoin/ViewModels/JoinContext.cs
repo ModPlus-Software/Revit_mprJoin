@@ -44,7 +44,7 @@
             JoinOption = UserSettingsService.Get<JoinOption>(nameof(JoinOption));
             AllowedCategories = PluginSetting.AllowedCategoriesToJoin;
         }
-        
+
         /// <summary>
         /// Опции для работы сервиса.
         /// </summary>
@@ -55,32 +55,39 @@
         /// </summary>
         public override ICommand Execute => new RelayCommand<ScopeType>(scope =>
         {
-            try
+            Command.RevitEvent.Run(
+                () =>
             {
-                if (scope == ScopeType.SelectedElement)
-                    MainWindow.Hide();
-
-                var pairs = CurrentConfiguration.Pairs.ToList();
-                if (!pairs.Any())
+                try
                 {
-                    MessageBox.Show(Language.GetItem("e2"), MessageBoxIcon.Alert);
-                    return;
+                    if (scope == ScopeType.SelectedElement)
+                        MainWindow.Hide();
+
+                    var pairs = CurrentConfiguration.Pairs.ToList();
+                    if (!pairs.Any())
+                    {
+                        MessageBox.Show(Language.GetItem("e2"), MessageBoxIcon.Alert);
+                        return;
+                    }
+
+                    SetElements(pairs, scope);
+                    _elementConnectorService.JoinElements(_uiApplication.ActiveUIDocument.Document, pairs, JoinOption);
                 }
-
-                SetElements(pairs, scope);
-                _elementConnectorService.JoinElements(_uiApplication.ActiveUIDocument.Document, pairs, JoinOption);
-            }
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
-            {
-                // ignore
-            }
-            catch (Exception e)
-            {
-                e.ShowInExceptionBox();
-            }
-
-            if (scope == ScopeType.SelectedElement)
-                ModPlus.ShowModal(MainWindow);
+                catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+                {
+                    // ignore
+                }
+                catch (Exception e)
+                {
+                    e.ShowInExceptionBox();
+                }
+                finally
+                {
+                    if (scope == ScopeType.SelectedElement)
+                        ModPlus.ShowModeless(MainWindow);
+                }
+            },
+                false);
         });
 
         /// <summary>

@@ -22,7 +22,7 @@
         private readonly UIApplication _uiApplication;
         private readonly ElementConnectorService _elementConnectorService;
 
-        public CutContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService) 
+        public CutContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService)
             : base(uiApplication, mainWindow, userSettingsService)
         {
             _uiApplication = uiApplication;
@@ -45,45 +45,51 @@
             CutOptions = UserSettingsService.Get<CutOptions>(nameof(CutOptions));
             AllowedCategories = PluginSetting.AllowedCategoriesToCut;
         }
-        
+
         /// <summary>
         /// Опции для работы сервиса.
         /// </summary>
         public CutOptions CutOptions { get; set; }
-        
+
         /// <summary>
         /// Команда выполнения.
         /// </summary>
         public override ICommand Execute => new RelayCommand<ScopeType>(scope =>
         {
-            try
-            {
-                if (scope == ScopeType.SelectedElement)
-                    MainWindow.Hide();
-                
-                var pairs = CurrentConfiguration.Pairs.ToList();
-                if (!pairs.Any())
+            Command.RevitEvent.Run(
+                () =>
                 {
-                    MessageBox.Show(Language.GetItem("e2"), MessageBoxIcon.Alert);
-                    return;
-                }
+                    try
+                    {
+                        if (scope == ScopeType.SelectedElement)
+                            MainWindow.Hide();
 
-                SetElements(pairs, scope);
-                _elementConnectorService.CutElements(_uiApplication.ActiveUIDocument.Document, pairs, CutOptions);
-            }
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
-            {
-                // ignore
-            }
-            catch (Exception e)
-            {
-                e.ShowInExceptionBox();
-            }
+                        var pairs = CurrentConfiguration.Pairs.ToList();
+                        if (!pairs.Any())
+                        {
+                            MessageBox.Show(Language.GetItem("e2"), MessageBoxIcon.Alert);
+                            return;
+                        }
 
-            if (scope == ScopeType.SelectedElement)
-                ModPlus.ShowModal(MainWindow);
+                        SetElements(pairs, scope);
+                        _elementConnectorService.CutElements(_uiApplication.ActiveUIDocument.Document, pairs, CutOptions);
+                    }
+                    catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+                    {
+                        // ignore
+                    }
+                    catch (Exception e)
+                    {
+                        e.ShowInExceptionBox();
+                    }
+                    finally
+                    {
+                        if (scope == ScopeType.SelectedElement)
+                            ModPlus.ShowModeless(MainWindow);
+                    }
+                }, false);
         });
-        
+
         public override void SaveSettings()
         {
             UserSettingsService.Set(CutOptions, nameof(CutOptions));

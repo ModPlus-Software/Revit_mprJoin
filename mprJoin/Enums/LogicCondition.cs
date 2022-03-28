@@ -1,18 +1,17 @@
-﻿namespace mprJoin.Enums
+﻿namespace mprJoin.Enums;
+
+/// <summary>
+/// Логические операторы.
+/// </summary>
+public enum LogicCondition
 {
     /// <summary>
-    /// Логические операторы.
+    /// И.
     /// </summary>
-    public enum LogicCondition
-    {
-        /// <summary>
-        /// И.
-        /// </summary>
-        And,
+    And,
         
-        /// <summary>
-        /// Или.
-        /// </summary>
-        Or
-    }
+    /// <summary>
+    /// Или.
+    /// </summary>
+    Or
 }

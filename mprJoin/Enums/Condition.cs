@@ -1,38 +1,37 @@
-﻿namespace mprJoin.Enums
+﻿namespace mprJoin.Enums;
+
+/// <summary>
+/// Условия для нахождения параметра.
+/// </summary>
+public enum Condition
 {
     /// <summary>
-    /// Условия для нахождения параметра.
+    /// Равно.
     /// </summary>
-    public enum Condition
-    {
-        /// <summary>
-        /// Равно.
-        /// </summary>
-        Equals,
+    Equals,
         
-        /// <summary>
-        /// Не равно.
-        /// </summary>
-        NotEquals,
+    /// <summary>
+    /// Не равно.
+    /// </summary>
+    NotEquals,
         
-        /// <summary>
-        /// Содержит.
-        /// </summary>
-        Contains,
+    /// <summary>
+    /// Содержит.
+    /// </summary>
+    Contains,
         
-        /// <summary>
-        /// Не содержит.
-        /// </summary>
-        NotContains,
+    /// <summary>
+    /// Не содержит.
+    /// </summary>
+    NotContains,
         
-        /// <summary>
-        /// Начинается.
-        /// </summary>
-        Begin,
+    /// <summary>
+    /// Начинается.
+    /// </summary>
+    Begin,
         
-        /// <summary>
-        /// Не начинается.
-        /// </summary>
-        NotBegin,
-    }
+    /// <summary>
+    /// Не начинается.
+    /// </summary>
+    NotBegin,
 }

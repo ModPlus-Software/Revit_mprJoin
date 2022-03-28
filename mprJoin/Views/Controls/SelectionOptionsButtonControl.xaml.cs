@@ -1,47 +1,46 @@
-﻿namespace mprJoin.Views.Controls
+﻿namespace mprJoin.Views.Controls;
+
+using System.Windows;
+using System.Windows.Input;
+
+/// <summary>
+/// Логика взаимодействия для SelectionOptionsButtonControl.xaml
+/// </summary>
+public partial class SelectionOptionsButtonControl
 {
-    using System.Windows;
-    using System.Windows.Input;
+    public static readonly DependencyProperty ExecuteCommandProperty = DependencyProperty.Register(
+        "ExecuteCommand", typeof(ICommand), typeof(SelectionOptionsButtonControl), new PropertyMetadata(default(ICommand)));
 
-    /// <summary>
-    /// Логика взаимодействия для SelectionOptionsButtonControl.xaml
-    /// </summary>
-    public partial class SelectionOptionsButtonControl
+    public static readonly DependencyProperty ButtonTextProperty = DependencyProperty.Register(
+        "ButtonText", typeof(string), typeof(SelectionOptionsButtonControl), new PropertyMetadata(default(string)));
+
+    public SelectionOptionsButtonControl()
     {
-        public static readonly DependencyProperty ExecuteCommandProperty = DependencyProperty.Register(
-            "ExecuteCommand", typeof(ICommand), typeof(SelectionOptionsButtonControl), new PropertyMetadata(default(ICommand)));
+        InitializeComponent();
 
-        public static readonly DependencyProperty ButtonTextProperty = DependencyProperty.Register(
-            "ButtonText", typeof(string), typeof(SelectionOptionsButtonControl), new PropertyMetadata(default(string)));
+        ModPlusAPI.Windows.Helpers.WindowHelpers.ChangeStyleForResourceDictionary(Resources);
+        ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources);
+    }
 
-        public SelectionOptionsButtonControl()
-        {
-            InitializeComponent();
+    public ICommand ExecuteCommand
+    {
+        get => (ICommand)GetValue(ExecuteCommandProperty);
+        set => SetValue(ExecuteCommandProperty, value);
+    }
 
-            ModPlusAPI.Windows.Helpers.WindowHelpers.ChangeStyleForResourceDictionary(Resources);
-            ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources);
-        }
+    public string ButtonText
+    {
+        get => (string)GetValue(ButtonTextProperty);
+        set => SetValue(ButtonTextProperty, value);
+    }
 
-        public ICommand ExecuteCommand
-        {
-            get => (ICommand)GetValue(ExecuteCommandProperty);
-            set => SetValue(ExecuteCommandProperty, value);
-        }
+    private void Button_OnClick(object sender, RoutedEventArgs e)
+    {
+        Popup.IsOpen = !Popup.IsOpen;
+    }
 
-        public string ButtonText
-        {
-            get => (string)GetValue(ButtonTextProperty);
-            set => SetValue(ButtonTextProperty, value);
-        }
-
-        private void Button_OnClick(object sender, RoutedEventArgs e)
-        {
-            Popup.IsOpen = !Popup.IsOpen;
-        }
-
-        private void ClosePopup_OnClick(object sender, RoutedEventArgs e)
-        {
-            Popup.IsOpen = false;
-        }
+    private void ClosePopup_OnClick(object sender, RoutedEventArgs e)
+    {
+        Popup.IsOpen = false;
     }
 }

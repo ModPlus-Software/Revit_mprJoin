@@ -1,14 +1,13 @@
-﻿namespace mprJoin.Views.Controls
-{
-    public partial class JoinControl 
-    {
-        public JoinControl()
-        {
-            InitializeComponent();
+﻿namespace mprJoin.Views.Controls;
 
-            ModPlusAPI.Windows.Helpers.WindowHelpers.ChangeStyleForResourceDictionary(Resources);
-            ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources);
-            ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources, "LangCommon");
-        }
+public partial class JoinControl 
+{
+    public JoinControl()
+    {
+        InitializeComponent();
+
+        ModPlusAPI.Windows.Helpers.WindowHelpers.ChangeStyleForResourceDictionary(Resources);
+        ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources);
+        ModPlusAPI.Language.SetLanguageProviderForResourceDictionary(Resources, "LangCommon");
     }
 }

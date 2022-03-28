@@ -1,18 +1,17 @@
-﻿namespace mprJoin.Enums
+﻿namespace mprJoin.Enums;
+
+/// <summary>
+/// Опции для соединения и вырезания геометрии.
+/// </summary>
+public enum JoinOption
 {
     /// <summary>
-    /// Опции для соединения и вырезания геометрии.
+    /// Присоединить
     /// </summary>
-    public enum JoinOption
-    {
-        /// <summary>
-        /// Присоединить
-        /// </summary>
-        Join,
+    Join,
         
-        /// <summary>
-        /// Отсоединить
-        /// </summary>
-        DisJoin
-    }
+    /// <summary>
+    /// Отсоединить
+    /// </summary>
+    DisJoin
 }

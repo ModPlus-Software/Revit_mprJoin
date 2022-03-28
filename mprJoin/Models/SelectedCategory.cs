@@ -1,27 +1,26 @@
-﻿namespace mprJoin.Models
+﻿namespace mprJoin.Models;
+
+using ModPlusAPI.Mvvm;
+
+public class SelectedCategory : ObservableObject
 {
-    using ModPlusAPI.Mvvm;
+    private bool _isSelected;
 
-    public class SelectedCategory : ObservableObject
+    /// <summary>
+    /// Является ли категория выбранной
+    /// </summary>
+    public bool IsSelected
     {
-        private bool _isSelected;
-
-        /// <summary>
-        /// Является ли категория выбранной
-        /// </summary>
-        public bool IsSelected
+        get => _isSelected;
+        set
         {
-            get => _isSelected;
-            set
-            {
-                _isSelected = value;
-                OnPropertyChanged();
-            }
+            _isSelected = value;
+            OnPropertyChanged();
         }
-
-        /// <summary>
-        /// Имя категории
-        /// </summary>
-        public string Name { get; set; }
     }
+
+    /// <summary>
+    /// Имя категории
+    /// </summary>
+    public string Name { get; set; }
 }

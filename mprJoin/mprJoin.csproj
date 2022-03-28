@@ -67,49 +67,45 @@
 		<AssemblyName>$(AssemblyName)_$(Description)</AssemblyName>
 	</PropertyGroup>
 
-	<Choose>
-		<When Condition="'$(Configuration)'=='R2017'">
-			<ItemGroup>
-				<PackageReference Include="ModPlus.Revit.API.2017" Version="2.0.0" ExcludeAssets="runtime" />
-				<PackageReference Include="ModPlus.Revit.Module.2017" Version="7.8.7" ExcludeAssets="runtime" />
-			</ItemGroup>
-		</When>
-		<When Condition="'$(Configuration)'=='R2018'">
-			<ItemGroup>
-				<PackageReference Include="ModPlus.Revit.API.2018" Version="2.0.0" ExcludeAssets="runtime" />
-				<PackageReference Include="ModPlus.Revit.Module.2018" Version="7.8.7" ExcludeAssets="runtime" />
-			</ItemGroup>
-		</When>
-		<When Condition="'$(Configuration)'=='R2019'">
-			<ItemGroup>
-				<PackageReference Include="ModPlus.Revit.API.2019" Version="3.0.0" ExcludeAssets="runtime" />
-				<PackageReference Include="ModPlus.Revit.Module.2019" Version="7.8.7" ExcludeAssets="runtime" />
-			</ItemGroup>
-		</When>
-		<When Condition="'$(Configuration)'=='R2020'">
-			<ItemGroup>
-				<PackageReference Include="ModPlus.Revit.API.2020" Version="3.0.0" ExcludeAssets="runtime" />
-				<PackageReference Include="ModPlus.Revit.Module.2020" Version="7.8.7" ExcludeAssets="runtime" />
-			</ItemGroup>
-		</When>
-		<When Condition="'$(Configuration)'=='R2021'">
-			<ItemGroup>
-				<PackageReference Include="ModPlus.Revit.API.2021" Version="3.0.0" ExcludeAssets="runtime" />
-				<PackageReference Include="ModPlus.Revit.Module.2021" Version="7.8.7" ExcludeAssets="runtime" />
-			</ItemGroup>
-		</When>
-		<When Condition="'$(Configuration)'=='R2022' or '$(Configuration)'=='Debug'">
-			<ItemGroup>
-				<PackageReference Include="ModPlus.Revit.API.2022" Version="3.0.0" ExcludeAssets="runtime" />
-				<PackageReference Include="ModPlus.Revit.Module.2022" Version="7.8.7" ExcludeAssets="runtime" />
-			</ItemGroup>
-		</When>
-	</Choose>
+	<ItemGroup Condition="'$(Configuration)'=='R2017'">
+		<PackageReference Include="ModPlus.Revit.API.2017" Version="2.0.0" ExcludeAssets="runtime" />
+		<PackageReference Include="ModPlus.Revit.Module.2017" Version="9.3.2" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='R2018'">
+		<PackageReference Include="ModPlus.Revit.API.2018" Version="2.0.0" ExcludeAssets="runtime" />
+		<PackageReference Include="ModPlus.Revit.Module.2018" Version="9.3.2" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='R2019'">
+		<PackageReference Include="ModPlus.Revit.API.2019" Version="3.0.0" ExcludeAssets="runtime" />
+		<PackageReference Include="ModPlus.Revit.Module.2019" Version="9.3.2" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='R2020'">
+		<PackageReference Include="ModPlus.Revit.API.2020" Version="3.0.0" ExcludeAssets="runtime" />
+		<PackageReference Include="ModPlus.Revit.Module.2020" Version="9.3.2" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='R2021'">
+		<PackageReference Include="ModPlus.Revit.API.2021" Version="3.0.0" ExcludeAssets="runtime" />
+		<PackageReference Include="ModPlus.Revit.Module.2021" Version="9.3.2" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='R2022'">
+		<PackageReference Include="ModPlus.Revit.API.2022" Version="3.0.0" ExcludeAssets="runtime" />
+		<PackageReference Include="ModPlus.Revit.Module.2022" Version="9.3.2" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+		<PackageReference Include="ModPlus.Revit.API.2022" Version="3.0.0" ExcludeAssets="runtime" />
+		<PackageReference Include="ModPlus.Revit.Module.2022" Version="9.3.2" ExcludeAssets="runtime" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations" Version="2021.3.0" ExcludeAssets="runtime" />
-		<PackageReference Include="ModPlusAPI" Version="7.15.0" ExcludeAssets="runtime" />
-		<PackageReference Include="ModPlusStyle" Version="4.1.0" ExcludeAssets="runtime" />
+		<PackageReference Include="ModPlusAPI" Version="8.6.0" ExcludeAssets="runtime" />
+		<PackageReference Include="ModPlusStyle" Version="4.2.0" ExcludeAssets="runtime" />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

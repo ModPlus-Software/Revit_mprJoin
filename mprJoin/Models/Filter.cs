@@ -1,44 +1,43 @@
-﻿namespace mprJoin.Models
+﻿namespace mprJoin.Models;
+
+using System.Collections.ObjectModel;
+using System.Windows.Input;
+using Enums;
+using ModPlusAPI.Mvvm;
+
+/// <summary>
+/// Модель фильтра.
+/// </summary>
+public class Filter : ObservableObject
 {
-    using System.Collections.ObjectModel;
-    using System.Windows.Input;
-    using Enums;
-    using ModPlusAPI.Mvvm;
+    private string _parameterName;
+    private string _parameterValue;
 
     /// <summary>
-    /// Модель фильтра.
+    /// Имя параметра.
     /// </summary>
-    public class Filter : ObservableObject
+    public string ParameterName
     {
-        private string _parameterName;
-        private string _parameterValue;
-
-        /// <summary>
-        /// Имя параметра.
-        /// </summary>
-        public string ParameterName
+        get => _parameterName;
+        set
         {
-            get => _parameterName;
-            set
-            {
-                _parameterName = value;
-                OnPropertyChanged();
-            }
+            _parameterName = value;
+            OnPropertyChanged();
         }
-
-        /// <summary>
-        /// Значение параметра.
-        /// </summary>
-        public string ParameterValue
-        {
-            get => _parameterValue;
-            set
-            {
-                _parameterValue = value;
-                OnPropertyChanged();
-            }
-        }
-        
-        public Condition Condition { get; set; }
     }
+
+    /// <summary>
+    /// Значение параметра.
+    /// </summary>
+    public string ParameterValue
+    {
+        get => _parameterValue;
+        set
+        {
+            _parameterValue = value;
+            OnPropertyChanged();
+        }
+    }
+        
+    public Condition Condition { get; set; }
 }

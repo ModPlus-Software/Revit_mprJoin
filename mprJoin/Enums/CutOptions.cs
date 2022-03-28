@@ -1,18 +1,17 @@
-﻿namespace mprJoin.Enums
+﻿namespace mprJoin.Enums;
+
+/// <summary>
+/// Опции вырезаний.
+/// </summary>
+public enum CutOptions
 {
     /// <summary>
-    /// Опции вырезаний.
+    /// Вырезать.
     /// </summary>
-    public enum CutOptions
-    {
-        /// <summary>
-        /// Вырезать.
-        /// </summary>
-        Cut,
+    Cut,
         
-        /// <summary>
-        /// Отменить вырезание.
-        /// </summary>
-        CancelCut
-    }
+    /// <summary>
+    /// Отменить вырезание.
+    /// </summary>
+    CancelCut
 }

@@ -1,23 +1,22 @@
-﻿namespace mprJoin.Enums
+﻿namespace mprJoin.Enums;
+
+/// <summary>
+/// Опции для действия окна Примыкания
+/// </summary>
+public enum ContiguityOption
 {
     /// <summary>
-    /// Опции для действия окна Примыкания
+    /// Присоединить
     /// </summary>
-    public enum ContiguityOption
-    {
-        /// <summary>
-        /// Присоединить
-        /// </summary>
-        Join,
+    Join,
         
-        /// <summary>
-        /// Отсоединить
-        /// </summary>
-        DisJoin,
+    /// <summary>
+    /// Отсоединить
+    /// </summary>
+    DisJoin,
         
-        /// <summary>
-        /// Инвертировать
-        /// </summary>
-        Invert
-    }
+    /// <summary>
+    /// Инвертировать
+    /// </summary>
+    Invert
 }

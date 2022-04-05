@@ -1,12 +1,11 @@
-﻿using ModPlusAPI.Services;
-using mprJoin.Settings;
-
-namespace mprJoin;
+﻿namespace mprJoin;
 
 using System.Collections.Generic;
 using System.Windows.Input;
 using Autodesk.Revit.UI;
 using ModPlusAPI.Mvvm;
+using ModPlusAPI.Services;
+using Settings;
 using ViewModels;
 using Views;
 

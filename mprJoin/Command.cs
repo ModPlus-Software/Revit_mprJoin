@@ -28,14 +28,14 @@ public class Command : IExternalCommand
 #if !DEBUG
                 ModPlusAPI.Statistic.SendCommandStarting(ModPlusConnector.Instance);
 #endif
-            RevitEvent = new RevitEvent();
-            var win = new MainWindow();
-            var context = new MainContext(commandData.Application, win);
-            win.DataContext = context;
+                RevitEvent = new RevitEvent();
+                var win = new MainWindow();
+                var context = new MainContext(commandData.Application, win);
+                win.DataContext = context;
 
-            ModPlus.ShowModeless(win);
+                ModPlus.ShowModeless(win);
 
-            return Result.Succeeded;
+                return Result.Succeeded;
         }
         catch (Autodesk.Revit.Exceptions.OperationCanceledException)
         {

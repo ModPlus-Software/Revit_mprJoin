@@ -46,6 +46,7 @@ public static class PluginSetting
         BuiltInCategory.OST_MechanicalEquipment,
         BuiltInCategory.OST_SpecialityEquipment,
         BuiltInCategory.OST_PlumbingFixtures,
+        BuiltInCategory.OST_DataDevices
     };
 
     /// <summary>

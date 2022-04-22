@@ -56,8 +56,7 @@ public abstract class BaseJoinCutContext : BaseContext
     /// Список моделей категорий для вывода пользователю в текстовом представлении
     /// </summary>
     public List<string> StringSelectedCategories =>
-        _stringSelectedCategories ??=
-            GetSelectedCategories(AllowedCategories).Select(i => i.Name).ToList();
+        _stringSelectedCategories ??= GetSelectedCategories(AllowedCategories).Select(i => i.Name).ToList();
 
     /// <summary>
     /// Добавить пару.
@@ -66,8 +65,7 @@ public abstract class BaseJoinCutContext : BaseContext
     {
         try
         {
-            CurrentConfiguration.Pairs.Add(
-                new CustomElementPair(GetSelectedCategories(PluginSetting.AllowedCategoriesToJoin)));
+            CurrentConfiguration.Pairs.Add(new CustomElementPair(GetSelectedCategories(PluginSetting.AllowedCategoriesToJoin)));
         }
         catch (Exception exception)
         {

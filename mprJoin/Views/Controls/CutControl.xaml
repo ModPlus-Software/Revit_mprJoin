@@ -8,7 +8,7 @@
              xmlns:models="clr-namespace:mprJoin.Models"
              xmlns:mps="https://modplus.org/winfx/xaml/controls"
              xmlns:options="clr-namespace:mprJoin.Enums"
-             xmlns:vm="clr-namespace:mprJoin.ViewModels"
+             xmlns:vm="clr-namespace:mprJoin.ViewModels" xmlns:moduleControls="https://modplus.org/winfx/xaml/moduleControls"
              d:DataContext="{d:DesignInstance vm:CutContext}"
              mc:Ignorable="d">
 
@@ -123,41 +123,27 @@
                 <DataTemplate DataType="{x:Type models:CustomElementPair}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Кнопка управления видимости фильтров -->
-                        <Button Grid.Row="0"
-                                Grid.Column="0"
-                                Command="{Binding Path=ChangeVisibilityForFilters}"
-                                Style="{StaticResource ModPlusFlatButtonForIcon}"
-                                ToolTip="{Binding Source={StaticResource Lang}, XPath=tp4}">
-                            <Viewbox Width="24"
-                                     Height="24">
-                                <Canvas Width="24"
-                                        Height="24">
-                                    <Path Data="M11 11L16.76 3.62A1 1 0 0 0 16.59 2.22A1 1 0 0 0 16 2H2A1 1 0 0 0 1.38 2.22A1 1 0 0 0 1.21 3.62L7 11V16.87A1 1 0 0 0 7.29 17.7L9.29 19.7A1 1 0 0 0 10.7 19.7A1 1 0 0 0 11 18.87V11M13 16L18 21L23 16Z"
-                                          Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" />
-                                </Canvas>
-                            </Viewbox>
-                        </Button>
-
-                        <ComboBox Grid.Row="0"
-                                  Grid.Column="1"
-                                  ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.StringSelectedCategories}"
-                                  SelectedItem="{Binding Path=WhatToJoinCategory}" />
+                        <!-- Элементы для соединения-->
+                        <moduleControls:ElementApplyFilterControl 
+                                                  Grid.Row="0"
+                                                  Grid.Column="0"
+                                                  DataContext="{Binding Path=WhatJoinFilters}"
+                                                  Orientation="Vertical"
+                                                  IsFloatingHint="False"/>
 
                         <!-- Стрелка -->
                         <Viewbox Grid.Row="0"
-                                 Grid.Column="2"
+                                 Grid.Column="1"
                                  Width="24"
                                  Height="24"
                                  Margin="0 4 0 0"
@@ -169,13 +155,17 @@
                             </Canvas>
                         </Viewbox>
 
-                        <controls:WithWhatToJoinControl Grid.Row="0"
-                                                        Grid.Column="3"
-                                                        Pair="{Binding}" />
+                        <!-- Элементы с кем будет соединяться-->
+                        <moduleControls:ElementApplyFilterControl 
+                                                Grid.Row="0"
+                                                Grid.Column="2"
+                                                DataContext="{Binding Path=WithWhatToJoin}"
+                                                Orientation="Vertical"
+                                                IsFloatingHint="False"/>
 
                         <!-- remove pair -->
                         <Button Grid.Row="0"
-                                Grid.Column="4"
+                                Grid.Column="3"
                                 Margin="0 4 4 4"
                                 Command="{Binding DataContext.RemovePair, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
                                 CommandParameter="{Binding}"
@@ -183,185 +173,10 @@
                                 ToolTip="{Binding Source={StaticResource Lang}, XPath=tp7}"
                                 Content="{StaticResource RemoveIcon}"/>
 
-                        <!-- left filters -->
-                        <Grid Grid.Row="1"
-                              Grid.Column="0"
-                              Grid.ColumnSpan="2"
-                              Visibility="{Binding Path=ShowFilters, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                        <Separator Grid.Row="1"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="4"/>
 
-                            <!-- Добавление главных фильтров -->
-                            <Button Grid.Row="0"
-                                    Grid.Column="0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Command="{Binding Path=AddWhatJoinFilter}"
-                                    Style="{StaticResource ModPlusFlatButtonForIcon}"
-                                    ToolTip="{Binding Source={StaticResource Lang}, XPath=tp5}"
-                                    Content="{StaticResource AddIcon}"/>
-
-                            <!-- Block с Or And -->
-                            <ComboBox Grid.Row="1"
-                                      Grid.Column="0"
-                                      Margin="0"
-                                      VerticalAlignment="Center"
-                                      mps:ComboBoxAssist.IsBorderless="True"
-                                      SelectedIndex="{Binding Path=WhatJoinLogicCondition, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:LogicCondition}, Mode=TwoWay}"
-                                      ToolTip="{Binding Source={StaticResource Lang}, XPath=tp6}"
-                                      ToolTipService.InitialShowDelay="200"
-                                      ToolTipService.ShowDuration="15000">
-                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op1}" />
-                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op2}" />
-                            </ComboBox>
-
-                            <!-- ListBox c фильтрами для основной категории -->
-                            <ListBox Grid.Row="0"
-                                     Grid.RowSpan="2"
-                                     Grid.Column="1"
-                                     Margin="20 0 0 0"
-                                     mps:ListBoxAssist.ListBoxItemPadding="0"
-                                     Background="Transparent"
-                                     BorderThickness="0"
-                                     ItemsSource="{Binding WhatJoinFilters}">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBox Grid.Column="0"
-                                                     Text="{Binding Path=ParameterName, Mode=TwoWay}"
-                                                     mps:HintAssist.Hint="{Binding Source={StaticResource LangCommon}, XPath=parameter}"
-                                                     Margin="1"/>
-
-                                            <ComboBox Grid.Column="1"
-                                                      SelectedIndex="{Binding Path=Condition, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:Condition}, Mode=TwoWay}"
-                                                      Margin="1"
-                                                      VerticalAlignment="Stretch">
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op3}" />
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op4}" />
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op5}" />
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op6}" />
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op7}" />
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op8}" />
-                                            </ComboBox>
-                                            <TextBox Grid.Column="2"
-                                                     Text="{Binding Path=ParameterValue, Mode=TwoWay}" 
-                                                     mps:HintAssist.Hint="{Binding Source={StaticResource LangCommon}, XPath=value}"
-                                                     Margin="1"/>
-
-                                            <Button Grid.Column="3"
-                                                    Margin="0 0 4 0"
-                                                    Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.RemoveWhatJoinFilter}"
-                                                    CommandParameter="{Binding}"
-                                                    ToolTip="{Binding Source={StaticResource Lang}, XPath=tp2}"
-                                                    Style="{StaticResource ModPlusFlatButtonForIcon}"
-                                                    Content="{StaticResource RemoveIcon}"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Grid>
-
-                        <!-- right filters -->
-                        <Grid Grid.Row="1"
-                              Grid.Column="3"
-                              Grid.ColumnSpan="2"
-                              Visibility="{Binding Path=ShowFilters, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Добавление вспомогательных фильтров -->
-                            <Button Grid.Row="0"
-                                    Grid.Column="0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Command="{Binding Path=AddWhereJointFilter}"
-                                    Style="{StaticResource ModPlusFlatButtonForIcon}"
-                                    ToolTip="{Binding Source={StaticResource Lang}, XPath=tp8}"
-                                    Content="{StaticResource AddIcon}"/>
-
-                            <!-- Block с Or And -->
-                            <ComboBox Grid.Row="1"
-                                      Grid.Column="0"
-                                      Margin="0"
-                                      VerticalAlignment="Center"
-                                      mps:ComboBoxAssist.IsBorderless="True"
-                                      SelectedIndex="{Binding Path=WhereJoinLogicCondition, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:LogicCondition}, Mode=TwoWay}"
-                                      ToolTip="{Binding Source={StaticResource Lang}, XPath=tp6}"
-                                      ToolTipService.InitialShowDelay="200"
-                                      ToolTipService.ShowDuration="15000">
-                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op1}" />
-                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op2}" />
-                            </ComboBox>
-
-                            <!-- ListBox c фильтрами для вспомогательных категорий -->
-                            <ListBox Grid.Row="0"
-                                     Grid.RowSpan="2"
-                                     Grid.Column="1"
-                                     Margin="20 0 0 0"
-                                     mps:ListBoxAssist.ListBoxItemPadding="0"
-                                     Background="Transparent"
-                                     BorderThickness="0"
-                                     ItemsSource="{Binding Path=WhereJoinFilters}">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBox Grid.Column="0"
-                                                     Text="{Binding Path=ParameterName, Mode=TwoWay}"
-                                                     mps:HintAssist.Hint="{Binding Source={StaticResource LangCommon}, XPath=parameter}"
-                                                     Margin="1"/>
-
-                                            <ComboBox Grid.Column="1"
-                                                      SelectedIndex="{Binding Path=Condition, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:Condition}, Mode=TwoWay}"
-                                                      Margin="1"
-                                                      VerticalAlignment="Stretch">
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op3}" />
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op4}" />
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op5}" />
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op6}" />
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op7}" />
-                                                <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=op8}" />
-                                            </ComboBox>
-                                            <TextBox Grid.Column="2"
-                                                     Text="{Binding Path=ParameterValue, Mode=TwoWay}" 
-                                                     mps:HintAssist.Hint="{Binding Source={StaticResource LangCommon}, XPath=value}"
-                                                     Margin="1"/>
-
-                                            <Button Grid.Column="3"
-                                                    Margin="0 0 4 0"
-                                                    Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}, Path=DataContext.RemoveWhereJoinFilter}"
-                                                    CommandParameter="{Binding}"
-                                                    ToolTip="{Binding Source={StaticResource Lang}, XPath=tp2}"
-                                                    Style="{StaticResource ModPlusFlatButtonForIcon}"
-                                                    Content="{StaticResource RemoveIcon}"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </Grid>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

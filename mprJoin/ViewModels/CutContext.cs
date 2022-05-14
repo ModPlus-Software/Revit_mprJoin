@@ -22,11 +22,11 @@ public class CutContext : BaseJoinCutContext
     private readonly UIApplication _uiApplication;
     private readonly ElementConnectorService _elementConnectorService;
 
-    public CutContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService)
-        : base(uiApplication, mainWindow, userSettingsService)
+    public CutContext(MainWindow mainWindow, UserSettingsService userSettingsService)
+        : base(mainWindow, userSettingsService)
     {
-        _uiApplication = uiApplication;
-        _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
+        _uiApplication = ModPlus.UiApplication;
+        _elementConnectorService = new ElementConnectorService(_uiApplication.ActiveUIDocument);
         var configurationsList = UserSettingsService.Get<ObservableCollection<JoinConfigurations>>(_cutConfigurationFieldName);
         PermanentConfiguration = configurationsList.FirstOrDefault(i => !i.IsEditable) ??
                                  new JoinConfigurations

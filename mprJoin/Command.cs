@@ -30,7 +30,7 @@ public class Command : IExternalCommand
 #endif
                 RevitEvent = new RevitEvent();
                 var win = new MainWindow();
-                var context = new MainContext(commandData.Application, win);
+                var context = new MainContext(win);
                 win.DataContext = context;
 
                 ModPlus.ShowModeless(win);

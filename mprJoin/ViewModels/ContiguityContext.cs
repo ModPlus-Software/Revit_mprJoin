@@ -1,15 +1,12 @@
 ﻿namespace mprJoin.ViewModels;
 
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Enums;
-using Models;
 using ModPlus_Revit;
-using ModPlus_Revit.Enums;
 using ModPlus_Revit.Utils;
 using ModPlusAPI;
 using ModPlusAPI.Mvvm;
@@ -23,15 +20,14 @@ public class ContiguityContext : BaseContext
 {
     private readonly UIApplication _uiApplication;
     private readonly CollectorService _collectorService;
-    private ObservableCollection<SelectedCategory> _selectedCategories;
     private readonly ElementConnectorService _elementConnectorService;
 
-    public ContiguityContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService)
-        : base(uiApplication, mainWindow, userSettingsService)
+    public ContiguityContext(MainWindow mainWindow, UserSettingsService userSettingsService)
+        : base(mainWindow, userSettingsService)
     {
         _collectorService = new CollectorService();
-        _uiApplication = uiApplication;
-        _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
+        _uiApplication = ModPlus.UiApplication;
+        _elementConnectorService = new ElementConnectorService(_uiApplication.ActiveUIDocument);
         Filter = UserSettingsService
            .Get<ElementApplyFilter>(nameof(Filter));
         if (Filter.SourceCategoriesOverride == null)

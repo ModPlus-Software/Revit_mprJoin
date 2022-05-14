@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Windows.Input;
-using Autodesk.Revit.UI;
 using ModPlusAPI.Mvvm;
 using ModPlusAPI.Services;
 using Settings;
@@ -17,12 +16,12 @@ public class MainContext : ObservableObject
     private readonly List<BaseContext> _contexts;
     private readonly UserSettingsService _userSettingsService;
 
-    public MainContext(UIApplication uiApplication, MainWindow mainWindow)
+    public MainContext(MainWindow mainWindow)
     {
         _userSettingsService = new UserSettingsService(PluginSetting.SaveFileName);
-        ContiguityContext = new ContiguityContext(uiApplication, mainWindow, _userSettingsService);
-        JoinContext = new JoinContext(uiApplication, mainWindow, _userSettingsService);
-        CutContext = new CutContext(uiApplication, mainWindow, _userSettingsService);
+        ContiguityContext = new ContiguityContext(mainWindow, _userSettingsService);
+        JoinContext = new JoinContext(mainWindow, _userSettingsService);
+        CutContext = new CutContext(mainWindow, _userSettingsService);
         _contexts = new List<BaseContext>
         {
             ContiguityContext,

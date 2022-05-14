@@ -10,24 +10,23 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Enums;
 using Models;
+using ModPlus_Revit;
 using ModPlusAPI.Mvvm;
 using ModPlusAPI.Services;
 using ModPlusAPI.Windows;
 using Services;
-using Settings;
 using Views;
 
 public abstract class BaseJoinCutContext : BaseContext
 {
-    private List<string> _stringSelectedCategories;
     private readonly CollectorService _collectorService;
     private readonly UIApplication _uiApplication;
 
-    protected BaseJoinCutContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService) 
-        : base(uiApplication, mainWindow, userSettingsService)
+    protected BaseJoinCutContext(MainWindow mainWindow, UserSettingsService userSettingsService) 
+        : base(mainWindow, userSettingsService)
     {
         _collectorService = new CollectorService();
-        _uiApplication = uiApplication;
+        _uiApplication = ModPlus.UiApplication;
     }
 
     public List<BuiltInCategory> AllowedCategories { get; protected set; }
@@ -53,19 +52,13 @@ public abstract class BaseJoinCutContext : BaseContext
     public ObservableCollection<JoinConfigurations> Configurations { get; set; }
 
     /// <summary>
-    /// Список моделей категорий для вывода пользователю в текстовом представлении
-    /// </summary>
-    public List<string> StringSelectedCategories =>
-        _stringSelectedCategories ??= GetSelectedCategories(AllowedCategories).Select(i => i.Name).ToList();
-
-    /// <summary>
     /// Добавить пару.
     /// </summary>
     public ICommand AddPair => new RelayCommandWithoutParameter(() =>
     {
         try
         {
-            CurrentConfiguration.Pairs.Add(new CustomElementPair(GetSelectedCategories(PluginSetting.AllowedCategoriesToJoin)));
+            CurrentConfiguration.Pairs.Add(new CustomElementPair(AllowedCategories));
         }
         catch (Exception exception)
         {
@@ -155,31 +148,18 @@ public abstract class BaseJoinCutContext : BaseContext
 
         foreach (var pair in pairs)
         {
-            if (string.IsNullOrEmpty(pair.WhatToJoinCategory))
-            {
-                pair.WhatToJoinElements = new List<Element>();
-                pair.WhereToJoinElements = new List<Element>();
-                continue;
-            }
-
             pair.WhatToJoinElements = collector
 
                 // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
                 // что у какого то элемента не получается посмотреть категорию
-                .WherePasses(new ElementMulticategoryFilter(PluginSetting.AllowedCategoriesToJoin))
-                .Where(el =>
-                    el.Category.Name.Equals(
-                        pair.WhatToJoinCategory,
-                        StringComparison.InvariantCultureIgnoreCase))
+                .WherePasses(new ElementMulticategoryFilter(AllowedCategories))
                 .ToList();
 
             pair.WhereToJoinElements = collector
 
                 // Оставляет возможные категории, без этого при следующей проверке получаю ошибку, полагаю,
                 // что у какого то элемента не получается посмотреть категорию
-                .WherePasses(new ElementMulticategoryFilter(PluginSetting.AllowedCategoriesToJoin))
-                .Where(el => pair.WithWhatToJoin.Where(cat => cat.IsSelected).Select(cat => cat.Name).Any(cat =>
-                    cat.Equals(el.Category.Name, StringComparison.InvariantCultureIgnoreCase)))
+                .WherePasses(new ElementMulticategoryFilter(AllowedCategories))
                 .ToList();
         }
 

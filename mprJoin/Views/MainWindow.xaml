@@ -12,6 +12,7 @@
                    WindowStartupLocation="CenterScreen"
                    MinHeight="300"
                    MinWidth="300"
+                   MaxHeight="800"
                    Name="Window"
                    d:DataContext="{d:DesignInstance local:MainContext, IsDesignTimeCreatable=False}">
     <Window.Resources>

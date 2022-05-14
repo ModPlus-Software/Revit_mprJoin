@@ -6,9 +6,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:options="clr-namespace:mprJoin.Enums"
              xmlns:vm="clr-namespace:mprJoin.ViewModels"
-             xmlns:controls="clr-namespace:mprJoin.Views.Controls"
+             xmlns:controls="clr-namespace:mprJoin.Views.Controls" xmlns:moduleControls="https://modplus.org/winfx/xaml/moduleControls"
              d:DataContext="{d:DesignInstance vm:ContiguityContext}"
-             mc:Ignorable="d">
+             mc:Ignorable="d" Name="Win">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,21 +23,16 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ListBox Grid.Row="0"
-                 ItemsSource="{Binding Path=SelectedCategories}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox IsChecked="{Binding IsSelected}"
-                              Content="{Binding Path=Name}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <moduleControls:ElementApplyFilterControl Grid.Row="0"
+                                                  Grid.Column="1"
+                                                  DataContext="{Binding Path=Filter}"
+                                                  IsFloatingHint="False"/>
 
         <StackPanel Grid.Row="1"
                     Grid.Column="0">

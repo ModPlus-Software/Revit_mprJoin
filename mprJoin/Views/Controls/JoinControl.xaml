@@ -118,7 +118,23 @@
                  Grid.Row="1"
                  Grid.Column="0"
                  mps:RippleAssist.IsDisabled="True"
-                 ItemsSource="{Binding Path=CurrentConfiguration.Pairs}">
+                 ItemsSource="{Binding Path=CurrentConfiguration.Pairs}"
+                 Background="Transparent"
+                 BorderThickness="0">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}"
+                       BasedOn="{StaticResource ModPlusListBoxItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <mps:Card Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Padding="{TemplateBinding Padding}"></mps:Card>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:CustomElementPair}">
                     <Grid>
@@ -172,11 +188,6 @@
                                 Style="{StaticResource ModPlusFlatButtonForIcon}"
                                 ToolTip="{Binding Source={StaticResource Lang}, XPath=tp7}"
                                 Content="{StaticResource RemoveIcon}"/>
-
-                        <Separator Grid.Row="1"
-                                   Grid.Column="0"
-                                   Grid.ColumnSpan="4"/>
-
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

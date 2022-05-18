@@ -12,6 +12,8 @@ using ModPlusAPI.Mvvm;
 /// </summary>
 public class CustomElementPair : ObservableObject
 {
+    private bool _activateParallelsWallsSeeting;
+
     public CustomElementPair()
     {
     }
@@ -23,6 +25,9 @@ public class CustomElementPair : ObservableObject
         WithWhatToJoin.SourceCategoriesOverride = categories;
         WhatJoinFilters = new ElementApplyFilter();
         WhatJoinFilters.SourceCategoriesOverride = categories;
+        WithWhatToJoin.PropertyChanged += CheckFiltersCategory;
+        WhatJoinFilters.PropertyChanged += CheckFiltersCategory;
+        ActivateParallesWallSetting = CheckCategory();
     }
 
     /// <summary>
@@ -34,6 +39,24 @@ public class CustomElementPair : ObservableObject
     /// Фильтр для элементов куда будут присоединяться (т.е. у них будут образовываться вырезы)
     /// </summary>
     public ElementApplyFilter WhatJoinFilters { get; set; }
+
+    /// <summary>
+    /// Только паралельные стены
+    /// </summary>
+    public bool OnlyParallelWalls { get; set; }
+
+    /// <summary>
+    /// Активация опции "Только параллельные стены"
+    /// </summary>
+    public bool ActivateParallesWallSetting
+    {
+        get => _activateParallelsWallsSeeting;
+        set
+        {
+            _activateParallelsWallsSeeting = value;
+            OnPropertyChanged();
+        }
+    }
 
     /// <summary>
     /// Элементы которые будут будут иметь высший приоритет при соединении
@@ -51,5 +74,28 @@ public class CustomElementPair : ObservableObject
     {
         WhatToJoinElements = WhatToJoinElements.Where(i => WhatJoinFilters.IsMatch(i)).ToList();
         WhereToJoinElements = WhereToJoinElements.Where(i => WithWhatToJoin.IsMatch(i)).ToList();
+    }
+
+    public void SetSettingsAfterGetInSaveFile(List<BuiltInCategory> categories)
+    {
+        WithWhatToJoin.SourceCategoriesOverride = categories;
+        WhatJoinFilters.SourceCategoriesOverride = categories;
+        WithWhatToJoin.PropertyChanged += CheckFiltersCategory;
+        WhatJoinFilters.PropertyChanged += CheckFiltersCategory;
+        ActivateParallesWallSetting = CheckCategory();
+    }
+
+    private void CheckFiltersCategory(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        ActivateParallesWallSetting = CheckCategory();
+    }
+
+    /// <summary>
+    /// Проверяет имеется ли левом и правом фильтре категория стен
+    /// </summary>
+    private bool CheckCategory()
+    {
+        return WithWhatToJoin.Categories.Select(i => i.BuiltInCategory).Contains(BuiltInCategory.OST_Walls)
+            && WhatJoinFilters.Categories.Select(i => i.BuiltInCategory).Contains(BuiltInCategory.OST_Walls);
     }
 }

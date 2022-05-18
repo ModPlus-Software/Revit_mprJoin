@@ -43,6 +43,7 @@ public class JoinContext : BaseJoinCutContext
             Configurations.Add(PermanentConfiguration);
         JoinOption = UserSettingsService.Get<JoinOption>(nameof(JoinOption));
         AllowedCategories = PluginSetting.AllowedCategoriesToJoin;
+        configurationsList.ToList().ForEach(i => i.Pairs.ToList().ForEach(p => p.SetSettingsAfterGetInSaveFile(AllowedCategories)));
     }
 
     /// <summary>

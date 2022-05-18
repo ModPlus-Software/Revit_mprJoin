@@ -119,6 +119,20 @@
                  Grid.Column="0"
                  mps:RippleAssist.IsDisabled="True"
                  ItemsSource="{Binding Path=CurrentConfiguration.Pairs}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}"
+                       BasedOn="{StaticResource ModPlusListBoxItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <mps:Card Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Padding="{TemplateBinding Padding}"></mps:Card>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:CustomElementPair}">
                     <Grid>
@@ -131,18 +145,20 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Элементы для соединения-->
                         <moduleControls:ElementApplyFilterControl 
                                                   Grid.Row="0"
                                                   Grid.Column="0"
+                                                  Grid.RowSpan="3"
                                                   DataContext="{Binding Path=WhatJoinFilters}"
                                                   Orientation="Vertical"
                                                   IsFloatingHint="False"/>
 
                         <!-- Стрелка -->
-                        <Viewbox Grid.Row="0"
+                        <Viewbox Grid.Row="1"
                                  Grid.Column="1"
                                  Width="24"
                                  Height="24"
@@ -159,12 +175,22 @@
                         <moduleControls:ElementApplyFilterControl 
                                                 Grid.Row="0"
                                                 Grid.Column="2"
+                                                Grid.RowSpan="3"
                                                 DataContext="{Binding Path=WithWhatToJoin}"
                                                 Orientation="Vertical"
                                                 IsFloatingHint="False"/>
 
-                        <!-- remove pair -->
+                        <!-- Кнопка перемещение пары вверх -->
                         <Button Grid.Row="0"
+                                Grid.Column="3"
+                                Margin="0 4 4 4"
+                                Command="{Binding DataContext.ReplaceUp, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"
+                                Style="{StaticResource ModPlusFlatButtonForIcon}"
+                                Content="{StaticResource ModPlus.Icons.24.Arrow-Up-Bold}"/>
+
+                        <!-- remove pair -->
+                        <Button Grid.Row="1"
                                 Grid.Column="3"
                                 Margin="0 4 4 4"
                                 Command="{Binding DataContext.RemovePair, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
@@ -173,10 +199,14 @@
                                 ToolTip="{Binding Source={StaticResource Lang}, XPath=tp7}"
                                 Content="{StaticResource RemoveIcon}"/>
 
-                        <Separator Grid.Row="1"
-                                   Grid.Column="0"
-                                   Grid.ColumnSpan="4"/>
-
+                        <!-- Кнопка перемещение пары вверх -->
+                        <Button Grid.Row="2"
+                                Grid.Column="3"
+                                Margin="0 4 4 4"
+                                Command="{Binding DataContext.ReplaceDown, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"
+                                Style="{StaticResource ModPlusFlatButtonForIcon}"
+                                Content="{StaticResource ModPlus.Icons.24.Arrow-Down-Bold}"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

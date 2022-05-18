@@ -95,12 +95,12 @@ public class ElementConnectorService
                         {
                             if (whoWillJoinCurve
                                 .get_ElementsAtJoin(0)
-                                .ToList()
+                                .OfType<Element>()
                                 .Any(i => i.Id.Equals(wallWhereWillJoin.Id)))
                                 continue;
                             if (whoWillJoinCurve
                                 .get_ElementsAtJoin(1)
-                                .ToList()
+                                .OfType<Element>()
                                 .Any(i => i.Id.Equals(wallWhereWillJoin.Id)))
                                 continue;
                         }
@@ -176,7 +176,8 @@ public class ElementConnectorService
                 foreach (var elementWhoWillJoin in pair.WhatToJoinElements)
                 {
                     foreach (var intersectedElement in _collectorService
-                                 .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements))
+                                 .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements)
+                                 .Where(i => CheckParallelWalls(pair.OnlyParallelWalls, elementWhoWillJoin, i)))
                     {
                         try
                         {
@@ -215,6 +216,23 @@ public class ElementConnectorService
         }
 
         resultService.ShowByType();
+    }
+
+    private bool CheckParallelWalls(bool checkParallelWalls, Element whoWillJoin, Element withWhoWillJoin)
+    {
+        if (!checkParallelWalls)
+            return true;
+
+        if (whoWillJoin is not Wall whoWillJoinWall)
+            return true;
+
+        if (withWhoWillJoin is not Wall withWhoWillJoinWall)
+            return true;
+
+        var whoCurve = ((LocationCurve)whoWillJoinWall.Location).Curve;
+        var withWhoCurve = ((LocationCurve)withWhoWillJoinWall.Location).Curve;
+
+        if (whoCurve.)
     }
 
     private void ChangeEndJoinState(Element element, int end, ContiguityOption joinType)

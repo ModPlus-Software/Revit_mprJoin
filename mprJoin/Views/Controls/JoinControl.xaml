@@ -147,18 +147,21 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Элементы для соединения-->
                         <moduleControls:ElementApplyFilterControl 
                                                   Grid.Row="0"
-                                                  Grid.Column="0"
+                                                  Grid.RowSpan="3"
+                                                  Grid.Column="0" 
                                                   DataContext="{Binding Path=WhatJoinFilters}"
                                                   Orientation="Vertical"
                                                   IsFloatingHint="False"/>
 
                         <!-- Стрелка -->
-                        <Viewbox Grid.Row="0"
+                        <Viewbox Grid.Row="1"
                                  Grid.Column="1"
                                  Width="24"
                                  Height="24"
@@ -175,12 +178,22 @@
                         <moduleControls:ElementApplyFilterControl 
                                                 Grid.Row="0"
                                                 Grid.Column="2"
+                                                Grid.RowSpan="3"
                                                 DataContext="{Binding Path=WithWhatToJoin}"
                                                 Orientation="Vertical"
                                                 IsFloatingHint="False"/>
 
-                        <!-- remove pair -->
+                        <!-- Кнопка перемещение пары вверх -->
                         <Button Grid.Row="0"
+                                Grid.Column="3"
+                                Margin="0 4 4 4"
+                                Command="{Binding DataContext.ReplaceUp, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"
+                                Style="{StaticResource ModPlusFlatButtonForIcon}"
+                                Content="{StaticResource ModPlus.Icons.24.Arrow-Up-Bold}"/>
+
+                        <!-- remove pair -->
+                        <Button Grid.Row="1"
                                 Grid.Column="3"
                                 Margin="0 4 4 4"
                                 Command="{Binding DataContext.RemovePair, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
@@ -188,56 +201,40 @@
                                 Style="{StaticResource ModPlusFlatButtonForIcon}"
                                 ToolTip="{Binding Source={StaticResource Lang}, XPath=tp7}"
                                 Content="{StaticResource RemoveIcon}"/>
+
+                        <!-- Кнопка перемещение пары вверх -->
+                        <Button Grid.Row="2"
+                                Grid.Column="3"
+                                Margin="0 4 4 4"
+                                Command="{Binding DataContext.ReplaceDown, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"
+                                Style="{StaticResource ModPlusFlatButtonForIcon}"
+                                Content="{StaticResource ModPlus.Icons.24.Arrow-Down-Bold}"/>
+
+                        <!-- Чекбокс для только параллельных стен-->
+                        <!-- Только параллельные стены -->
+                        <CheckBox 
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Visibility="{Binding ActivateParallesWallSetting, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsChecked="{Binding Path=OnlyParallelWalls}"
+                            Content="{Binding Source={StaticResource Lang}, XPath=h9}"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <StackPanel Grid.Row="1"
-                    Grid.Column="1">
-            <!-- Кнопка добавления пар -->
-            <Button Margin="0 4 12 4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Command="{Binding DataContext.AddPair, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
-                    Style="{StaticResource ModPlusFlatButtonForIcon}"
-                    ToolTip="{Binding Source={StaticResource Lang}, XPath=tp1}"
-                    Content="{StaticResource AddIcon}"/>
-
-            <!-- Кнопка перемещение пары вверх -->
-            <Button Margin="0 4 12 4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Command="{Binding DataContext.ReplaceUp, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
-                    CommandParameter="{Binding ElementName=ListBoxWithPairs, Path=SelectedItem}"
-                    Style="{StaticResource ModPlusFlatButtonForIcon}">
-                <Viewbox Width="24"
-                         Height="24">
-                    <Canvas Width="24"
-                            Height="24">
-                        <Path Data="M16,13V21H8V13H2L12,3L22,13H16M7,11H10V19H14V11H17L12,6L7,11Z"
-                              Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" />
-                    </Canvas>
-                </Viewbox>
-            </Button>
-
-            <!-- Кнопка кнопка перемещения пары вниз -->
-            <Button Margin="0 4 12 4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Command="{Binding DataContext.ReplaceDown, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
-                    CommandParameter="{Binding ElementName=ListBoxWithPairs, Path=SelectedItem}"
-                    Style="{StaticResource ModPlusFlatButtonForIcon}">
-                <Viewbox Width="24"
-                         Height="24">
-                    <Canvas Width="24"
-                            Height="24">
-                        <Path Data="M22,11L12,21L2,11H8V3H16V11H22M12,18L17,13H14V5H10V13H7L12,18Z"
-                              Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Button}, Path=Foreground}" />
-                    </Canvas>
-                </Viewbox>
-            </Button>
-        </StackPanel>
+        <!-- Кнопка добавления пар -->
+        <Button 
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="0 4 12 4"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Command="{Binding DataContext.AddPair, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+            Style="{StaticResource ModPlusFlatButtonForIcon}"
+            ToolTip="{Binding Source={StaticResource Lang}, XPath=tp1}"
+            Content="{StaticResource AddIcon}"/>
 
         <Grid Grid.Row="2"
               Grid.Column="0"

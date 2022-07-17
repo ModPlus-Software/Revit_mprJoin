@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using Autodesk.Revit.DB;
-using Extensions;
 using ModPlus_Revit.Utils;
 using ModPlusAPI.Mvvm;
 
@@ -12,7 +11,7 @@ using ModPlusAPI.Mvvm;
 /// </summary>
 public class CustomElementPair : ObservableObject
 {
-    private bool _activateParallelsWallsSeeting;
+    private bool _isVisibleOnlyParallelWallsSetting;
 
     public CustomElementPair()
     {
@@ -21,13 +20,17 @@ public class CustomElementPair : ObservableObject
     public CustomElementPair(List<BuiltInCategory> categories)
         : this()
     {
-        WithWhatToJoin = new ElementApplyFilter();
-        WithWhatToJoin.SourceCategoriesOverride = categories;
-        WhatJoinFilters = new ElementApplyFilter();
-        WhatJoinFilters.SourceCategoriesOverride = categories;
+        WithWhatToJoin = new ElementApplyFilter
+        {
+            SourceCategoriesOverride = categories
+        };
+        WhatJoinFilters = new ElementApplyFilter
+        {
+            SourceCategoriesOverride = categories
+        };
         WithWhatToJoin.PropertyChanged += CheckFiltersCategory;
         WhatJoinFilters.PropertyChanged += CheckFiltersCategory;
-        ActivateParallesWallSetting = CheckCategory();
+        IsVisibleOnlyParallelWalls = CheckCategory();
     }
 
     /// <summary>
@@ -41,19 +44,19 @@ public class CustomElementPair : ObservableObject
     public ElementApplyFilter WhatJoinFilters { get; set; }
 
     /// <summary>
-    /// Только паралельные стены
+    /// Только параллельные стены
     /// </summary>
     public bool OnlyParallelWalls { get; set; }
 
     /// <summary>
-    /// Активация опции "Только параллельные стены"
+    /// Видимость опции "Только параллельные стены"
     /// </summary>
-    public bool ActivateParallesWallSetting
+    public bool IsVisibleOnlyParallelWalls
     {
-        get => _activateParallelsWallsSeeting;
+        get => _isVisibleOnlyParallelWallsSetting;
         set
         {
-            _activateParallelsWallsSeeting = value;
+            _isVisibleOnlyParallelWallsSetting = value;
             OnPropertyChanged();
         }
     }
@@ -82,12 +85,12 @@ public class CustomElementPair : ObservableObject
         WhatJoinFilters.SourceCategoriesOverride = categories;
         WithWhatToJoin.PropertyChanged += CheckFiltersCategory;
         WhatJoinFilters.PropertyChanged += CheckFiltersCategory;
-        ActivateParallesWallSetting = CheckCategory();
+        IsVisibleOnlyParallelWalls = CheckCategory();
     }
 
     private void CheckFiltersCategory(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        ActivateParallesWallSetting = CheckCategory();
+        IsVisibleOnlyParallelWalls = CheckCategory();
     }
 
     /// <summary>

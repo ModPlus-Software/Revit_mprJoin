@@ -12,6 +12,7 @@ using ModPlusAPI.Mvvm;
 public class CustomElementPair : ObservableObject
 {
     private bool _isVisibleOnlyParallelWallsSetting;
+    private bool _onlyParallelWalls;
 
     public CustomElementPair()
     {
@@ -46,7 +47,15 @@ public class CustomElementPair : ObservableObject
     /// <summary>
     /// Только параллельные стены
     /// </summary>
-    public bool OnlyParallelWalls { get; set; }
+    public bool OnlyParallelWalls
+    {
+        get => _onlyParallelWalls;
+        set
+        {
+            _onlyParallelWalls = value;
+            OnPropertyChanged();
+        }
+    }
 
     /// <summary>
     /// Видимость опции "Только параллельные стены"
@@ -98,7 +107,12 @@ public class CustomElementPair : ObservableObject
     /// </summary>
     private bool CheckCategory()
     {
-        return WithWhatToJoin.Categories.Select(i => i.BuiltInCategory).All(j => j == BuiltInCategory.OST_Walls)
-            && WhatJoinFilters.Categories.Select(i => i.BuiltInCategory).All(j => j == BuiltInCategory.OST_Walls);
+        var result = WithWhatToJoin.Categories.Select(i => i.BuiltInCategory).All(j => j == BuiltInCategory.OST_Walls)
+                     && WhatJoinFilters.Categories.Select(i => i.BuiltInCategory).All(j => j == BuiltInCategory.OST_Walls);
+
+        if (result == false)
+            OnlyParallelWalls = false;
+
+        return result;
     }
 }

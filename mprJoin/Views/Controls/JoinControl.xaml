@@ -216,7 +216,7 @@
                         <CheckBox 
                             Grid.Row="3"
                             Grid.Column="0"
-                            Visibility="{Binding IsVisibleOnlyParallelWalls, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsEnabled="{Binding IsVisibleOnlyParallelWalls}"
                             IsChecked="{Binding Path=OnlyParallelWalls}"
                             Content="{Binding Source={StaticResource Lang}, XPath=h9}"/>
                     </Grid>

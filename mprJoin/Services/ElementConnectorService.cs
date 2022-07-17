@@ -1,13 +1,13 @@
 ﻿namespace mprJoin.Services;
 
 using System;
+using ModPlus_Revit.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI;
 using Enums;
-using Extensions;
 using Models;
 using ModPlusAPI.Enums;
 using ModPlusAPI.Services;
@@ -16,6 +16,7 @@ public class ElementConnectorService
 {
     private readonly Document _doc;
     private readonly CollectorService _collectorService;
+    private readonly GeometryService _geometryService;
 
     /// <summary>
     /// ctor
@@ -25,6 +26,7 @@ public class ElementConnectorService
     {
         _doc = uiDocument.Document;
         _collectorService = new CollectorService();
+        _geometryService = new GeometryService();
     }
 
     /// <summary>
@@ -85,7 +87,8 @@ public class ElementConnectorService
                 foreach (var elementWhoWillJoin in pair.WhatToJoinElements)
                 {
                     foreach (var intersectedElement in _collectorService
-                                 .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements))
+                                 .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements)
+                                 .Where(i => CheckParallelWalls(pair.OnlyParallelWalls, elementWhoWillJoin, i)))
                     {
                         // Проверка на примыкание стен. Если стена примыкает к другой стене, то данная проверка
                         // (!JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin, intersectedElement))
@@ -176,8 +179,7 @@ public class ElementConnectorService
                 foreach (var elementWhoWillJoin in pair.WhatToJoinElements)
                 {
                     foreach (var intersectedElement in _collectorService
-                                 .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements)
-                                 .Where(i => CheckParallelWalls(pair.OnlyParallelWalls, elementWhoWillJoin, i)))
+                                 .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements))
                     {
                         try
                         {
@@ -232,7 +234,17 @@ public class ElementConnectorService
         var whoCurve = ((LocationCurve)whoWillJoinWall.Location).Curve;
         var withWhoCurve = ((LocationCurve)withWhoWillJoinWall.Location).Curve;
 
-        if (whoCurve.)
+        if (whoCurve is Line whoCurveLine && withWhoCurve is Line withWhoCurveLine)
+        {
+            return whoCurveLine.Direction.Normalize().IsParallelTo(withWhoCurveLine.Direction.Normalize());
+        }
+
+        if (whoCurve is Arc whoCurveArc && withWhoCurve is Arc withWhoCurveArc)
+        {
+            return _geometryService.IsArcParallel(whoCurveArc, withWhoCurveArc);
+        }
+
+        return false;
     }
 
     private void ChangeEndJoinState(Element element, int end, ContiguityOption joinType)

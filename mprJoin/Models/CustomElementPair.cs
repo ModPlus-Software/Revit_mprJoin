@@ -95,7 +95,7 @@ public class CustomElementPair : ObservableObject
     /// </summary>
     private bool CheckCategory()
     {
-        return WithWhatToJoin.Categories.Select(i => i.BuiltInCategory).Contains(BuiltInCategory.OST_Walls)
-            && WhatJoinFilters.Categories.Select(i => i.BuiltInCategory).Contains(BuiltInCategory.OST_Walls);
+        return WithWhatToJoin.Categories.Select(i => i.BuiltInCategory).All(j => j == BuiltInCategory.OST_Walls)
+            && WhatJoinFilters.Categories.Select(i => i.BuiltInCategory).All(j => j == BuiltInCategory.OST_Walls);
     }
 }

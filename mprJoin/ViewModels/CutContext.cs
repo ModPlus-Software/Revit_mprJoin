@@ -43,6 +43,8 @@ public class CutContext : BaseJoinCutContext
         if (!Configurations.Contains(PermanentConfiguration))
             Configurations.Add(PermanentConfiguration);
         CutOptions = UserSettingsService.Get<CutOptions>(nameof(CutOptions));
+        AllowedCategories = PluginSetting.AllowedCategoriesToCut;
+        configurationsList.ToList().ForEach(i => i.Pairs.ToList().ForEach(p => p.SetSettingsAfterGetInSaveFile(AllowedCategories)));
     }
 
     /// <summary>

@@ -11,12 +11,14 @@ using Enums;
 using Models;
 using ModPlusAPI.Enums;
 using ModPlusAPI.Services;
+using mprJoin.Helpers;
 
 public class ElementConnectorService
 {
     private readonly Document _doc;
     private readonly CollectorService _collectorService;
     private readonly GeometryService _geometryService;
+    private readonly FailurePreProcessor _errorPreProcessor;
 
     /// <summary>
     /// ctor
@@ -27,6 +29,7 @@ public class ElementConnectorService
         _doc = uiDocument.Document;
         _collectorService = new CollectorService();
         _geometryService = new GeometryService();
+        _errorPreProcessor = new FailurePreProcessor();
     }
 
     /// <summary>
@@ -81,6 +84,9 @@ public class ElementConnectorService
         using (var tr = new Transaction(doc, trName))
         {
             tr.Start();
+            var trOptions = tr.GetFailureHandlingOptions();
+            trOptions.SetFailuresPreprocessor(_errorPreProcessor);
+            tr.SetFailureHandlingOptions(trOptions);
 
             foreach (var pair in pairs)
             {
@@ -173,6 +179,9 @@ public class ElementConnectorService
         using (var tr = new Transaction(doc, trName))
         {
             tr.Start();
+            var trOptions = tr.GetFailureHandlingOptions();
+            trOptions.SetFailuresPreprocessor(_errorPreProcessor);
+            tr.SetFailureHandlingOptions(trOptions);
 
             foreach (var pair in pairs)
             {

@@ -1,4 +1,5 @@
 ﻿namespace mprJoin.ViewModels;
+
 using ModPlusAPI.Mvvm;
 using ModPlusAPI.Services;
 using Views;

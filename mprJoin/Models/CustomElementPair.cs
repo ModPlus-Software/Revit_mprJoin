@@ -1,4 +1,5 @@
 ﻿namespace mprJoin.Models;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -107,8 +108,10 @@ public class CustomElementPair : ObservableObject
     /// </summary>
     private bool CheckCategory()
     {
-        var result = WithWhatToJoin.Categories.Select(i => i.BuiltInCategory).All(j => j == BuiltInCategory.OST_Walls)
-                     && WhatJoinFilters.Categories.Select(i => i.BuiltInCategory).All(j => j == BuiltInCategory.OST_Walls);
+        var result = WithWhatToJoin.Categories.Any() &&
+                     WhatJoinFilters.Categories.Any() &&
+                     WithWhatToJoin.Categories.Select(i => i.BuiltInCategory).All(j => j == BuiltInCategory.OST_Walls) &&
+                     WhatJoinFilters.Categories.Select(i => i.BuiltInCategory).All(j => j == BuiltInCategory.OST_Walls);
 
         if (result == false)
             OnlyParallelWalls = false;

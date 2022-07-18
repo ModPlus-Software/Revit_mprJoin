@@ -118,7 +118,10 @@
                  Grid.Row="1"
                  Grid.Column="0"
                  mps:RippleAssist.IsDisabled="True"
-                 ItemsSource="{Binding Path=CurrentConfiguration.Pairs}">
+                 ItemsSource="{Binding Path=CurrentConfiguration.Pairs}"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 ScrollViewer.CanContentScroll="False">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}"
                        BasedOn="{StaticResource ModPlusListBoxItem}">

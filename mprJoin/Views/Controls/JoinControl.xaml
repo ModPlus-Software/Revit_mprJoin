@@ -120,7 +120,8 @@
                  mps:RippleAssist.IsDisabled="True"
                  ItemsSource="{Binding Path=CurrentConfiguration.Pairs}"
                  Background="Transparent"
-                 BorderThickness="0">
+                 BorderThickness="0"
+                 ScrollViewer.CanContentScroll="False">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}"
                        BasedOn="{StaticResource ModPlusListBoxItem}">
@@ -213,28 +214,26 @@
 
                         <!-- Чекбокс для только параллельных стен-->
                         <!-- Только параллельные стены -->
-                        <CheckBox 
-                            Grid.Row="3"
-                            Grid.Column="0"
-                            IsEnabled="{Binding IsVisibleOnlyParallelWalls}"
-                            IsChecked="{Binding Path=OnlyParallelWalls}"
-                            Content="{Binding Source={StaticResource Lang}, XPath=h9}"/>
+                        <CheckBox Grid.Row="3"
+                                  Grid.Column="0"
+                                  Visibility="{Binding Path=IsVisibleOnlyParallelWalls, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  IsChecked="{Binding Path=OnlyParallelWalls}"
+                                  Content="{Binding Source={StaticResource Lang}, XPath=h9}"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
 
         <!-- Кнопка добавления пар -->
-        <Button 
-            Grid.Row="1"
-            Grid.Column="1"
-            Margin="0 4 12 4"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            Command="{Binding DataContext.AddPair, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
-            Style="{StaticResource ModPlusFlatButtonForIcon}"
-            ToolTip="{Binding Source={StaticResource Lang}, XPath=tp1}"
-            Content="{StaticResource AddIcon}"/>
+        <Button Grid.Row="1"
+                Grid.Column="1"
+                Margin="0 4 12 4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Command="{Binding DataContext.AddPair, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                Style="{StaticResource ModPlusFlatButtonForIcon}"
+                ToolTip="{Binding Source={StaticResource Lang}, XPath=tp1}"
+                Content="{StaticResource AddIcon}"/>
 
         <Grid Grid.Row="2"
               Grid.Column="0"

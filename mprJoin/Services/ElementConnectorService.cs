@@ -11,7 +11,7 @@ using Enums;
 using Models;
 using ModPlusAPI.Enums;
 using ModPlusAPI.Services;
-using mprJoin.Helpers;
+using Helpers;
 
 public class ElementConnectorService
 {

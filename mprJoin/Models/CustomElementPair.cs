@@ -12,7 +12,7 @@ using ModPlusAPI.Mvvm;
 /// </summary>
 public class CustomElementPair : ObservableObject
 {
-    private bool _isVisibleOnlyParallelWallsSetting;
+    private bool _isEnabledOnlyParallelWallsSetting;
     private bool _onlyParallelWalls;
 
     public CustomElementPair()
@@ -32,7 +32,7 @@ public class CustomElementPair : ObservableObject
         };
         WithWhatToJoin.PropertyChanged += CheckFiltersCategory;
         WhatJoinFilters.PropertyChanged += CheckFiltersCategory;
-        IsVisibleOnlyParallelWalls = CheckCategory();
+        IsEnabledOnlyParallelWalls = CheckCategory();
     }
 
     /// <summary>
@@ -59,14 +59,14 @@ public class CustomElementPair : ObservableObject
     }
 
     /// <summary>
-    /// Видимость опции "Только параллельные стены"
+    /// Доступность опции "Только параллельные стены"
     /// </summary>
-    public bool IsVisibleOnlyParallelWalls
+    public bool IsEnabledOnlyParallelWalls
     {
-        get => _isVisibleOnlyParallelWallsSetting;
+        get => _isEnabledOnlyParallelWallsSetting;
         set
         {
-            _isVisibleOnlyParallelWallsSetting = value;
+            _isEnabledOnlyParallelWallsSetting = value;
             OnPropertyChanged();
         }
     }
@@ -95,12 +95,12 @@ public class CustomElementPair : ObservableObject
         WhatJoinFilters.SourceCategoriesOverride = categories;
         WithWhatToJoin.PropertyChanged += CheckFiltersCategory;
         WhatJoinFilters.PropertyChanged += CheckFiltersCategory;
-        IsVisibleOnlyParallelWalls = CheckCategory();
+        IsEnabledOnlyParallelWalls = CheckCategory();
     }
 
     private void CheckFiltersCategory(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        IsVisibleOnlyParallelWalls = CheckCategory();
+        IsEnabledOnlyParallelWalls = CheckCategory();
     }
 
     /// <summary>

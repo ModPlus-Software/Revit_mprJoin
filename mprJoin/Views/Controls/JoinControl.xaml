@@ -212,11 +212,10 @@
                                 Style="{StaticResource ModPlusFlatButtonForIcon}"
                                 Content="{StaticResource ModPlus.Icons.24.Arrow-Down-Bold}"/>
 
-                        <!-- Чекбокс для только параллельных стен-->
                         <!-- Только параллельные стены -->
                         <CheckBox Grid.Row="3"
                                   Grid.Column="0"
-                                  Visibility="{Binding Path=IsVisibleOnlyParallelWalls, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  IsEnabled="{Binding Path=IsEnabledOnlyParallelWalls}"
                                   IsChecked="{Binding Path=OnlyParallelWalls}"
                                   Content="{Binding Source={StaticResource Lang}, XPath=h9}"/>
                     </Grid>

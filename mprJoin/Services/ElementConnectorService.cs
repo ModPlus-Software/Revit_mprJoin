@@ -1,13 +1,13 @@
 ﻿namespace mprJoin.Services;
 
 using System;
+using ModPlus_Revit.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI;
 using Enums;
-using Extensions;
 using Models;
 using ModPlusAPI.Enums;
 using ModPlusAPI.Services;
@@ -16,6 +16,7 @@ public class ElementConnectorService
 {
     private readonly Document _doc;
     private readonly CollectorService _collectorService;
+    private readonly GeometryService _geometryService;
 
     /// <summary>
     /// ctor
@@ -25,6 +26,7 @@ public class ElementConnectorService
     {
         _doc = uiDocument.Document;
         _collectorService = new CollectorService();
+        _geometryService = new GeometryService();
     }
 
     /// <summary>
@@ -79,13 +81,15 @@ public class ElementConnectorService
         using (var tr = new Transaction(doc, trName))
         {
             tr.Start();
-
+            WarningSwallower.Set(tr);
+            
             foreach (var pair in pairs)
             {
                 foreach (var elementWhoWillJoin in pair.WhatToJoinElements)
                 {
                     foreach (var intersectedElement in _collectorService
-                                 .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements))
+                                 .GetIntersectedElementByBoundingBoxFilter(doc, elementWhoWillJoin, pair.WhereToJoinElements)
+                                 .Where(i => CheckParallelWalls(pair.OnlyParallelWalls, elementWhoWillJoin, i)))
                     {
                         // Проверка на примыкание стен. Если стена примыкает к другой стене, то данная проверка
                         // (!JoinGeometryUtils.AreElementsJoined(document, elementWhoWillJoin, intersectedElement))
@@ -95,12 +99,12 @@ public class ElementConnectorService
                         {
                             if (whoWillJoinCurve
                                 .get_ElementsAtJoin(0)
-                                .ToList()
+                                .OfType<Element>()
                                 .Any(i => i.Id.Equals(wallWhereWillJoin.Id)))
                                 continue;
                             if (whoWillJoinCurve
                                 .get_ElementsAtJoin(1)
-                                .ToList()
+                                .OfType<Element>()
                                 .Any(i => i.Id.Equals(wallWhereWillJoin.Id)))
                                 continue;
                         }
@@ -170,6 +174,7 @@ public class ElementConnectorService
         using (var tr = new Transaction(doc, trName))
         {
             tr.Start();
+            WarningSwallower.Set(tr);
 
             foreach (var pair in pairs)
             {
@@ -215,6 +220,33 @@ public class ElementConnectorService
         }
 
         resultService.ShowByType();
+    }
+
+    private bool CheckParallelWalls(bool checkParallelWalls, Element whoWillJoin, Element withWhoWillJoin)
+    {
+        if (!checkParallelWalls)
+            return true;
+
+        if (whoWillJoin is not Wall whoWillJoinWall)
+            return true;
+
+        if (withWhoWillJoin is not Wall withWhoWillJoinWall)
+            return true;
+
+        var whoCurve = ((LocationCurve)whoWillJoinWall.Location).Curve;
+        var withWhoCurve = ((LocationCurve)withWhoWillJoinWall.Location).Curve;
+
+        if (whoCurve is Line whoCurveLine && withWhoCurve is Line withWhoCurveLine)
+        {
+            return whoCurveLine.Direction.Normalize().IsParallelTo(withWhoCurveLine.Direction.Normalize());
+        }
+
+        if (whoCurve is Arc whoCurveArc && withWhoCurve is Arc withWhoCurveArc)
+        {
+            return _geometryService.IsArcParallel(whoCurveArc, withWhoCurveArc);
+        }
+
+        return false;
     }
 
     private void ChangeEndJoinState(Element element, int end, ContiguityOption joinType)

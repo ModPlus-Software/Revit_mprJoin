@@ -30,7 +30,8 @@ public static class PluginSetting
         BuiltInCategory.OST_StructuralColumns,
         BuiltInCategory.OST_StructuralFraming,
         BuiltInCategory.OST_StructuralFoundation,
-        BuiltInCategory.OST_Roofs
+        BuiltInCategory.OST_Roofs,
+        BuiltInCategory.OST_StructConnections
     };
         
     /// <summary>
@@ -46,7 +47,9 @@ public static class PluginSetting
         BuiltInCategory.OST_MechanicalEquipment,
         BuiltInCategory.OST_SpecialityEquipment,
         BuiltInCategory.OST_PlumbingFixtures,
-        BuiltInCategory.OST_DataDevices
+        BuiltInCategory.OST_DataDevices,
+        BuiltInCategory.OST_Mass,
+        BuiltInCategory.OST_StructConnections
     };
 
     /// <summary>

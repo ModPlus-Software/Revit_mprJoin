@@ -7,6 +7,7 @@
              xmlns:options="clr-namespace:mprJoin.Enums"
              xmlns:vm="clr-namespace:mprJoin.ViewModels"
              xmlns:controls="clr-namespace:mprJoin.Views.Controls"
+             xmlns:moduleControls="https://modplus.org/winfx/xaml/moduleControls"
              d:DataContext="{d:DesignInstance vm:ContiguityContext}"
              mc:Ignorable="d">
 
@@ -23,21 +24,15 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ListBox Grid.Row="0"
-                 ItemsSource="{Binding Path=SelectedCategories}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <CheckBox IsChecked="{Binding IsSelected}"
-                              Content="{Binding Path=Name}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <moduleControls:ElementApplyFilterControl Grid.Row="0"
+                                                  DataContext="{Binding Path=Filter}"
+                                                  IsFloatingHint="False"/>
 
         <StackPanel Grid.Row="1"
                     Grid.Column="0">
@@ -48,6 +43,7 @@
         </StackPanel>
 
         <ComboBox Grid.Row="2"
+                  VerticalAlignment="Top"
                   SelectedIndex="{Binding Path=ContiguityOption, Converter={StaticResource EnumToIntConverter}, ConverterParameter={x:Type options:ContiguityOption}, Mode=TwoWay}">
             <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h2}" />
             <ComboBoxItem Content="{Binding Source={StaticResource Lang}, XPath=h3}" />

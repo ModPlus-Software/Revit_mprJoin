@@ -1,14 +1,13 @@
 ﻿namespace mprJoin.ViewModels;
 
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Enums;
-using Models;
 using ModPlus_Revit;
+using ModPlus_Revit.Utils;
 using ModPlusAPI;
 using ModPlusAPI.Mvvm;
 using ModPlusAPI.Services;
@@ -21,17 +20,20 @@ public class ContiguityContext : BaseContext
 {
     private readonly UIApplication _uiApplication;
     private readonly CollectorService _collectorService;
-    private ObservableCollection<SelectedCategory> _selectedCategories;
     private readonly ElementConnectorService _elementConnectorService;
 
-    public ContiguityContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService)
-        : base(uiApplication, mainWindow, userSettingsService)
+    public ContiguityContext(MainWindow mainWindow, UserSettingsService userSettingsService)
+        : base(mainWindow, userSettingsService)
     {
         _collectorService = new CollectorService();
-        _uiApplication = uiApplication;
-        _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
-        var list = UserSettingsService.Get<ObservableCollection<SelectedCategory>>(nameof(SelectedCategories));
-        _selectedCategories = list.Any() ? list : null;
+        _uiApplication = ModPlus.UiApplication;
+        _elementConnectorService = new ElementConnectorService(_uiApplication.ActiveUIDocument);
+        Filter = UserSettingsService
+           .Get<ElementApplyFilter>(nameof(Filter));
+        if (Filter.SourceCategoriesOverride == null)
+        {
+            Filter.SourceCategoriesOverride = PluginSetting.AllowedCategoriesToContiguity;
+        }
 
         ContiguityOption = UserSettingsService.Get<ContiguityOption>(nameof(ContiguityOption));
         FirstEnd = UserSettingsService.Get<bool>(nameof(FirstEnd));
@@ -44,10 +46,9 @@ public class ContiguityContext : BaseContext
     public ContiguityOption ContiguityOption { get; set; }
 
     /// <summary>
-    /// Список моделей категорий для вывода пользователю
+    /// Фильтр
     /// </summary>
-    public ObservableCollection<SelectedCategory> SelectedCategories =>
-        _selectedCategories ??= new ObservableCollection<SelectedCategory>(GetSelectedCategories(PluginSetting.AllowedCategoriesToContiguity));
+    public ElementApplyFilter Filter { get; set; }
 
     /// <summary>
     /// Обрабатывать ли начало элемента
@@ -71,7 +72,6 @@ public class ContiguityContext : BaseContext
                 if (scope == ScopeType.SelectedElement)
                     MainWindow.Hide();
 
-                var selectedCategories = SelectedCategories.Where(i => i.IsSelected).Select(i => i.Name).ToList();
                 var elements = _collectorService
                     .GetFilteredElementCollector(_uiApplication.ActiveUIDocument, scope)
                     .WhereElementIsNotElementType()
@@ -81,7 +81,7 @@ public class ContiguityContext : BaseContext
                     .WherePasses(new ElementMulticategoryFilter(PluginSetting.AllowedCategoriesToContiguity))
 
                     // Оставляет только выбранные
-                    .Where(element => selectedCategories.Contains(element.Category.Name))
+                    .Where(element => Filter.IsMatch(element))
                     .ToList();
                 if (!elements.Any())
                 {
@@ -116,7 +116,7 @@ public class ContiguityContext : BaseContext
     /// </summary>
     public override void SaveSettings()
     {
-        UserSettingsService.Set(SelectedCategories, nameof(SelectedCategories));
+        UserSettingsService.Set(Filter, nameof(Filter));
         UserSettingsService.Set(ContiguityOption, nameof(ContiguityOption));
         UserSettingsService.Set(FirstEnd, nameof(FirstEnd));
         UserSettingsService.Set(SecondEnd, nameof(SecondEnd));

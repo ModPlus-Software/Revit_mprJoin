@@ -21,11 +21,11 @@ public class JoinContext : BaseJoinCutContext
     private readonly UIApplication _uiApplication;
     private readonly ElementConnectorService _elementConnectorService;
 
-    public JoinContext(UIApplication uiApplication, MainWindow mainWindow, UserSettingsService userSettingsService)
-        : base(uiApplication, mainWindow, userSettingsService)
+    public JoinContext(MainWindow mainWindow, UserSettingsService userSettingsService)
+        : base(mainWindow, userSettingsService)
     {
-        _uiApplication = uiApplication;
-        _elementConnectorService = new ElementConnectorService(uiApplication.ActiveUIDocument);
+        _uiApplication = ModPlus.UiApplication;
+        _elementConnectorService = new ElementConnectorService(_uiApplication.ActiveUIDocument);
         var configurationsList = userSettingsService.Get<ObservableCollection<JoinConfigurations>>(nameof(JoinConfigurations));
         PermanentConfiguration = configurationsList.FirstOrDefault(i => !i.IsEditable) ??
                                  new JoinConfigurations
@@ -43,6 +43,7 @@ public class JoinContext : BaseJoinCutContext
             Configurations.Add(PermanentConfiguration);
         JoinOption = UserSettingsService.Get<JoinOption>(nameof(JoinOption));
         AllowedCategories = PluginSetting.AllowedCategoriesToJoin;
+        configurationsList.ToList().ForEach(i => i.Pairs.ToList().ForEach(p => p.SetSettingsAfterGetInSaveFile(AllowedCategories)));
     }
 
     /// <summary>
